@@ -63,6 +63,7 @@ def generate_and_save_histogram (filepath="https://raw.githubusercontent.com/pri
     print(count)
     try:
         os.remove('static/images/Laplace.png')
+        print('deleted the previous image')
     except:
         pass
     plt.savefig('static/images/Laplace.png')
