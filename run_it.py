@@ -45,6 +45,7 @@ def generate_and_save_histogram (filepath="https://raw.githubusercontent.com/pri
     release=[None for _ in range(2000)]
     true=[None for _ in range(2000)]
     print('Initialized empty lists')
+    print('using epsilon', epsilon)
     for k in range(2000):
         DPmean=meanDP(x=data, lower=1, upper=125, epsilon=epsilon)
         release[k]=float(DPmean['release'])
@@ -60,6 +61,10 @@ def generate_and_save_histogram (filepath="https://raw.githubusercontent.com/pri
     #plt.show()
     print(true[0])
     print(count)
+    try:
+        os.remove('static/images/Laplace.png')
+    except:
+        pass
     plt.savefig('static/images/Laplace.png')
     print('fig saved')
 
