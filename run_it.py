@@ -89,7 +89,8 @@ def process():
     except:
         epsilon=0.1
     generate_and_save_histogram(epsilon=epsilon)
-    return '/static/images/Laplace.png'
+    #return '/static/images/Laplace.png'
+    return render_template('upload.html', source='/static/images/Laplace.png')
 	
 if __name__ == '__main__':
     app.run(debug=True)
