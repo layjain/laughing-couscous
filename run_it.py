@@ -5,6 +5,7 @@ import pandas
 import numpy as np
 import matplotlib.pyplot as plt
 import os
+import time
 
 def _clip(x, lower, upper):
     if lower>upper:
@@ -39,6 +40,7 @@ def meanDP(x, lower, upper, epsilon):
 def generate_and_save_histogram (filepath="https://raw.githubusercontent.com/privacytoolsproject/cs208/master/data/FultonPUMS5full.csv",
                                  label='age',
                                  epsilon=1):
+    global name
     #filepath="https://raw.githubusercontent.com/privacytoolsproject/cs208/master/data/FultonPUMS5full.csv"
     PUMSdata=pandas.read_csv(filepath)
     data=np.array(PUMSdata['age'])
@@ -67,7 +69,10 @@ def generate_and_save_histogram (filepath="https://raw.githubusercontent.com/pri
         print('deleted the previous image')
     except:
         pass
-    plt.savefig('static/images/Laplace.png')
+    name='static/images/Laplace'+str(time.time())+'.png'
+    plt.savefig(name)
+    #plt.show()
+    plt.close()
     print('fig saved')
 
 
@@ -90,7 +95,7 @@ def process():
         epsilon=0.1
     generate_and_save_histogram(epsilon=epsilon)
     #return '/static/images/Laplace.png'
-    return render_template('upload.html', source='/static/images/Laplace.png')
+    return render_template('upload.html', source=name)
 	
 if __name__ == '__main__':
     app.run(debug=True)
