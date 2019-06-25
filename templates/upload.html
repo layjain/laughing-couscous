@@ -82,7 +82,7 @@
 	</div>
 		<div class="col">
 			<div id="figure">
-				<img src='' alt="Histogram" id="figure-address">
+				<img src='' alt="Histogram will be displayed here once you click 'Analyze'" id="figure-address">
 			</div>
 		</div>
 	</div>
@@ -99,7 +99,21 @@
 		  };
 		xhttp.open("GET", "/process?e="+e+"&d="+d, true);
 		xhttp.send();
-
+	}
+</script>
+<script type="text/javascript">
+	function Analysis2(){
+		var xhttp = new XMLHttpRequest();
+		var e=document.getElementById("epsilon").value;
+		var d=document.getElementById("delta").value;
+		xhttp.onreadystatechange = function() {
+		    if (this.readyState == 4 && this.status == 200) {
+		      document.getElementById("figure").innerHTML =
+		      this.responseText;
+		    }
+		  };
+		xhttp.open("GET", "/process?e="+e+"&d="+d, true);
+		xhttp.send();
 	}
 </script>
 </body>
