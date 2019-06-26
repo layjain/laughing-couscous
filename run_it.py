@@ -6,6 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 import time
+import logreg
 
 def _clip(x, lower, upper):
     if lower>upper:
@@ -64,11 +65,6 @@ def generate_and_save_histogram (filepath="https://raw.githubusercontent.com/pri
     #plt.show()
     print(true[0])
     print(count)
-    try:
-        os.remove('static/images/Laplace.png')
-        print('deleted the previous image')
-    except:
-        pass
     name='static/images/Laplace'+str(time.time())+'.png'
     plt.savefig(name)
     #plt.show()
@@ -81,6 +77,10 @@ app = Flask(__name__)
 @app.route('/')
 @app.route('/index')
 def index():
+    return render_template('index.html')
+        
+@app.route('/upload')
+def upload():
     return render_template('upload.html')
 
 @app.route('/process', methods=['GET','POST'])
@@ -92,10 +92,28 @@ def process():
     try:
         epsilon=float(e)
     except:
+        print('could not convert given epsilon to float')
         epsilon=0.1
     generate_and_save_histogram(epsilon=epsilon)
-    #return '/static/images/Laplace.png'
     return render_template('upload.html', source=name)
+
+@app.route('/dpml')
+def dpml_upload():
+    return render_template('dpml.html')
+
+@app.route('/dpml_process', methods=['GET', "POST"])
+def dpml_process():
+    print(request)
+    print(dict(request.args))
+    e = request.args.get('e','0.1')
+    d = request.args.get('d', '0.1')
+    try:
+        print('could not convert given epsilon to float')
+        epsilon=float(e)
+    except:
+        epsilon=0.1
+    name=logreg.generate_and_save_graph(epsilon=epsilon)
+    return render_template('dpml.html', source=name)
 	
 if __name__ == '__main__':
     app.run(debug=True)
