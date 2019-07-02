@@ -8,7 +8,7 @@
 <body background="/static/images/background.jpg">
 		
 	<nav id="navbar-example2" class="navbar navbar-light bg-light">
-		<a class="navbar-brand" href="#">DIFFPRIV.COM</a>
+		<a class="navbar-brand" href="#">PRIVAZ</a>
 		  <ul class="nav justify">
 		  <li class="nav-item">
 		    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Home</a>
@@ -39,7 +39,10 @@
 				</div>
 			</div>
 		</div>
-		<div class="input-group mb-3">
+		<form action="upload_process" method="POST" enctype="multipart/form-data">
+			<input type="file" name="file">
+						<button type="submit" name="submit"> {{ UPLOAD_STATUS }} </button>
+		<!-- <div class="input-group mb-3">
 		  <div class="input-group-prepend">
 		    <span class="input-group-text" id="inputGroupFileAddon01">Upload Dataset</span>
 		  </div>
@@ -47,7 +50,8 @@
 		    <input type="file" class="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01">
 		    <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
 		  </div>
-		</div>
+		</div> -->
+
 		<div class="row">
 			<div class="col-2">
 				<br>
@@ -63,9 +67,7 @@
 					<div class="col">
 					<select class="custom-select" size="10">
 					  <option selected>Select Item</option>
-					  <option value="1">One</option>
-					  <option value="2">Two</option>
-					  <option value="3">Three</option>
+					  {{ OPTIONS_LIST|safe }}
 					</select>
 					</div>
 					<div class="col">
