@@ -76,7 +76,7 @@ def mapFeaturePlot(x1,x2,degree):
             out= np.hstack((out,terms))
     return out
 
-def generate_and_save_graph(filepath="static/uploaded/logReg.txt", epsilon=0.1):
+def generate_and_save_graph(filepath="static/uploaded/logReg.txt", degree=6, epsilon=0.1, Lambda=1, alpha=1, epochs=800):
     print('making graph')
     df=pd.read_csv(filepath, header=None)
     df.head()
@@ -84,19 +84,13 @@ def generate_and_save_graph(filepath="static/uploaded/logReg.txt", epsilon=0.1):
     X=df.iloc[:,:-1].values
     y=df.iloc[:,-1].values
 
-    pos , neg = (y==1).reshape(118,1) , (y==0).reshape(118,1)
+    pos , neg = (y==1).reshape(-1,1) , (y==0).reshape(-1,1)
 
-    X = mapFeature(X[:,0], X[:,1],6)
+    X = mapFeature(X[:,0], X[:,1],degree)
 
     initial_theta = np.zeros((X.shape[1], 1))
 
-    # Set regularization parameter lambda to 1
-    Lambda = 1
-
-    #Compute and display initial cost and gradient for regularized logistic regression
-    cost, grad=costFunctionReg(initial_theta, X, y, Lambda)
-
-    theta , J_history = gradientDescent(X,y,initial_theta,1,800,0.2)
+    theta , J_history = gradientDescent(X,y,initial_theta,alpha,epochs,Lambda)
 
     scale = 2/( len(X) * Lambda * epsilon) 
     noise = noisevector( scale,len(theta) )
@@ -113,8 +107,8 @@ def generate_and_save_graph(filepath="static/uploaded/logReg.txt", epsilon=0.1):
     z_dp=np.zeros((len(u_vals),len(v_vals)))
     for i in range(len(u_vals)):
         for j in range(len(v_vals)):
-            z[i,j] =mapFeaturePlot(u_vals[i],v_vals[j],6) @ theta
-            z_dp[i,j] =mapFeaturePlot(u_vals[i],v_vals[j],6) @ theta_dp
+            z[i,j] =mapFeaturePlot(u_vals[i],v_vals[j],degree) @ theta
+            z_dp[i,j] =mapFeaturePlot(u_vals[i],v_vals[j],degree) @ theta_dp
     plt.contour(u_vals,v_vals,z.T,0,colors='green')
     plt.contour(u_vals,v_vals,z_dp.T,0,colors='black')
     plt.xlabel("Exam 1 score")
