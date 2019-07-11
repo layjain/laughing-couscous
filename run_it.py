@@ -10,6 +10,7 @@ import time
 import logreg
 import os
 from flask import session
+import tqdm
 ALLOWED_EXTENSIONS = set(['txt', 'csv'])
 UPLOAD_FOLDER = 'static/uploaded'
 
@@ -33,6 +34,13 @@ def lap(mean, scale, size):
     randGen=mean-scale*np.sign(rand)*np.log(1-2*np.abs(rand))
     ###NOTE: contrary to given, np.sign returns 0 for 0, want to change?
     return randGen
+
+def bootstrap(x,n, y=None):
+    index=np.random.choice(range(1, len(x)+1, 1), size=n, replace=True)
+    if y==None:
+        return [x[i] for i in index]
+    else:
+        return [[x[i] for i in index], [y[i] for i in index]]
     
 def meanDP(x, lower, upper, epsilon):
     if upper<lower:
@@ -45,40 +53,93 @@ def meanDP(x, lower, upper, epsilon):
     DPrelease=sensitiveValue+lap(0, scale, 1)
     return {'release':DPrelease, 'true':sensitiveValue}
 
-#Mean Release    
+def medianRelease(x, lower, upper, epsilon, nbins=0):
+    #x is a np vector
+    n=len(x)
+    if nbins==0:
+        bins=np.array(range(int(np.floor(lower)), int(np.ceil(upper)+1)), dtype='float32')
+        nbins=len(bins)
+    else:
+        ######## CHECK THIS PART OF CODE ############
+        bins=np.linspace(lower, upper, num=int(nbins))
+
+    x_clipped=clip(x, lower, upper)
+    sensitive_value=np.median(x)
+    quality=np.array([0 for _ in range(nbins)], dtype='float32')
+    for i in range(len(quality)):
+        quality[i]=min(sum(x_clipped<=bins[i]), sum(x_clipped>=bins[i]))
+    likelihoods=np.exp(epsilon*quality)/2
+    probabilities=likelihoods/sum(likelihoods)
+
+    flag=np.random.uniform(low=0, high=1)<np.cumsum(probabilities)
+    DPrelease=min(bins[flag])
+    return {'release':DPrelease, 'true':sensitive_value}
+
+  
 def generate_and_save_histogram (filepath="https://raw.githubusercontent.com/privacytoolsproject/cs208/master/data/FultonPUMS5full.csv",
                                  label='age',
-                                 epsilon=1):
+                                 epsilon=1,
+                                 measure='Mean',
+                                 selection='age'):
     #filepath="https://raw.githubusercontent.com/privacytoolsproject/cs208/master/data/FultonPUMS5full.csv"
-    PUMSdata=pandas.read_csv(filepath)
-    data=np.array(PUMSdata['age'])
-    count=0
-    release=[None for _ in range(2000)]
-    true=[None for _ in range(2000)]
-    print('Initialized empty lists')
-    print('using epsilon', epsilon)
-    for k in range(2000):
-        DPmean=meanDP(x=data, lower=1, upper=125, epsilon=epsilon)
-        release[k]=float(DPmean['release'])
-        true[k]=DPmean['true']
-        if release[k]<0:
-            count+=1
-    print('loop finished')
-    plt.hist(release, bins=10)
-##    plt.title("Histogram of released DP means")
-##    plt.xlabel(" Differentially Private Mean Age")
-##    plt.ylabel("frequency")
-    print('Plot made')
-    #plt.show()
-    print(true[0])
-    print(count)
-    name='static/images/Laplace'+str(time.time())+'.png'
-    plt.savefig(name)
-    #plt.show()
-    plt.close()
-    print('fig saved')
-    return name
+    print('called generate_and_save_histogram')
+    if measure=='Median':
+        PUMSdata=pandas.read_csv(filepath)
+        data=np.array(PUMSdata[selection], dtype='float32')
+        populationTrue=float(np.median(data))
+        sample_index=np.random.choice(range(1, len(data)+1, 1), size=100, replace=False)
+        x=data[sample_index]
+        n_sims=2000
+        history=[None for _ in range(n_sims)]
+        upper=125
+        for i in (range(n_sims)):
+            history[i]=medianRelease(x=x, lower=1, upper=upper, epsilon=1)['release']
 
+        x_clipped=clip(x, lower=1, upper=upper)
+        breaks=np.arange(0.5, upper+1)
+        fig, axs=plt.subplots(2, 1)
+        axs[0].hist(x_clipped, bins=breaks)
+        axs[0].set_title('Histogram of Private Data')
+        axs[0].axvline(x=np.median(x_clipped), color='r')
+        axs[1].hist(history, bins=breaks)
+        axs[1].set_title('Histogram of released DP medians')
+        name='static/images/Laplace'+str(time.time())+'.png'
+        plt.savefig(name)
+        plt.show()
+        plt.close()
+        print('fig saved')
+        return name
+
+    else:
+        print('measure given : '+measure+' hence using: Mean')
+        PUMSdata=pandas.read_csv(filepath)
+        data=np.array(PUMSdata[selection], dtype='float32')
+        count=0
+        release=[None for _ in range(2000)]
+        true=[None for _ in range(2000)]
+        print('Initialized empty lists')
+        print('using epsilon', epsilon)
+        for k in range(2000):
+            DPmean=meanDP(x=data, lower=1, upper=125, epsilon=epsilon)
+            release[k]=float(DPmean['release'])
+            true[k]=DPmean['true']
+            if release[k]<0:
+                count+=1
+        print('loop finished')
+        plt.hist(release, bins=10)
+    ##    plt.title("Histogram of released DP means")
+    ##    plt.xlabel(" Differentially Private Mean Age")
+    ##    plt.ylabel("frequency")
+        print('Plot made')
+        #plt.show()
+        print(true[0])
+        print(count)
+        name='static/images/Laplace'+str(time.time())+'.png'
+        plt.savefig(name)
+        #plt.show()
+        plt.close()
+        print('fig saved')
+        return name
 
 app = Flask(__name__)
 
@@ -109,6 +170,7 @@ def upload_process():
             filepath="https://raw.githubusercontent.com/privacytoolsproject/cs208/master/data/FultonPUMS5full.csv"
             df=pandas.read_csv(filepath)
             headers_list=list(df)
+            session['headers_list']=headers_list
             OPTIONS_LIST=list_to_html(headers_list)
             print(OPTIONS_LIST)
             return render_template('upload.html', UPLOAD_STATUS='No File Selected', OPTIONS_LIST=OPTIONS_LIST)
@@ -131,6 +193,25 @@ def process():
     e = request.args.get('e','0.1')
     d = request.args.get('d', '0.1')
     try:
+        selection_index = int(request.args.get('selection', '0'))-1
+    except:
+        selection_index=-1
+    if selection_index == -1:
+        selection = 'age'
+    else:
+        selection = session['headers_list'][selection_index]
+
+    try:
+        measure_index = int(request.args.get('measure', '0'))-1
+    except:
+        measure_index = -1
+    if measure_index == -1:
+        measure = 'Mean'
+    else:
+        measure = ['Mean', 'Median', 'Mode'][measure_index]
+
+
+    try:
         epsilon=float(e)
     except:
         print('could not convert given epsilon to float')
@@ -138,10 +219,10 @@ def process():
     if session.get('filename')!=None:
         filepath = 'static/uploaded/'+session.get('filename')
         UPLOAD_STATUS='UPLOADED!'
-        name=generate_and_save_histogram(filepath=filepath, epsilon=epsilon)
+        name=generate_and_save_histogram(filepath=filepath, epsilon=epsilon, measure=measure, selection=selection)
     else:
         UPLOAD_STATUS='USED DEFAULT FILE'
-        name=generate_and_save_histogram(epsilon=epsilon)
+        name=generate_and_save_histogram(epsilon=epsilon, measure=measure, selection=selection)
     
     return render_template('upload.html', UPLOAD_STATUS=UPLOAD_STATUS, source=name)
 
@@ -228,7 +309,7 @@ def list_to_html(L):
     return ans
 	
 if __name__ == '__main__':
+    pass
     app.secret_key = 'super secret key'
     app.config['SESSION_TYPE'] = 'filesystem'
-
     app.run(debug=True)
