@@ -28,6 +28,13 @@
 				  </div>
 				  <input type="text" class="form-control" placeholder="0.1" aria-label="0.1" aria-describedby="basic-addon1" id="epsilon">
 				</div>
+				<br>
+				<div class="input-group mb-3">
+				  <div class="input-group-prepend">
+				    <span class="input-group-text" id="basic-addon1">low</span>
+				  </div>
+				  <input type="text" class="form-control" placeholder="0" aria-label="0.1" aria-describedby="basic-addon1" id="low">
+				</div>
 			</div>
 
 			<div class="col-3">
@@ -36,6 +43,13 @@
 				    <span class="input-group-text" id="basic-addon1">delta</span>
 				  </div>
 				  <input type="text" class="form-control" placeholder="0.1" aria-label="0.1" aria-describedby="basic-addon1" id="delta">
+				</div>
+			<br>
+			<div class="input-group mb-3">
+				  <div class="input-group-prepend">
+				    <span class="input-group-text" id="basic-addon1">high</span>
+				  </div>
+				  <input type="text" class="form-control" placeholder="160" aria-label="0.1" aria-describedby="basic-addon1" id="high">
 				</div>
 			</div>
 		</div>
@@ -128,7 +142,9 @@
 		var d=document.getElementById("delta").value;
 		var selection=document.getElementById("selector").value;
 		var measure=document.getElementById("measure-selector").value;
-		
+		var low=document.getElementById("low").value;
+		var high=document.getElementById("high").value;
+
 		xhttp.onreadystatechange = function() {
 		    if (this.readyState == 4 && this.status == 200) {
 		      document.open();
@@ -136,7 +152,7 @@
 		      document.close();
 		    }
 		  };
-		xhttp.open("GET", "/process?e="+e+"&d="+d+"&selection="+selection+"&measure="+measure, true);
+		xhttp.open("GET", "/process?e="+e+"&d="+d+"&selection="+selection+"&measure="+measure+"&high="+high+"&low="+low, true);
 		xhttp.send();
 	}
 </script>

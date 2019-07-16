@@ -17,6 +17,7 @@ UPLOAD_FOLDER = 'static/uploaded'
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 def _clip(x, lower, upper):
     if lower>upper:
         raise ValueError('Cannot clip with lower more than upper')
@@ -80,7 +81,9 @@ def generate_and_save_histogram (filepath="https://raw.githubusercontent.com/pri
                                  label='age',
                                  epsilon=1,
                                  measure='Mean',
-                                 selection='age'):
+                                 selection='age',
+                                 high=160,
+                                 low=0):
     #filepath="https://raw.githubusercontent.com/privacytoolsproject/cs208/master/data/FultonPUMS5full.csv"
     print('called generate_and_save_histogram')
     if measure=='Median':
@@ -91,11 +94,10 @@ def generate_and_save_histogram (filepath="https://raw.githubusercontent.com/pri
         x=data[sample_index]
         n_sims=2000
         history=[None for _ in range(n_sims)]
-        upper=125
         for i in (range(n_sims)):
-            history[i]=medianRelease(x=x, lower=1, upper=upper, epsilon=1)['release']
+            history[i]=medianRelease(x=x, lower=low, upper=high, epsilon=1)['release']
 
-        x_clipped=clip(x, lower=1, upper=upper)
+        x_clipped=clip(x, lower=low, upper=high)
         breaks=np.arange(0.5, upper+1)
         fig, axs=plt.subplots(2, 1)
         axs[0].hist(x_clipped, bins=breaks)
@@ -120,7 +122,7 @@ def generate_and_save_histogram (filepath="https://raw.githubusercontent.com/pri
         print('Initialized empty lists')
         print('using epsilon', epsilon)
         for k in range(2000):
-            DPmean=meanDP(x=data, lower=1, upper=125, epsilon=epsilon)
+            DPmean=meanDP(x=data, lower=low, upper=high, epsilon=epsilon)
             release[k]=float(DPmean['release'])
             true[k]=DPmean['true']
             if release[k]<0:
@@ -192,6 +194,9 @@ def process():
     print(dict(request.args))
     e = request.args.get('e','0.1')
     d = request.args.get('d', '0.1')
+    low = float(request.args.get('low', '0'))
+    high =  float(request.args.get('high', '160'))
+
     try:
         selection_index = int(request.args.get('selection', '0'))-1
     except:
@@ -219,10 +224,10 @@ def process():
     if session.get('filename')!=None:
         filepath = 'static/uploaded/'+session.get('filename')
         UPLOAD_STATUS='UPLOADED!'
-        name=generate_and_save_histogram(filepath=filepath, epsilon=epsilon, measure=measure, selection=selection)
+        name=generate_and_save_histogram(filepath=filepath, epsilon=epsilon, measure=measure, selection=selection, low=low, high=high)
     else:
         UPLOAD_STATUS='USED DEFAULT FILE'
-        name=generate_and_save_histogram(epsilon=epsilon, measure=measure, selection=selection)
+        name=generate_and_save_histogram(epsilon=epsilon, measure=measure, selection=selection, high=high, low=low)
     
     return render_template('upload.html', UPLOAD_STATUS=UPLOAD_STATUS, source=name)
 
