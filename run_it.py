@@ -8,15 +8,23 @@ import matplotlib.pyplot as plt
 import os
 import time
 import logreg
+import query as query_src
 import os
 from flask import session
 import tqdm
+import src
+import subprocess
+import shutil
+
 ALLOWED_EXTENSIONS = set(['txt', 'csv'])
 UPLOAD_FOLDER = 'static/uploaded'
 
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def allowed_file_txt(filename):
+    return '.' in filename and filename.rsplit('.',1)[1].lower() in ['txt']
 
 def _clip(x, lower, upper):
     if lower>upper:
@@ -186,6 +194,37 @@ def upload_process():
         flash('only txt and csv allowed, Try Again!')
         return render_template('upload.html', UPLOAD_STATUS='WrongExtension, Try a csv or txt')
 
+@app.route('/query_upload_process', methods=['GET','POST'])
+def query_upload_process():
+    #session['filename_query']=None
+    print(request)
+    print(request.files)
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            flash('No file part')
+            return render_template('upload.html', UPLOAD_STATUS='CLICK TO UPLOAD')
+        file = request.files['file']
+        if file.filename=='':
+            flash('No selected file')
+            filepath="src/data.txt"
+            df=pandas.read_csv(filepath)
+            headers_list=list(df)
+            session['headers_list']=headers_list
+            TABS_LIST=query_src.list_to_html_tabs(headers_list)
+            DIVS_TABS_LIST=query_src.list_to_html_divs_tabs(headers_list)
+            return render_template('query.html', UPLOAD_STATUS='No File Selected', TABS_LIST=TABS_LIST, DIVS_TABS_LIST=DIVS_TABS_LIST)
+        if file and allowed_file(file.filename):
+            session['filename_query']="data.txt"
+            file.save("src/data.txt")
+            df = pandas.read_csv(os.path.join(UPLOAD_FOLDER, session.get('filename')))
+            headers_list=list(df)
+            session["headers_list"]=headers_list
+            TABS_LIST=query_src.list_to_html_tabs(headers_list)
+            DIVS_TABS_LIST=query_src.list_to_html_divs_tabs(headers_list)
+            return render_template('query.html', UPLOAD_STATUS='UPLOADED!', TABS_LIST=TABS_LIST, DIVS_TABS_LIST=DIVS_TABS_LIST)
+        flash('only txt and csv allowed, Try Again!')
+        return render_template('query.html', UPLOAD_STATUS='WrongExtension, Try a txt')
+
 
     
 @app.route('/process', methods=['GET','POST'])
@@ -194,9 +233,10 @@ def process():
     print(dict(request.args))
     e = request.args.get('e','0.1')
     d = request.args.get('d', '0.1')
-    low = float(request.args.get('low', '0'))
-    high =  float(request.args.get('high', '160'))
-
+    low = (request.args.get('low', '0'))
+    high =  (request.args.get('high', '160'))
+    low = get_float(low, 0)
+    high = get_float(high, 160)
     try:
         selection_index = int(request.args.get('selection', '0'))-1
     except:
@@ -286,6 +326,55 @@ def dpml_process():
     name=logreg.generate_and_save_graph(filepath=filepath, epsilon=epsilon, Lambda=Lambda,\
                                         degree=Degree, alpha=alpha, epochs=epochs)
     return render_template('dpml.html', source=name, UPLOAD_STATUS=UPLOAD_STATUS)
+
+@app.route('/query', methods=['GET','POST'])
+def query():
+    return render_template('query.html', UPLOAD_STATUS='Click to Upload')
+
+@app.route('/query_process', methods=['GET','POST'])
+def query_process():
+    #Processing args
+    e=request.args.get('e', '0.1')
+    low=request.args.get('low', '0')
+    high=request.args.get('high', '125')
+    qid=request.args.get('qiid', '(0,1)')
+    dpid=request.args.get('dpid', '3')
+
+    epsilon=get_float(e, 0.1)
+    low = get_float(low, 0)
+    high = get_float(high, 125)
+    qid = tuple(qid)
+    #TODO- Handle exception if input not tuple-like
+    dpid = get_natural(dpid, 3)
+
+    f = open("src/kwargs.txt", 'w+')
+    f.write(str([qid,  dpid]))
+    f.close()
+
+    print(request)
+    print(dict(request.args))
+    try:
+        filename_query=session.get('filename_query')
+        UPLOAD_STATUS='UPLOADED'
+    except:
+        filename_query=None
+        UPLOAD_STATUS='USED DEFAULT'
+
+    f = open("src/attribute.txt", 'w+')
+    f.write(str(session["headers_list"]))
+    f.close()
+
+    subprocess.call("src/K_Anonymity.py", shell=True)
+
+    name=str(time.time())+'.txt'
+    address = "static/css/"+name
+    f = open(address, 'w+')
+    f.close()
+    shutil.copy2("src/Anonymity.txt", address)
+
+    DOWNLOAD_PART = query_src.show_download_part(name)
+
+    return render_template('query.html', UPLOAD_STATUS=UPLOAD_STATUS, DOWNLOAD_PART=DOWNLOAD_PART)
 
 def get_float(var, default, failure_message=None):
     if failure_message==None:

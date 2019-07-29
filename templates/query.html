@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+		<link rel="stylesheet" type="text/css" href="/static/css/upload_form_style.css">
+		<link rel="stylesheet" type="text/css" href="/static/css/tabs_style.css">
+		<title>Visualization</title>
+	</head>
+<body background="/static/images/background.jpg">
+		
+	<nav id="navbar-example2" class="navbar navbar-light bg-light">
+		<a class="navbar-brand" href="#">PRIVAZ</a>
+		  <ul class="nav justify">
+		  <li class="nav-item">
+		    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Home</a>
+		  </li>
+		  <li class="nav-item">
+		    <a class="nav-link" href="home">Logout</a>
+		  </li>
+		</ul>	
+	</nav>
+	<h3>Upload a file (txt or csv):</h3>
+	<div align="left" id="Upload bar"> 
+	<form action="query_upload_process" method="POST" enctype="multipart/form-data">
+			<input type="file" name="file">
+						<button type="submit" name="submit"> {{ UPLOAD_STATUS }} </button>
+	</form>
+	</div>
+	<!-- BEGINS TABS -->
+
+<h3>Choose levels, for respective headers</h3>
+<p>Click on the buttons inside the tabbed menu:</p>
+<div class="tab">
+{{TABS_LIST|safe}}
+
+</div>
+{{DIVS_TABS_LIST|safe}}
+
+<div class="row mt-4 text-center">
+	<div class="col">
+		QIID:  <input type="text" id="qiid">
+	</div>
+	<div class="col">
+		DPID:  <input type="number" id="dpid">
+	</div>
+	<div class="col">
+		epsilon:  <input type="number" step="any" name="epsilon" id="epsilon">
+	</div>
+</div>
+<div class="row mt-4 text-center">
+	<div class="col">
+		Max:  <input type="number" step="any" name="max" id="max">
+	</div>
+	<div class="col">
+		Min:  <input type="number" step="any" name="min" id="min">
+	</div>
+	<div class="col">
+		<button type="button" class="btn btn-dark" id="Query-Button">Query Dataset</button>
+	</div>
+</div>
+
+{{DOWNLOAD_PART|safe}}
+
+
+<script>
+console.log("Im at query.html")
+function openField(evt, fieldName) {
+  var i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+  document.getElementById(fieldName).style.display = "block";
+  evt.currentTarget.className += " active";
+}
+</script>
+
+<script type="text/javascript" src="/static/js/query_script.js"></script>
+   
+</body>
+</html>
+
+	<!-- ENDS TABS -->

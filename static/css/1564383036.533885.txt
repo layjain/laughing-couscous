@@ -1,0 +1,4 @@
+['Professional', 'Person', '28', 'Cancer', 2]
+['Professional', 'Person', '28', 'Cancer']
+['Artist', 'Person', '32', 'Cancer', 1]
+['Professional', 'Person', '32', 'HIV', 1]
