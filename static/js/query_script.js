@@ -20,3 +20,18 @@ function query_js(){
 		xhttp.open("GET", "/query_process?e="+e+"&high="+high+"&low="+low+"&dpid="+dpid+"&qiid="+qiid, true);
 		xhttp.send();
 }
+
+function saveField(item){
+	var xhttp = new XMLHttpRequest();
+	var item = item;
+	var item_text = document.getElementById("disease_text").value;
+	console.log(item_text);
+
+	// xhttp.onreadystatechange = function(){
+	// 	if (this.readyState == 4 && this.status == 200){
+	// 		document.getElementById('"'+item+'_text"').value = this.responseText;
+	// 	}
+	// };
+	xhttp.open("GET", "/query_save_process?item="+item+"&item_text="+item_text, true);
+	xhttp.send();
+}

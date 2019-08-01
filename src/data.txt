@@ -1,4 +1,4 @@
-job, sex, age, disease
+job,sex,age,disease
 Lawyer,male,28,Cancer
 Doctor,female,28,Cancer
 Writer,female,32,Cancer

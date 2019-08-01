@@ -94,6 +94,7 @@ def generate_and_save_histogram (filepath="https://raw.githubusercontent.com/pri
                                  low=0):
     #filepath="https://raw.githubusercontent.com/privacytoolsproject/cs208/master/data/FultonPUMS5full.csv"
     print('called generate_and_save_histogram')
+    upper=high
     if measure=='Median':
         PUMSdata=pandas.read_csv(filepath)
         data=np.array(PUMSdata[selection], dtype='float32')
@@ -330,6 +331,14 @@ def dpml_process():
 @app.route('/query', methods=['GET','POST'])
 def query():
     return render_template('query.html', UPLOAD_STATUS='Click to Upload')
+
+@app.route('/query_save_process', methods=['GET', 'POST'])
+def query_save_process():
+    item=request.args.get('item','')
+    item_text = request.args.get('item_text', '')
+    print('item_text was ', item_text)
+    query_src.save_item_text(item, item_text)
+    return item_text
 
 @app.route('/query_process', methods=['GET','POST'])
 def query_process():
