@@ -1,6 +1,10 @@
 from flask import Flask, flash
 from flask import request, render_template, redirect, url_for
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from werkzeug.utils import secure_filename
+from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.urls import url_parse
 #import Laplace
 import pandas
 import numpy as np
@@ -10,14 +14,22 @@ import time
 import logreg
 import query as query_src
 import os
+basedir=os.path.abspath(os.path.dirname(__file__))
 from flask import session
 import tqdm
 import src
 import subprocess
 import shutil
+from flask_login import LoginManager, current_user, login_user, logout_user
+from flask_login import UserMixin
 
 ALLOWED_EXTENSIONS = set(['txt', 'csv'])
 UPLOAD_FOLDER = 'static/uploaded'
+
+class Config(object):
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
+        'sqlite:///' + os.path.join(basedir, 'app.db')
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -157,6 +169,12 @@ app = Flask(__name__)
 @app.route('/')
 @app.route('/home')
 def home():
+    if current_user.is_authenticated:
+        return render_template('index.html')
+    return render_template('home.html')
+@app.route('/home_with_logout')
+def home_with_logout():
+    logout_user()
     return render_template('home.html')
 
 @app.route('/index')
@@ -183,13 +201,17 @@ def upload_process():
             headers_list=list(df)
             session['headers_list']=headers_list
             OPTIONS_LIST=list_to_html(headers_list)
+            print(len(df[headers_list[0]]),'rows')
             print(OPTIONS_LIST)
             return render_template('upload.html', UPLOAD_STATUS='No File Selected', OPTIONS_LIST=OPTIONS_LIST)
         if file and allowed_file(file.filename):
+            print('File is Allowed', file.filename)
             session['filename']=secure_filename(file.filename)
             file.save(os.path.join(UPLOAD_FOLDER, session.get('filename')))
             df = pandas.read_csv(os.path.join(UPLOAD_FOLDER, session.get('filename')))
             headers_list=list(df)
+            print(headers_list)
+            session['headers_list'] = headers_list
             OPTIONS_LIST=list_to_html(headers_list)
             return render_template('upload.html', UPLOAD_STATUS='UPLOADED!', OPTIONS_LIST=OPTIONS_LIST)
         flash('only txt and csv allowed, Try Again!')
@@ -246,6 +268,8 @@ def process():
         selection = 'age'
     else:
         selection = session['headers_list'][selection_index]
+
+    print('Selection being', selection)
 
     try:
         measure_index = int(request.args.get('measure', '0'))-1
@@ -385,6 +409,93 @@ def query_process():
 
     return render_template('query.html', UPLOAD_STATUS=UPLOAD_STATUS, DOWNLOAD_PART=DOWNLOAD_PART)
 
+@app.route('/federatedML', methods=['GET', 'POST'])
+def federatedML():
+    return render_template('federatedML.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def render_login_page():
+    if current_user.is_authenticated:
+        return render_template('index.html')
+    return render_template('login.html')
+
+@app.route('/login_check', methods=['GET', 'POST'])
+def login_check():
+    username = request.args.get('username', '')
+    password = request.args.get('password', '')
+    remember = request.args.get('remember', True)
+    print('username', username, 'password', password, 'remember', remember)
+    if current_user.is_authenticated:
+        print('already authenticated user')
+        return render_template('index.html')
+    elif username=='':
+        print('empty username')
+        return render_template('login.html')
+    else:
+        user = User.query.filter_by(username=username).first()
+        if user is None or not user.check_password(password):
+            print('Wrong password')
+            return 'Wrong Username-Password Combination'
+        login_user(user, remember = remember)
+        next_page = request.args.get('next')
+        if not next_page or url_parse(next_page).netloc != '':
+            print('returning index')
+            return render_template('index.html')
+        print('next_page was ', next_page)
+        return redirect(next_page)
+
+@app.route('/check_username_available', methods=['GET', 'POST'])
+def check_username_available():
+    username = request.args.get('username')
+    user = User.query.filter_by(username=username).first()
+    if user is not None and user.username is not None:
+        print(user.username)
+        return 'Please use a different Username'
+    email = request.args.get('email')
+    if email == '':
+        return 'Please enter a valid email'
+    user = User.query.filter_by(email=email).first()
+    if user is not None and user.username is not None:
+        return 'Please use a different email address'
+    return ''
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    print('Args at register')
+    print(request.args)
+    print(request.form)
+    print('request type:---->', request.method)
+    username = request.args.get('username')
+    password = request.args.get('password')
+    remember = request.args.get('remember')
+    email = request.args.get('email')
+    ###Check if duplicate
+    user = User.query.filter_by(username=username).first()
+
+    if user is not None and user.username is not None:
+        print(user.username)
+        return 'Please use a different Username'
+    if email == '':
+        return 'Please enter a valid email'
+    user = User.query.filter_by(email=email).first()
+    if user is not None and user.username is not None:
+        return 'Please use a different email address'
+
+    user = User(username=username, email=email)
+    print('Adding New User')
+    print('username==', username)
+    print('password==', password)
+    print('remember==', remember)
+    print('email==', email)
+    user.set_password(password)
+    db.session.add(user)
+    db.session.commit()
+    return render_template('index.html')
+
+@app.route('/joinFederatedProject', methods=['GET', 'POST'])
+def joinFederatedProject():
+    ProjectID = request.args.get('ProjectID')
+
 def get_float(var, default, failure_message=None):
     if failure_message==None:
         failure_message='could not convert'+str(var)+'to float'
@@ -411,8 +522,35 @@ def list_to_html(L):
         ans=ans+'<option value="'+str(i)+'">'+str(L[i-1])+'</option>'
     return ans
 	
-if __name__ == '__main__':
+
+app.secret_key = 'super secret key'
+app.config.from_object(Config)
+app.config['SESSION_TYPE'] = 'filesystem'
+login = LoginManager(app)
+login.login_view = 'login_check'
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+class User(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), index=True, unique=True)
+    email = db.Column(db.String(64), index=True, unique=True)
+    password_hash = db.Column(db.String(128))
+
+    def __repr__(self):
+        return 'User {}'.format(self.username)
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
+class Project():
     pass
-    app.secret_key = 'super secret key'
-    app.config['SESSION_TYPE'] = 'filesystem'
+
+@login.user_loader
+def load_user(id): #app/models.py
+    return User.query.get(int(id))
+
+if __name__ == '__main__':
     app.run(debug=True)

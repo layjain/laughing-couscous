@@ -8,16 +8,17 @@
 <body background="/static/images/background.jpg">
 		
 	<nav id="navbar-example2" class="navbar navbar-light bg-light">
-		<a class="navbar-brand" href="#">DIFFPRIV.COM</a>
+		<a class="navbar-brand" href="#">PRIVAZ</a>
 		  <ul class="nav justify">
 		  <li class="nav-item">
 		    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Home</a>
 		  </li>
 		  <li class="nav-item">
-		    <a class="nav-link" href="home">Logout</a>
+		    <a class="nav-link" href="home_with_logout">Logout</a>
 		  </li>
 		</ul>	
 	</nav>
+	<h3>Hi {{ current_user.username }}!</h3>
 	<div class="row mt-4 text-center">
 		<div class="col-6 text-left" id="features">
 			<h1>Features</h1>
@@ -36,6 +37,7 @@
 			<a href="dpml" class="btn btn-primary btn-lg active btn-block" role="button" aria-pressed="true"><h1>DPML</h1></a></button>
 			<br><br><br>
 			<a href="query" class="btn btn-primary btn-lg active btn-block" role="button" aria-pressed="true"><h1>Query Dataset</h1></a></button>
+			<a href="federatedML" class="btn btn-primary btn-lg active btn-block" role="button" aria-pressed="true"><h1>Federated ML</h1></a></button>
 		</div>
         
 </body>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+		<link rel="stylesheet" href="/static/css/home_form_style.css">
+		<title>Welcome</title>
+	</head>
+<body background="/static/images/background.jpg">
+		
+	<nav id="navbar-example2" class="navbar navbar-light bg-light">
+		<a class="navbar-brand" href="#">PRIVAZ</a>
+		  <ul class="nav justify">
+		  <li class="nav-item">
+		    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Home</a>
+		  </li>
+		  <li class="nav-item">
+		    <a class="nav-link" href="home_with_logout">Logout</a>
+		  </li>
+		</ul>	
+	</nav>
+	<h3>Hi {{ current_user.username }}!</h3>
+	<p>Choose Project to Contribute</p>
+	Project ID: <input type="text" label="Project ID" id="JoinID">
+	<button id="JoinButton">Join</button><hr>
+	OR
+	<a href="#">View My Past Projects</a>
+	<p>OR</p>
+	<p>Create your own project!</p>
+	Project ID: <input type="text" label="Project ID" id="NewID">
+	<button id="CreateButton">Create!</button>
+
+<script type="text/javascript" src="/static/js/federatedML_script.js?bsigiggfiu"></script>
+</body>
+</html>

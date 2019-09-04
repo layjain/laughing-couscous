@@ -51,9 +51,9 @@ def generate_and_save_histogram (filepath="https://raw.githubusercontent.com/pri
     plt.title("Histogram of released DP means")
     plt.xlabel(" Differentially Private Mean Age")
     plt.ylabel("frequency")
-    #plt.show()
+    plt.show()
     print(true[0])
     print(count)
-    plt.savefig('static/images/Laplace.png')
+    #plt.savefig('static/images/Laplace.png')
     
         
