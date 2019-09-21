@@ -288,7 +288,7 @@ def process():
         UPLOAD_STATUS='USED DEFAULT FILE'
         name=generate_and_save_histogram(filepath=filepath, epsilon=epsilon, measure=measure, selection=selection, low=low, high=high, delta=delta, mechanism=mechanism, gamma=gamma)
     
-    return render_template('upload.html', UPLOAD_STATUS=UPLOAD_STATUS, source=name)
+    return  name
 
 @app.route('/dpml',methods=['GET','POST'])
 def dpml_upload():
