@@ -54,9 +54,21 @@
             >
             <label
               class="btn btn-outline"
-              for="function-logistic"
-              data-control="logistic"
-              >Logistic</label
+              for="function-boundedLaplace"
+              data-control="boundedLaplace"
+              >Bounded Laplace</label
+            >
+            <label
+              class="btn btn-outline"
+              for="function-staircase"
+              data-control="staircase"
+              >Staircase</label
+            >
+            <label
+              class="btn btn-outline"
+              for="function-gaussian"
+              data-control="gaussian"
+              >Gaussian</label
             >
             <div class="d-none tab-radios">
               <input
@@ -68,8 +80,22 @@
               />
               <input
                 type="radio"
-                value="logistic"
-                id="function-logistic"
+                class="tab-radio"
+                value="boundedLaplace"
+                id="function-boundedLaplace"
+                name="function"
+              />
+              <input
+                type="radio"
+                value="staircase"
+                id="function-staircase"
+                name="function"
+                class="tab-radio"
+              />
+              <input
+                type="radio"
+                value="gaussian"
+                id="function-gaussian"
                 name="function"
                 class="tab-radio"
               />
@@ -81,22 +107,13 @@
             <h6>Select Measure</h6>
           </header>
           <div class="d-flex justify-content-center measures tab-select">
-            <label
-              class="btn btn-outline"
-              for="measure-mean"
-              data-hide="logistic"
+            <label class="btn btn-outline" for="measure-mean" data-hide=""
               >Mean</label
             >
-            <label
-              class="btn btn-outline"
-              for="measure-median"
-              data-hide="laplace"
+            <label class="btn btn-outline" for="measure-median" data-hide=""
               >Median</label
             >
-            <label
-              class="btn btn-outline"
-              for="measure-mode"
-              data-hide="logistic"
+            <label class="btn btn-outline" for="measure-mode" data-hide=""
               >Mode</label
             >
             <div class="d-none tab-radios">
@@ -129,7 +146,7 @@
             <h6>Parameters</h6>
           </header>
           <div>
-            <div class="form-row align-items-center my-3" data-hide="logistic">
+            <div class="form-row align-items-center my-3" data-hide="">
               <div class="col-auto">
                 <div class="input-group parameter-input">
                   <div class="input-group-prepend">
@@ -154,7 +171,10 @@
                 id="epsilon-range"
               />
             </div>
-            <div class="form-row align-items-center my-3" data-hide="laplace">
+            <div
+              class="form-row align-items-center my-3"
+              data-hide="laplace staircase"
+            >
               <div class="col-auto">
                 <div class="input-group parameter-input">
                   <div class="input-group-prepend">
@@ -176,6 +196,33 @@
                 max="1"
                 step="0.5"
                 id="delta-range"
+              />
+            </div>
+            <div
+              class="form-row align-items-center my-3"
+              data-hide="laplace boundedLaplace gaussian"
+            >
+              <div class="col-auto">
+                <div class="input-group parameter-input">
+                  <div class="input-group-prepend">
+                    <label for="gamma" class="input-group-text">Gamma</label>
+                  </div>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="gamma"
+                    min="0"
+                    max="100"
+                  />
+                </div>
+              </div>
+              <input
+                type="range"
+                class="custom-range col"
+                min="0"
+                max="1"
+                step="0.5"
+                id="gamma-range"
               />
             </div>
           </div>

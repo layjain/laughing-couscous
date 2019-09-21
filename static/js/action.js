@@ -31,7 +31,9 @@ $("#upload-data").click(function() {
   $(this)
     .parent()
     .hide();
-  var form_data = new FormData($(".upload-form")[0]);
+  var form_data = new FormData();
+  form_data.append("file", $("#select-file")[0].files[0]);
+  console.log(form_data);
   $.ajax({
     type: "POST",
     url: "/upload_process",
@@ -40,6 +42,22 @@ $("#upload-data").click(function() {
     cache: false,
     processData: false,
     success: function(data) {
+      $.each(data, function(item) {
+        label = $("<label/>")
+          .addClass("btn btn-outline")
+          .attr("for", "field-" + item.toLowerCase())
+          .text(item);
+        label.appendTo($(".tab-select.fields"));
+        input = $("<input/>")
+          .attr({
+            type: "radio",
+            name: "field",
+            id: "field-" + item.toLowerCase(),
+            value: item.toLowerCase()
+          })
+          .addClass("tab-radio");
+        input.appendTo($(".tab-select.fields .tab-radios"));
+      });
       console.log("Success!");
     }
   });

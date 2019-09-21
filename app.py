@@ -195,22 +195,22 @@ def upload():
 def upload_process():
     session['filename']=None
     print(request.method)
-    print(request.type)
+    print(request.data)
     if request.method == 'POST':
         if 'file' not in request.files:
             flash('No file part')
             return render_template('upload.html', UPLOAD_STATUS='CLICK TO UPLOAD')
         file = request.files['file']
-        if file.filename=='':
-            flash('No selected file')
-            filepath="https://raw.githubusercontent.com/privacytoolsproject/cs208/master/data/FultonPUMS5full.csv"
-            df=pandas.read_csv(filepath)
-            headers_list=list(df)
-            session['headers_list']=headers_list
-            OPTIONS_LIST=list_to_html(headers_list)
-            print(len(df[headers_list[0]]),'rows')
-            print(OPTIONS_LIST)
-            return render_template('upload.html', UPLOAD_STATUS='No File Selected', OPTIONS_LIST=OPTIONS_LIST)
+        # if file.filename=='':
+        #     flash('No selected file')
+        #     filepath="https://raw.githubusercontent.com/privacytoolsproject/cs208/master/data/FultonPUMS5full.csv"
+        #     df=pandas.read_csv(filepath)
+        #     headers_list=list(df)
+        #     session['headers_list']=headers_list
+        #     OPTIONS_LIST=list_to_html(headers_list)
+        #     print(len(df[headers_list[0]]),'rows')
+        #     print(OPTIONS_LIST)
+        #     return render_template('upload.html', UPLOAD_STATUS='No File Selected', OPTIONS_LIST=OPTIONS_LIST)
         if file and allowed_file(file.filename):
             print('File is Allowed', file.filename)
             session['filename']=secure_filename(file.filename)
