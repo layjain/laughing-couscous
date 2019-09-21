@@ -419,25 +419,27 @@ def render_login_page():
         return render_template('index.html')
     return render_template('login.html')
 
-@app.route('/login_check', methods=['GET', 'POST'])
+@app.route('/login_check', methods=['POST'])
 def login_check():
-    username = request.args.get('username', '')
-    password = request.args.get('password', '')
-    remember = request.args.get('remember', True)
+    print (request.form)
+    username = request.form.get('username', '')
+    print(username)
+    password = request.form.get('password', '')
+    remember = request.form.get('remember', False)
     print('username', username, 'password', password, 'remember', remember)
     if current_user.is_authenticated:
         print('already authenticated user')
         return render_template('index.html')
     elif username=='':
         print('empty username')
-        return render_template('login.html')
+        return render_template('home.html')
     else:
         user = User.query.filter_by(username=username).first()
         if user is None or not user.check_password(password):
             print('Wrong password')
             return 'Wrong Username-Password Combination'
-        login_user(user, remember = remember)
-        next_page = request.args.get('next')
+        login_user(user, remember = bool(remember))
+        next_page = request.form.get('next')
         if not next_page or url_parse(next_page).netloc != '':
             print('returning index')
             return render_template('index.html')
@@ -451,12 +453,16 @@ def check_username_available():
     if user is not None and user.username is not None:
         print(user.username)
         return 'Please use a different Username'
-    email = request.args.get('email')
-    if email == '':
-        return 'Please enter a valid email'
-    user = User.query.filter_by(email=email).first()
-    if user is not None and user.username is not None:
-        return 'Please use a different email address'
+    return ''
+
+@app.route('/check_email_available', methods=['GET', 'POST'])
+def check_email_available():
+    value = request.args.get('email')
+    user = User.query.filter_by(email=value).first()
+    print(user)
+    if user is not None and user.email is not None:
+        print(user.email)
+        return 'Please use a different email'
     return ''
 
 @app.route('/register', methods=['GET', 'POST'])

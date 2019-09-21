@@ -1,0 +1,7 @@
+venv/
+templates/homeCopy.html
+templates/uploadCopy.html
+.vscode/
+__pycache__/
+migrations/
+src/__pycache__/

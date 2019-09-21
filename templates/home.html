@@ -1,58 +1,264 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-		<link rel="stylesheet" href="/static/css/home_form_style.css">
-		<title>Welcome</title>
-	</head>
-<body background="/static/images/background.jpg">
-		
-	<nav id="navbar-example2" class="navbar navbar-light bg-light">
-		<a class="navbar-brand" href="#">PRIVAZ</a>
-		  <ul class="nav justify">
-		  <li class="nav-item">
-		    <a class="nav-link disabled" href="home" tabindex="-1" aria-disabled="true">Home</a>
-		  </li>
-		  <li class="nav-item">
-		    <a class="nav-link" href="login" id="LoginButton">Login</a>
-		  </li>
-		</ul>	
-	</nav>
-	<div class="row mt-4 text-center">
-		<div class="col-6 text-left" id="features">
-			<h1>Features</h1>
-			<ul>
-				<h3><li>Differentialy Private Data Analysis</li>
-				<li>DP Visulaisation</li>
-				<li>Machine Learning Regression</li>
-				<li>Some other feature</li></h3>
-			</ul>
-		</div>
-		<div class="col-1"></div>
-		<div class="col-4" id="forms">
-				<div class="form-group">
-					<label for="name">Username</label>
-					<input type="text" name="name" class="form-control" placeholder="Your Name" id="name">
-				<small id="UserNameAvailability"></small>
-				</div>
-				<div class="form-group">
-					<label for="email1">Email address</label>
-					<input type="email" name="email" class="form-control" placeholder="Enter email" id="email1">
-				</div>
-				<div class="form-group">
-					<label for="pass1">Password</label>
-					<input name="password" class="form-control" placeholder="Password" type="password" id="pass1">
-				</div>
-				<div style="color:red" align="left">
-					<small id="password_errors"></small>
-				</div>
-				<div class="form-group form-check">
-					<input type="checkbox" class="form-check-input" id="checkpoint">
-					<label class="form-check-label" for="checkpoint" required><small>I have read and agree to the<a href="#"> terms and conditions</a></small>.</label>
-				</div>
-				<button class="btn btn-primary" id="SignUpButton"> SignUp </button>
-		</div>
-<script type="text/javascript" src="/static/js/home_script.js?bsigiggfiu"></script>
-    
-</body>
-</html>
+{% extends 'base.html' %} {% block bodyClass %}home-page{% endblock %} {% block
+preContent %}
+<div
+  id="login-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="Login Form"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content text-center">
+      <button
+        type="button"
+        class="btn modal-close"
+        data-dismiss="modal"
+        aria-label="Close"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <header>
+        <h2 class="bottom-border">Login to Privaz</h2>
+      </header>
+      <div class="login-form">
+        <form id="login" class="form" method="POST" action="/login_check">
+          <div class="form-group col-12 px-0">
+            <label for="login-username" class="sr-only">Username</label>
+            <input
+              type="text"
+              class="form-control"
+              id="login-username"
+              placeholder="Username"
+              name="username"
+            />
+          </div>
+          <div class="form-group col-12 px-0">
+            <label for="login-password" class="sr-only">Password</label>
+            <input
+              type="password"
+              class="form-control"
+              id="login-password"
+              placeholder="Password"
+              name="password"
+            />
+          </div>
+          <div class="custom-control custom-checkbox text-left my-2">
+            <input
+              type="checkbox"
+              class="custom-control-input"
+              id="login-remember"
+              name="remember"
+            />
+            <label class="custom-control-label" for="login-remember"
+              >Remember Me</label
+            >
+          </div>
+          <div class="col-12">
+            <button type="submit" class="btn" id="LoginButton">
+              Login
+            </button>
+          </div>
+        </form>
+        <hr width="80%" />
+        <p class="small">Forgot Password? <a href="#">Reset</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block content %}
+<section class="home-top">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-6 home-top-left">
+        <div class="home-hero">
+          <h2>Machine Learning made secure</h2>
+          <h3>It's <span>Free!</span></h3>
+        </div>
+      </div>
+      <div class="col-6 home-top-right">
+        <div class="signup-container text-center">
+          <header class="signup-header bottom-border mt-2 mb-4 pb-2">
+            <h3>Create an account</h3>
+            <em>Its totally free to use!</em>
+          </header>
+          <div class="signup-form px-3 pt-2">
+            <form id="signup" class="form needs-validation">
+              <div class="form-group col-12 px-0">
+                <label for="signup-username" class="sr-only">Username</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="signup-username"
+                  placeholder="Username"
+                  required
+                  data-toggle="tooltip"
+                  data-placement="top"
+                  title="Username already taken"
+                />
+              </div>
+              <div class="form-group col-12 px-0">
+                <label for="signup-email" class="sr-only">Email Address</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  id="signup-email"
+                  placeholder="Email Address"
+                  required
+                  data-toggle="tooltip"
+                  data-placement="top"
+                  title="Email already signed-up"
+                />
+              </div>
+              <div class="form-group col-12 px-0">
+                <label for="signup-password" class="sr-only">Password</label>
+                <input
+                  type="password"
+                  class="form-control"
+                  id="signup-password"
+                  placeholder="Password"
+                  required
+                />
+              </div>
+              <div class="custom-control custom-checkbox">
+                <input
+                  type="checkbox"
+                  class="custom-control-input"
+                  id="signup-agree"
+                />
+                <label class="custom-control-label" for="signup-agree"
+                  >I have read and agree to the
+                  <a href="#">Terms and Conditions</a>.</label
+                >
+              </div>
+              <div class="col-12">
+                <button type="submit" class="btn" id="SignUpButton">
+                  Sign Up
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="svg-shape">
+    <svg
+      version="1.1"
+      id="Layer_1"
+      xmlns="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      x="0px"
+      y="0px"
+      viewBox="0 0 960 132"
+      enable-background="new 0 0 960 132"
+      xml:space="preserve"
+    >
+      <path
+        fill="#F9F9F9"
+        d="M745.334,120.332C567.667,120.332,274.333,1,0,1v131h960V86.998C960,86.998,888,120.332,745.334,120.332z"
+      />
+    </svg>
+  </div>
+</section>
+<section class="home-features">
+  <div class="container">
+    <header class="section-header">
+      <h2 class="bottom-border">Features</h2>
+    </header>
+    <div class="row justify-content-around features-list">
+      <div class="col-4 py-3">
+        <div class="single-feature text-center">
+          <div class="feature-icon">
+            <img src="/static/images/visualization.png" />
+          </div>
+          <div class="feature-content">
+            <h4>Data Visualization</h4>
+            <p>
+              Some quick example text to build on the card title and make up the
+              bulk of the card's content.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-4 py-3">
+        <div class="single-feature text-center">
+          <div class="feature-icon">
+            <img src="/static/images/visualization.png" />
+          </div>
+          <div class="feature-content">
+            <h4>Data Visualization</h4>
+            <p>
+              Some quick example text to build on the card title and make up the
+              bulk of the card's content.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-4 py-3">
+        <div class="single-feature text-center">
+          <div class="feature-icon">
+            <img src="/static/images/visualization.png" />
+          </div>
+          <div class="feature-content">
+            <h4>Data Visualization</h4>
+            <p>
+              Some quick example text to build on the card title and make up the
+              bulk of the card's content.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-4 py-3">
+        <div class="single-feature text-center">
+          <div class="feature-icon">
+            <img src="/static/images/visualization.png" />
+          </div>
+          <div class="feature-content">
+            <h4>Data Visualization</h4>
+            <p>
+              Some quick example text to build on the card title and make up the
+              bulk of the card's content.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-4 py-3">
+        <div class="single-feature text-center">
+          <div class="feature-icon">
+            <img src="/static/images/visualization.png" />
+          </div>
+          <div class="feature-content">
+            <h4>Data Visualization</h4>
+            <p>
+              Some quick example text to build on the card title and make up the
+              bulk of the card's content.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-4 py-3">
+        <div class="single-feature text-center">
+          <div class="feature-icon">
+            <img src="/static/images/visualization.png" />
+          </div>
+          <div class="feature-content">
+            <h4>Data Visualization</h4>
+            <p>
+              Some quick example text to build on the card title and make up the
+              bulk of the card's content.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %} {% block scripts %}
+
+<script
+  type="text/javascript"
+  src="/static/js/home_script.js?bsigiggfiu"
+></script>
+<script type="text/javascript" src="/static/js/login_script.js?bhb"></script>
+{% endblock %}

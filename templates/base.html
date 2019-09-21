@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <!-- <link rel="stylesheet" href="/static/css/home_form_style.css"> -->
+    <link rel="stylesheet" href="/static/css/style.css" />
+    <title>Welcome</title>
+  </head>
+  <body class="{% block bodyClass %}{% endblock %}">
+    {% block preContent %}{% endblock %}
+    <header id="site-header">
+      <div class="container masthead">
+        <div class="row align-items-center justify-content-between">
+          <div class="col-auto site-logo">
+            <a href="/" title="Privaz">
+              <h1 id="site-logo">Privaz</h1>
+            </a>
+          </div>
+          <div class="col-auto">
+            <a
+              href="#login-modal"
+              class="btn-login"
+              id="login-btn"
+              data-toggle="modal"
+            >
+              Login
+            </a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer id="site-footer">
+      <div class="container text-center">
+        &copy; 2019 - PRIVAZ
+      </div>
+    </footer>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script
+      type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+
+    {% block scripts %} {% endblock %}
+  </body>
+</html>

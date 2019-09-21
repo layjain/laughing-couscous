@@ -1,23 +1,266 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-		<link rel="stylesheet" type="text/css" href="/static/css/upload_form_style.css">
-		<title>Visualization</title>
-	</head>
-<body background="/static/images/background.jpg">
-		
-	<nav id="navbar-example2" class="navbar navbar-light bg-light">
-		<a class="navbar-brand" href="#">PRIVAZ</a>
-		  <ul class="nav justify">
-		  <li class="nav-item">
-		    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Home</a>
-		  </li>
-		  <li class="nav-item">
-		    <a class="nav-link" href="home_with_logout">Logout</a>
-		  </li>
-		</ul>	
-	</nav>
+{% extends 'base.html' %} {% block content %}
+<section class="upload-full container">
+  <header class="section-header pt-5 pb-4">
+    <h2 class="bottom-border">Federated ML</h2>
+  </header>
+  <div class="row justify-content-between align-items-center">
+    <form class="form upload-form px-0 col-12">
+      <div class="upload-container text-center my-3">
+        <div
+          class="d-flex flex-column justify-content-around align-items-center"
+        >
+          <header>
+            <h3 class="bottom-border mb-4">Upload Your Dataset</h3>
+            <h4>Your Dataset</h4>
+          </header>
+          <figure class="file-icon">
+            <img
+              src="/static/images/sheet.png"
+              alt="Data File"
+              title="Data File"
+            />
+            <figcaption class="font-italic pt-3">
+              <div class="file-spec font-weight-bold" id="file-name"></div>
+              <div class="file-spec" id="file-size"></div>
+
+              <div class="upload-caption">
+                Upload your dataset in appropriate format (.xls, .txt, ...)
+                here.
+              </div>
+            </figcaption>
+          </figure>
+          <div class="upload-btns form-row justify-content-around px-0">
+            <div class="col-6 form-group dataset-upload my-0">
+              <label for="select-file" class="btn my-2">Select File</label>
+              <input type="file" id="select-file" />
+            </div>
+            <div class="col-6">
+              <a class="btn my-2" id="upload-data">Upload</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="parameters-container">
+        <section class="parameter-section" id="function-type">
+          <header class="section-header">
+            <h6>Select Function</h6>
+          </header>
+          <div class="d-flex justify-content-center functions tab-select">
+            <label
+              class="btn btn-outline"
+              for="function-laplace"
+              data-control="laplace"
+              >Laplace</label
+            >
+            <label
+              class="btn btn-outline"
+              for="function-logistic"
+              data-control="logistic"
+              >Logistic</label
+            >
+            <div class="d-none tab-radios">
+              <input
+                type="radio"
+                class="tab-radio"
+                value="laplace"
+                id="function-laplace"
+                name="function"
+              />
+              <input
+                type="radio"
+                value="logistic"
+                id="function-logistic"
+                name="function"
+                class="tab-radio"
+              />
+            </div>
+          </div>
+        </section>
+        <section class="parameter-section" id="measure-type">
+          <header class="section-header">
+            <h6>Select Measure</h6>
+          </header>
+          <div class="d-flex justify-content-center measures tab-select">
+            <label
+              class="btn btn-outline"
+              for="measure-mean"
+              data-hide="logistic"
+              >Mean</label
+            >
+            <label
+              class="btn btn-outline"
+              for="measure-median"
+              data-hide="laplace"
+              >Median</label
+            >
+            <label
+              class="btn btn-outline"
+              for="measure-mode"
+              data-hide="logistic"
+              >Mode</label
+            >
+            <div class="d-none tab-radios">
+              <input
+                type="radio"
+                class="tab-radio"
+                value="mean"
+                id="measure-mean"
+                name="measure"
+              />
+              <input
+                type="radio"
+                value="median"
+                id="measure-median"
+                name="measure"
+                class="tab-radio"
+              />
+              <input
+                type="radio"
+                class="tab-radio"
+                value="mode"
+                id="measure-mode"
+                name="measure"
+              />
+            </div>
+          </div>
+        </section>
+        <section class="parameter-section" id="greek-parameters">
+          <header class="section-header">
+            <h6>Parameters</h6>
+          </header>
+          <div>
+            <div class="form-row align-items-center my-3" data-hide="logistic">
+              <div class="col-auto">
+                <div class="input-group parameter-input">
+                  <div class="input-group-prepend">
+                    <label for="epsilon" class="input-group-text"
+                      >Epsilon</label
+                    >
+                  </div>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="epsilon"
+                    min="0"
+                    max="100"
+                  />
+                </div>
+              </div>
+              <input
+                type="range"
+                class="custom-range col"
+                min="0"
+                max="100"
+                id="epsilon-range"
+              />
+            </div>
+            <div class="form-row align-items-center my-3" data-hide="laplace">
+              <div class="col-auto">
+                <div class="input-group parameter-input">
+                  <div class="input-group-prepend">
+                    <label for="delta" class="input-group-text">Delta</label>
+                  </div>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="delta"
+                    min="0"
+                    max="100"
+                  />
+                </div>
+              </div>
+              <input
+                type="range"
+                class="custom-range col"
+                min="0"
+                max="1"
+                step="0.5"
+                id="delta-range"
+              />
+            </div>
+          </div>
+        </section>
+        <section class="parameter-section" id="field-type">
+          <header class="section-header">
+            <h6>Setect Field</h6>
+          </header>
+          <div>
+            <div class="d-flex justify-content-center fields tab-select">
+              <label class="btn btn-outline" for="field-age">Age</label>
+              <label class="btn btn-outline" for="field-population"
+                >Polulation</label
+              >
+              <label class="btn btn-outline" for="field-puma">Puma</label>
+              <div class="d-none tab-radios">
+                <input
+                  type="radio"
+                  class="tab-radio"
+                  value="age"
+                  id="field-age"
+                  name="field"
+                />
+                <input
+                  type="radio"
+                  value="population"
+                  id="field-population"
+                  name="field"
+                  class="tab-radio"
+                />
+                <input
+                  type="radio"
+                  value="puma"
+                  id="field-puma"
+                  name="field"
+                  class="tab-radio"
+                />
+              </div>
+            </div>
+            <div class="form-row my-4">
+              <div class="col-6">
+                <div class="input-group parameter-input">
+                  <div class="input-group-prepend">
+                    <label for="low" class="input-group-text">Low</label>
+                  </div>
+                  <input type="number" class="form-control" id="low" />
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="input-group parameter-input">
+                  <div class="input-group-prepend">
+                    <label for="high" class="input-group-text">High</label>
+                  </div>
+                  <input type="number" class="form-control" id="high" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <div class="d-flex justify-items-center">
+          <button
+            type="button"
+            onclick="Analysis3()"
+            class="btn"
+            id="Analyze-Button"
+          >
+            Analyze
+          </button>
+        </div>
+      </div>
+    </form>
+    <div class="data-graph col-6">
+      <div class="graph-container">
+        <div class="graph-pre-caption">
+          Your data will be visualized here after analyzing
+        </div>
+        <img
+          src="/static/images/Laplace1568152268.3212547.png"
+          id="data-histogram"
+        />
+      </div>
+    </div>
+  </div>
+</section>
+<!-- <div class="container">
 	<div class="row mt-4 text-center">
 		<div class="col-5" id="inputs">
 		<div class="row">
@@ -56,15 +299,6 @@
 		<form action="upload_process" method="POST" enctype="multipart/form-data">
 			<input type="file" name="file">
 						<button type="submit" name="submit"> {{ UPLOAD_STATUS }} </button>
-		<!-- <div class="input-group mb-3">
-		  <div class="input-group-prepend">
-		    <span class="input-group-text" id="inputGroupFileAddon01">Upload Dataset</span>
-		  </div>
-		  <div class="custom-file">
-		    <input type="file" class="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01">
-		    <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
-		  </div>
-		</div> -->
 
 		<div class="row">
 			<div class="col-2">
@@ -102,59 +336,85 @@
 			</div>
 		</div>
 	</div>
+	</div> -->
+{% endblock %} {% block scripts %}
 <script type="text/javascript">
-	function Analysis(){
-		var xhttp = new XMLHttpRequest();
-		var e=document.getElementById("epsilon").value;
-		var d=document.getElementById("delta").value;
-		var selection=document.getElementById("selector").value;
-		var measure=document.getElementById("measure-selector").value;
-		
-		xhttp.onreadystatechange = function() {
-		    if (this.readyState == 4 && this.status == 200) {
-		      document.getElementById("figure-address").src =
-		      this.responseText;
-		    }
-		  };
-		xhttp.open("GET", "/process?e="+e+"&d="+d+"&selection="+selection+"&measure="+measure, true);
-		xhttp.send();
-	}
-</script>
-<script type="text/javascript">
-	function Analysis2(){
-		var xhttp = new XMLHttpRequest();
-		var e=document.getElementById("epsilon").value;
-		var d=document.getElementById("delta").value;
-		xhttp.onreadystatechange = function() {
-		    if (this.readyState == 4 && this.status == 200) {
-		      document.getElementById("figure").innerHTML =
-		      this.responseText;
-		    }
-		  };
-		xhttp.open("GET", "/process?e="+e+"&d="+d, true);
-		xhttp.send();
-	}
-</script>
-<script type="text/javascript">
-	function Analysis3(){
-		var xhttp = new XMLHttpRequest();
-		var e=document.getElementById("epsilon").value;
-		var d=document.getElementById("delta").value;
-		var selection=document.getElementById("selector").value;
-		var measure=document.getElementById("measure-selector").value;
-		var low=document.getElementById("low").value;
-		var high=document.getElementById("high").value;
+  function Analysis() {
+    var xhttp = new XMLHttpRequest();
+    var e = document.getElementById("epsilon").value;
+    var d = document.getElementById("delta").value;
+    var selection = document.getElementById("selector").value;
+    var measure = document.getElementById("measure-selector").value;
 
-		xhttp.onreadystatechange = function() {
-		    if (this.readyState == 4 && this.status == 200) {
-		      document.open();
-		      document.write(this.responseText);
-		      document.close();
-		    }
-		  };
-		xhttp.open("GET", "/process?e="+e+"&d="+d+"&selection="+selection+"&measure="+measure+"&high="+high+"&low="+low, true);
-		xhttp.send();
-	}
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        document.getElementById("figure-address").src = this.responseText;
+      }
+    };
+    xhttp.open(
+      "GET",
+      "/process?e=" +
+        e +
+        "&d=" +
+        d +
+        "&selection=" +
+        selection +
+        "&measure=" +
+        measure,
+      true
+    );
+    xhttp.send();
+  }
 </script>
-</body>
-</html>
+<script type="text/javascript">
+  function Analysis2() {
+    var xhttp = new XMLHttpRequest();
+    var e = document.getElementById("epsilon").value;
+    var d = document.getElementById("delta").value;
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        document.getElementById("figure").innerHTML = this.responseText;
+      }
+    };
+    xhttp.open("GET", "/process?e=" + e + "&d=" + d, true);
+    xhttp.send();
+  }
+</script>
+<script type="text/javascript">
+  function Analysis3() {
+    var xhttp = new XMLHttpRequest();
+    var e = document.getElementById("epsilon").value;
+    var d = document.getElementById("delta").value;
+    var selection = document.getElementById("selector").value;
+    var measure = document.getElementById("measure-selector").value;
+    var low = document.getElementById("low").value;
+    var high = document.getElementById("high").value;
+
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        document.open();
+        document.write(this.responseText);
+        document.close();
+      }
+    };
+    xhttp.open(
+      "GET",
+      "/process?e=" +
+        e +
+        "&d=" +
+        d +
+        "&selection=" +
+        selection +
+        "&measure=" +
+        measure +
+        "&high=" +
+        high +
+        "&low=" +
+        low,
+      true
+    );
+    xhttp.send();
+  }
+</script>
+<script type="text/javascript" src="/static/js/action.js"></script>
+{% endblock %}
