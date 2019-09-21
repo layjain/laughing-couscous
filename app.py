@@ -21,7 +21,7 @@ import src
 import subprocess
 import shutil
 from flask_login import LoginManager, current_user, login_user, logout_user
-from flask_login import UserMixin
+from flask_login import UserMixin, login_required
 
 ALLOWED_EXTENSIONS = set(['txt', 'csv'])
 UPLOAD_FOLDER = 'static/uploaded'
@@ -189,7 +189,8 @@ def upload():
 @app.route('/upload_process', methods=['GET','POST'])
 def upload_process():
     session['filename']=None
-    print(request.files)
+    print(request.method)
+    print(request.type)
     if request.method == 'POST':
         if 'file' not in request.files:
             flash('No file part')

@@ -31,6 +31,18 @@ $("#upload-data").click(function() {
   $(this)
     .parent()
     .hide();
+  var form_data = new FormData($(".upload-form")[0]);
+  $.ajax({
+    type: "POST",
+    url: "/upload_process",
+    data: form_data,
+    contentType: false,
+    cache: false,
+    processData: false,
+    success: function(data) {
+      console.log("Success!");
+    }
+  });
 });
 
 $(".tab-radio").change(function() {
@@ -101,3 +113,8 @@ $("label[data-control]").click(function() {
     false
   );
 })();
+
+// UPLOAD BUTTON
+$(function() {
+  $("#upload-data").click(function() {});
+});
