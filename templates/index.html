@@ -1,23 +1,5 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-		<link rel="stylesheet" href="/static/css/home_form_style.css">
-		<title>Welcome</title>
-	</head>
-<body background="/static/images/background.jpg">
-		
-	<nav id="navbar-example2" class="navbar navbar-light bg-light">
-		<a class="navbar-brand" href="#">PRIVAZ</a>
-		  <ul class="nav justify">
-		  <li class="nav-item">
-		    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Home</a>
-		  </li>
-		  <li class="nav-item">
-		    <a class="nav-link" href="home_with_logout">Logout</a>
-		  </li>
-		</ul>	
-	</nav>
+{% extends 'base.html' %}
+{% block content %}
 	<h3>Hi {{ current_user.username }}!</h3>
 	<div class="row mt-4 text-center">
 		<div class="col-6 text-left" id="features">
@@ -39,6 +21,14 @@
 			<a href="query" class="btn btn-primary btn-lg active btn-block" role="button" aria-pressed="true"><h1>Query Dataset</h1></a></button>
 			<a href="federatedML" class="btn btn-primary btn-lg active btn-block" role="button" aria-pressed="true"><h1>Federated ML</h1></a></button>
 		</div>
-        
+    </div>
 </body>
 </html>
+
+{% endblock %} {% block scripts %}
+<script
+  type="text/javascript"
+  src="/static/js/home_script.js?bsigiggfiu"
+></script>
+<script type="text/javascript" src="/static/js/login_script.js?bhb"></script>
+{% endblock %}
