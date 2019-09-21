@@ -264,7 +264,7 @@ def process():
     print(request)
     print(dict(request.args))
     e = request.args.get('e','0.1')
-    d = request.args.get('d', '0.1')
+    delta = request.args.get('d', '0.1')
     gamma = request.args.get('gamma', '0.1')
     mechanism = request.args.get('mechanism', 'laplace')
     low = (request.args.get('low', '0'))
@@ -273,14 +273,15 @@ def process():
     high = get_float(high, 160)
     selection = request.args.get('selection', 'age')
     print('Selection being', selection)
-    measure = request.args.get('measure')
+    measure = request.args.get('measure').capitalize()
     try:
         epsilon=float(e)
     except:
         print('could not convert given epsilon to float')
         epsilon=0.1
     if session.get('filename')!=None:
-        filepath = 'static/uploaded/'+session.get('filename')
+        # filepath = 'static/uploaded/'+session.get('filename')
+        filepath="https://raw.githubusercontent.com/privacytoolsproject/cs208/master/data/FultonPUMS5full.csv"
         UPLOAD_STATUS='UPLOADED!'
         name=generate_and_save_histogram(filepath=filepath, epsilon=epsilon, measure=measure, selection=selection, low=low, high=high, delta=delta, mechanism=mechanism, gamma=gamma)
     else:
