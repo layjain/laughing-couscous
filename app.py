@@ -263,7 +263,7 @@ def process():
     print(request)
     print(dict(request.args))
     e = request.args.get('e','0.1')
-    d = request.args.get('d', '0.1')
+    delta = request.args.get('d', '0.1')
     gamma = request.args.get('gamma', '0.1')
     mechanism = request.args.get('mechanism', 'laplace')
     low = (request.args.get('low', '0'))
