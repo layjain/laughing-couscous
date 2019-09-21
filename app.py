@@ -5,6 +5,7 @@ from flask_migrate import Migrate
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.urls import url_parse
+import DPMechanisms
 #import Laplace
 import pandas
 import numpy as np
@@ -50,13 +51,6 @@ def _clip(x, lower, upper):
     return clipped
 clip=np.vectorize(_clip)
 
-def lap(mean, scale, size):
-    #size=number of random nos needed
-    rand=np.random.rand(size)-0.5
-    randGen=mean-scale*np.sign(rand)*np.log(1-2*np.abs(rand))
-    ###NOTE: contrary to given, np.sign returns 0 for 0, want to change?
-    return randGen
-
 def bootstrap(x,n, y=None):
     index=np.random.choice(range(1, len(x)+1, 1), size=n, replace=True)
     if y==None:
@@ -64,7 +58,7 @@ def bootstrap(x,n, y=None):
     else:
         return [[x[i] for i in index], [y[i] for i in index]]
     
-def meanDP(x, lower, upper, epsilon):
+def meanDP(x, lower, upper, epsilon, mechanism, delta, gamma):
     if upper<lower:
         raise ValueError
     n=len(x)
@@ -72,7 +66,14 @@ def meanDP(x, lower, upper, epsilon):
     scale=sensitivity/epsilon
     x_clipped=clip(x, lower, upper)
     sensitiveValue=np.mean(x_clipped)
-    DPrelease=sensitiveValue+lap(0, scale, 1)
+    if mechanism=="laplace":
+        DPrelease=sensitiveValue+DPMechanisms.laplace(0, sensitivity, epsilon)
+    elif mechanism=="boundedLaplace":
+        DPrelease=sensitiveValue+DPMechanisms.boundedLaplace(0, sensitivity, epsilon, delta)
+    elif mechanism=="staircase":
+        DPrelease=sensitiveValue+DPMechanisms.staircase(0, sensitivity, epsilon, gamma)
+    elif mechanism=="gaussian":
+        DPrelease=sensitiveValue+DPMechanisms.staircase(0, sensitivity, epsilon, delta)
     return {'release':DPrelease, 'true':sensitiveValue}
 
 def medianRelease(x, lower, upper, epsilon, nbins=0):
@@ -104,6 +105,9 @@ def generate_and_save_histogram (filepath="https://raw.githubusercontent.com/pri
                                  measure='Mean',
                                  selection='age',
                                  high=160,
+                                 delta=0,
+                                 gamma=0,
+                                 mechanism="laplace", 
                                  low=0):
     #filepath="https://raw.githubusercontent.com/privacytoolsproject/cs208/master/data/FultonPUMS5full.csv"
     print('called generate_and_save_histogram')
@@ -144,7 +148,7 @@ def generate_and_save_histogram (filepath="https://raw.githubusercontent.com/pri
         print('Initialized empty lists')
         print('using epsilon', epsilon)
         for k in range(2000):
-            DPmean=meanDP(x=data, lower=low, upper=high, epsilon=epsilon)
+            DPmean=meanDP(x=data, lower=low, upper=high, epsilon=epsilon, delta=delta, gamma=gamma, mechanism=mechanism)
             release[k]=float(DPmean['release'])
             true[k]=DPmean['true']
             if release[k]<0:
@@ -260,31 +264,15 @@ def process():
     print(dict(request.args))
     e = request.args.get('e','0.1')
     d = request.args.get('d', '0.1')
+    gamma = request.args.get('gamma', '0.1')
+    mechanism = request.args.get('mechanism', 'laplace')
     low = (request.args.get('low', '0'))
     high =  (request.args.get('high', '160'))
     low = get_float(low, 0)
     high = get_float(high, 160)
-    try:
-        selection_index = int(request.args.get('selection', '0'))-1
-    except:
-        selection_index=-1
-    if selection_index == -1:
-        selection = 'age'
-    else:
-        selection = session['headers_list'][selection_index]
-
+    selection = request.args.get('selection', 'age')
     print('Selection being', selection)
-
-    try:
-        measure_index = int(request.args.get('measure', '0'))-1
-    except:
-        measure_index = -1
-    if measure_index == -1:
-        measure = 'Mean'
-    else:
-        measure = ['Mean', 'Median', 'Mode'][measure_index]
-
-
+    measure = request.args.get('measure')
     try:
         epsilon=float(e)
     except:
@@ -293,10 +281,10 @@ def process():
     if session.get('filename')!=None:
         filepath = 'static/uploaded/'+session.get('filename')
         UPLOAD_STATUS='UPLOADED!'
-        name=generate_and_save_histogram(filepath=filepath, epsilon=epsilon, measure=measure, selection=selection, low=low, high=high)
+        name=generate_and_save_histogram(filepath=filepath, epsilon=epsilon, measure=measure, selection=selection, low=low, high=high, delta=delta, mechanism=mechanism, gamma=gamma)
     else:
         UPLOAD_STATUS='USED DEFAULT FILE'
-        name=generate_and_save_histogram(epsilon=epsilon, measure=measure, selection=selection, high=high, low=low)
+        name=generate_and_save_histogram(filepath=filepath, epsilon=epsilon, measure=measure, selection=selection, low=low, high=high, delta=delta, mechanism=mechanism, gamma=gamma)
     
     return render_template('upload.html', UPLOAD_STATUS=UPLOAD_STATUS, source=name)
 
