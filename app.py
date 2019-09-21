@@ -526,14 +526,7 @@ def get_natural(var, default, failure_message=None):
         print(failure_message)
         var=default
     return var
-
-def list_to_html(L):
-    ans=''
-    for i in range(1,len(L)+1):
-        ans=ans+'<option value="'+str(i)+'">'+str(L[i-1])+'</option>'
-    return ans
 	
-
 app.secret_key = 'super secret key'
 app.config.from_object(Config)
 app.config['SESSION_TYPE'] = 'filesystem'
