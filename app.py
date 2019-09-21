@@ -182,6 +182,7 @@ def index():
     return render_template('index.html')
         
 @app.route('/upload')
+@login_required
 def upload():
     return render_template('upload.html', UPLOAD_STATUS='CLICK TO UPLOAD')
 
@@ -410,6 +411,7 @@ def query_process():
     return render_template('query.html', UPLOAD_STATUS=UPLOAD_STATUS, DOWNLOAD_PART=DOWNLOAD_PART)
 
 @app.route('/federatedML', methods=['GET', 'POST'])
+@login_required
 def federatedML():
     return render_template('federatedML.html')
 
