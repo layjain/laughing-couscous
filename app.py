@@ -272,7 +272,7 @@ def process():
     high = get_float(high, 160)
     selection = request.args.get('selection', 'age')
     print('Selection being', selection)
-    measure = request.args.get('measure')
+    measure = request.args.get('measure').capitalize()
     try:
         epsilon=float(e)
     except:
