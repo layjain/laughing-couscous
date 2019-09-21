@@ -319,7 +319,9 @@ section.home-features {
 .upload-form .parameters-container {
   display: none;
 }
-
+.upload-form #field-type {
+  display: none;
+}
 .upload-form.dataset-selected > .upload-container {
   max-width: unset;
 }

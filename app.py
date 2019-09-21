@@ -193,9 +193,9 @@ def upload_process():
     print(request.method)
     print(request.data)
     if request.method == 'POST':
-        if 'file' not in request.files:
-            flash('No file part')
-            return render_template('upload.html', UPLOAD_STATUS='CLICK TO UPLOAD')
+        # if 'file' not in request.files:
+        #     flash('No file part')
+        #     return render_template('upload.html', UPLOAD_STATUS='CLICK TO UPLOAD')
         file = request.files['file']
         # if file.filename=='':
         #     flash('No selected file')
@@ -212,14 +212,15 @@ def upload_process():
             session['filename']=secure_filename(file.filename)
             file.save(os.path.join(UPLOAD_FOLDER, session.get('filename')))
             df = pandas.read_csv(os.path.join(UPLOAD_FOLDER, session.get('filename')))
+            filepath="https://raw.githubusercontent.com/privacytoolsproject/cs208/master/data/FultonPUMS5full.csv"
+            df=pandas.read_csv(filepath)
             headers_list=list(df)
             print(headers_list)
             session['headers_list'] = headers_list
             #OPTIONS_LIST=list_to_html(headers_list)
             FIELDS_LIST = json.dumps(headers_list)
-            return render_template('upload.html', UPLOAD_STATUS='UPLOADED!', FIELDS_LIST=FIELDS_LIST)
-        flash('only txt and csv allowed, Try Again!')
-        return render_template('upload.html', UPLOAD_STATUS='WrongExtension, Try a csv or txt')
+            return FIELDS_LIST
+        return FIELDS_LIST
 
 @app.route('/query_upload_process', methods=['GET','POST'])
 def query_upload_process():

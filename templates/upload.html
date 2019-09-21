@@ -32,7 +32,7 @@
           <div class="upload-btns form-row justify-content-around px-0">
             <div class="col-6 form-group dataset-upload my-0">
               <label for="select-file" class="btn my-2">Select File</label>
-              <input type="file" id="select-file" />
+              <input type="file" id="select-file" accept=".txt,.csv" />
             </div>
             <div class="col-6">
               <a class="btn my-2" id="upload-data">Upload</a>
@@ -120,13 +120,13 @@
               <input
                 type="radio"
                 class="tab-radio"
-                value="mean"
+                value="Mean"
                 id="measure-mean"
                 name="measure"
               />
               <input
                 type="radio"
-                value="median"
+                value="Median"
                 id="measure-median"
                 name="measure"
                 class="tab-radio"
@@ -134,7 +134,7 @@
               <input
                 type="radio"
                 class="tab-radio"
-                value="mode"
+                value="Mode"
                 id="measure-mode"
                 name="measure"
               />
@@ -432,8 +432,10 @@
     var xhttp = new XMLHttpRequest();
     var e = document.getElementById("epsilon").value;
     var d = document.getElementById("delta").value;
-    var selection = document.getElementById("selector").value;
-    var measure = document.getElementById("measure-selector").value;
+    var g = document.getElementById("gamma").value;
+    var mechanism = document.getElementsByName("function").value;
+    var selection = document.getElementsByName("field").value;
+    var measure = document.getElementsByName("measure").value;
     var low = document.getElementById("low").value;
     var high = document.getElementById("high").value;
 
@@ -450,6 +452,10 @@
         e +
         "&d=" +
         d +
+        "&gamma=" +
+        g +
+        "&mechanism=" +
+        mechanism +
         "&selection=" +
         selection +
         "&measure=" +

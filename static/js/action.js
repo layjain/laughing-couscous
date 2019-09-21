@@ -42,7 +42,7 @@ $("#upload-data").click(function() {
     cache: false,
     processData: false,
     success: function(data) {
-      $.each(data, function(item) {
+      $.each(JSON.parse(data), function(key, item) {
         label = $("<label/>")
           .addClass("btn btn-outline")
           .attr("for", "field-" + item.toLowerCase())
@@ -53,12 +53,12 @@ $("#upload-data").click(function() {
             type: "radio",
             name: "field",
             id: "field-" + item.toLowerCase(),
-            value: item.toLowerCase()
+            value: item
           })
           .addClass("tab-radio");
         input.appendTo($(".tab-select.fields .tab-radios"));
       });
-      console.log("Success!");
+      $("#field-type").show();
     }
   });
 });
