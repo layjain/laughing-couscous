@@ -232,9 +232,10 @@
             <h6>Setect Field</h6>
           </header>
           <div>
-            <div class="d-flex justify-content-center fields flex-wrap tab-select">
-              <div class="d-none tab-radios">
-              </div>
+            <div
+              class="d-flex justify-content-center fields flex-wrap tab-select"
+            >
+              <div class="d-none tab-radios"></div>
             </div>
             <div class="form-row my-4">
               <div class="col-6">
@@ -418,9 +419,12 @@
 
     xhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
-        document.open();
-        document.write(this.responseText);
-        document.close();
+        $("#data-histogram")
+          .attr("src", this.responseText)
+          .show();
+        // document.open();
+        // document.write(this.responseText);
+        // document.close();
       }
     };
     xhttp.open(
