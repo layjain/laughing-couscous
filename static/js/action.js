@@ -53,7 +53,7 @@ $("#upload-data").click(function() {
             type: "radio",
             name: "field",
             id: "field-" + item.toLowerCase(),
-            value: item.toLowerCase()
+            value: item
           })
           .addClass("tab-radio");
         input.appendTo($(".tab-select.fields .tab-radios"));
@@ -63,8 +63,7 @@ $("#upload-data").click(function() {
   });
 });
 
-$(".tab-radios").on("change", ".tab-radio", function(e) {
-  console.log(e.target);
+$(".tab-radios").on("change", ".tab-radio", function() {
   $(this)
     .parents(".tab-select")
     .find("label.btn")
@@ -72,9 +71,7 @@ $(".tab-radios").on("change", ".tab-radio", function(e) {
       $(this).removeClass("selected");
     });
   type = $(this).attr("name");
-  value = $(this)
-    .val()
-    .toLowerCase();
+  value = $(this).val();
 
   $("." + type + "s label.btn[for='" + type + "-" + value + "']").addClass(
     "selected"
