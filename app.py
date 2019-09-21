@@ -22,6 +22,7 @@ import subprocess
 import shutil
 from flask_login import LoginManager, current_user, login_user, logout_user
 from flask_login import UserMixin, login_required
+import json
 
 ALLOWED_EXTENSIONS = set(['txt', 'csv'])
 UPLOAD_FOLDER = 'static/uploaded'
@@ -214,8 +215,9 @@ def upload_process():
             headers_list=list(df)
             print(headers_list)
             session['headers_list'] = headers_list
-            OPTIONS_LIST=list_to_html(headers_list)
-            return render_template('upload.html', UPLOAD_STATUS='UPLOADED!', OPTIONS_LIST=OPTIONS_LIST)
+            #OPTIONS_LIST=list_to_html(headers_list)
+            FIELDS_LIST = json.dumps(headers_list)
+            return render_template('upload.html', UPLOAD_STATUS='UPLOADED!', FIELDS_LIST=FIELDS_LIST)
         flash('only txt and csv allowed, Try Again!')
         return render_template('upload.html', UPLOAD_STATUS='WrongExtension, Try a csv or txt')
 

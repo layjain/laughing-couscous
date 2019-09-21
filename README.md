@@ -9,3 +9,5 @@ TODO:
 4. add usernames to all the {{ current_user.username }} templates
 5. Debug Remember Me functionality
 6. Use POST instead of GET for Signup (Need help)
+7. Routing {{source}} (**IMPORTANT)
+8. Limit on File Size
