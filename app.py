@@ -216,8 +216,8 @@ def upload_process():
             session['filename']=secure_filename(file.filename)
             file.save(os.path.join(UPLOAD_FOLDER, session.get('filename')))
             df = pandas.read_csv(os.path.join(UPLOAD_FOLDER, session.get('filename')))
-            filepath="https://raw.githubusercontent.com/privacytoolsproject/cs208/master/data/FultonPUMS5full.csv"
-            df=pandas.read_csv(filepath)
+            # filepath="https://raw.githubusercontent.com/privacytoolsproject/cs208/master/data/FultonPUMS5full.csv"
+            # df=pandas.read_csv(filepath)
             headers_list=list(df)
             print(headers_list)
             session['headers_list'] = headers_list

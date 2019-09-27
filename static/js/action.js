@@ -12,13 +12,17 @@ $("#select-file").change(function(e) {
 
   $("figcaption .upload-caption").hide();
   $(".dataset-upload label")
+    .css("white-space", "nowrap")
     .addClass("btn-outline")
     .text("Change File");
-  $(".upload-btns>div:last-child").show();
+  $("#upload-data")
+    .parent()
+    .show();
 });
 // trigger only when file is uploaded first time
 
 $("#upload-data").click(function() {
+  $(".dataset-upload label").css("white-space", "unset");
   $(this)
     .parents(".upload-form")
     .addClass("dataset-selected col-5")
@@ -53,7 +57,8 @@ $("#upload-data").click(function() {
             type: "radio",
             name: "field",
             id: "field-" + item.toLowerCase(),
-            value: item
+            value: item.toLowerCase(),
+            required: "required"
           })
           .addClass("tab-radio");
         input.appendTo($(".tab-select.fields .tab-radios"));
@@ -79,14 +84,14 @@ $(".tab-radios").on("change", ".tab-radio", function() {
 });
 
 $("label[data-control]").click(function() {
-  console.log("clicked");
   target = $(this).attr("data-control");
-  $(".control-hidden").each(function() {
-    child = $(this)
-      .find("*[data-hide]")
-      .insertAfter($(this));
-    $(this).remove();
-  });
+  $(".control-hidden")
+    .removeClass("control-hidden")
+    .show();
+  $(".control-hidden")
+    .find("input")
+    .prop("required", true);
+  // });
   $("*[data-hide]").each(function() {
     source = $(this).attr("data-hide");
     if (source.indexOf(target) >= 0) {
@@ -97,42 +102,32 @@ $("label[data-control]").click(function() {
             .prop("checked", false)
         : "";
       console.log($("#" + $(this).attr("for")).val());
-      container = $("<div/>")
+      $(this)
         .addClass("control-hidden")
-        .insertAfter($(this))
         .hide();
-      $(this).appendTo(container);
+      $(this)
+        .find("input")
+        .prop("required", false);
     }
   });
 });
 
-(function() {
-  "use strict";
-  window.addEventListener(
-    "load",
-    function() {
-      // Fetch all the forms we want to apply custom Bootstrap validation styles to
-      var forms = document.getElementsByClassName("needs-validation");
-      // Loop over them and prevent submission
-      var validation = Array.prototype.filter.call(forms, function(form) {
-        form.addEventListener(
-          "submit",
-          function(event) {
-            if (form.checkValidity() === false) {
-              event.preventDefault();
-              event.stopPropagation();
-            }
-            form.classList.add("was-validated");
-          },
-          false
-        );
-      });
-    },
-    false
-  );
-})();
+$("form.needs-validation").submit(function(e) {
+  if (this.checkValidity() === false) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  $(this).addClass("was-validated");
+});
 
-// UPLOAD BUTTON
-$(function() {
-  $("#upload-data").click(function() {});
+// INPUT SLIDER TO TEXT
+$("input[type='range']").on("input", function() {
+  id = $(this)
+    .attr("id")
+    .replace("-range", "");
+  $("#" + id).val($(this).val());
+});
+$(".range-value").on("input", function() {
+  id = $(this).attr("id") + "-range";
+  $("#" + id).val($(this).val());
 });
