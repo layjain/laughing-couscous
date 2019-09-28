@@ -425,20 +425,19 @@ def render_login_page():
         return render_template('index.html')
     return render_template('login.html')
 
-@app.route('/login_check', methods=['POST'])
+@app.route('/login_check', methods=['POST', 'GET'])
 def login_check():
-    print (request.form)
-    username = request.form.get('username', '')
-    print(username)
-    password = request.form.get('password', '')
-    remember = request.form.get('remember', False)
+    print (request)
+    # username = request.form['username']
+    # print(username)
+    # password = request.form['password']
+    username = request.args.get('username', '')
+    password = request.args.get('password', '')
+    remember = request.args.get('remember', False)
     print('username', username, 'password', password, 'remember', remember)
     if current_user.is_authenticated:
         print('already authenticated user')
         return render_template('index.html')
-    elif username=='':
-        print('empty username')
-        return render_template('home.html')
     else:
         user = User.query.filter_by(username=username).first()
         if user is None or not user.check_password(password):
