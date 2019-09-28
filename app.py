@@ -451,6 +451,23 @@ def login_check():
         print('next_page was ', next_page)
         return redirect(next_page)
 
+@app.route('/login_redirect', methods=['POST','GET'])
+def login_redirect():
+    print (request)
+    # username = request.form['username']
+    # print(username)
+    # password = request.form['password']
+    next_page = request.form.get('next')
+    if current_user.is_authenticated:
+        print('already authenticated user')
+        if not next_page or url_parse(next_page).netloc != '':
+            return render_template('index.html')
+        return redirect(next_page)
+    else:
+        login_user(user, remember = bool(remember))
+        print('next_page was ', next_page)
+        return redirect(next_page)
+
 @app.route('/check_username_available', methods=['GET', 'POST'])
 def check_username_available():
     username = request.args.get('username')
@@ -531,7 +548,7 @@ app.secret_key = 'super secret key'
 app.config.from_object(Config)
 app.config['SESSION_TYPE'] = 'filesystem'
 login = LoginManager(app)
-login.login_view = 'login_check'
+login.login_view = 'login_redirect'
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 class User(UserMixin, db.Model):
