@@ -10,6 +10,9 @@ function login_js(){
 	var params = "username="+username+"&remember="+remember+"&password="+password;
 
 	xhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200 && this.responseText == "False"){
+			document.getElementById() = 
+		}
 	    if (this.readyState == 4 && this.status == 200) {
 	      document.open();
 	      document.write(this.responseText);
