@@ -1,0 +1,82 @@
+{% extends 'base.html' %} {% block content %}
+<section class="upload-full container">
+  <header class="section-header pt-5 pb-4">
+    <h2 class="bottom-border">{% block formTitle %} {% endblock %}</h2>
+  </header>
+  <div class="row justify-content-between align-items-center">
+    <form class="form upload-form px-0 col-12 needs-validation">
+      <div class="upload-container text-center my-3">
+        <div
+          class="d-flex flex-column justify-content-around align-items-center"
+        >
+          <header>
+            <h3 class="bottom-border mb-4">Upload Your Dataset</h3>
+            <h4>Your Dataset</h4>
+          </header>
+          <figure class="file-icon">
+            <img
+              src="/static/images/sheet.png"
+              alt="Data File"
+              title="Data File"
+            />
+            <figcaption class="font-italic pt-3">
+              <div class="file-spec font-weight-bold" id="file-name"></div>
+              <div class="file-spec" id="file-size"></div>
+
+              <div class="upload-caption">
+                Upload your dataset in appropriate format (.xls, .txt, ...)
+                here.
+              </div>
+            </figcaption>
+          </figure>
+          <div
+            class="upload-btns form-row justify-content-around px-0 align-items-center"
+          >
+            <div class="col-6 form-group dataset-upload my-0">
+              <label for="select-file" class="btn my-2">Select File</label>
+              <input type="file" id="select-file" accept=".txt,.csv" />
+            </div>
+            <div class="col-6">
+              <a class="btn my-2" id="upload-data">Upload</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="parameters-container">
+        {% block formFields %}{% endblock %}
+        <div class="d-flex justify-items-center">
+          <button
+            type="button"
+            onclick="Analysis3()"
+            class="btn"
+            id="Analyze-Button"
+          >
+            Analyze
+          </button>
+        </div>
+      </div>
+    </form>
+    <div class="data-graph col-6">
+      <div class="graph-container">
+        <div class="graph-pre-caption">
+          <span class="initial-caption"
+            >Your data will be visualized here after analyzing</span
+          >
+          <span class="loading-caption">Generating preview</span>
+        </div>
+        <div
+          class="loading-animation justify-content-center align-items-center"
+        >
+          <div class="triple-spinner"></div>
+        </div>
+        <img
+          src="/static/images/Laplace1568152268.3212547.png"
+          id="data-histogram"
+        />
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %} {% block scripts %} {% block analysisScript %} {% endblock %}
+<script type="text/javascript" src="/static/js/action.js"></script>
+{% endblock %}
