@@ -138,11 +138,25 @@ Learning {% endblock %} {% block formFields %}
     var degree = document.getElementById("degree").value;
     var epochs = document.getElementById("epochs").value;
     var alpha = document.getElementById("alpha").value;
+
+    $(".data-graph")
+      .addClass("visual-loading")
+      .removeClass("visual-available");
+    $("#Analyze-Button")
+      .prop("disabled", true)
+      .addClass("disabled");
+
     xhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
-        document.open();
-        document.write(this.responseText);
-        document.close();
+        $("#data-histogram")
+          .attr("src", this.responseText)
+          .show();
+        $(".data-graph")
+          .addClass("visual-available")
+          .removeClass("visual-loading");
+        $("#Analyze-Button")
+          .prop("disabled", false)
+          .removeClass("disabled");
       }
     };
     xhttp.open(
