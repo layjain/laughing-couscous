@@ -1,5 +1,4 @@
-console.log("Hello from home_script.js");
-
+$ = jQuery;
 document.getElementById("SignUpButton").addEventListener("click", signup_js);
 
 function signup_js() {
@@ -90,3 +89,13 @@ function check_email_available_js() {
   xhttp.open("GET", "/check_email_available?" + params, true);
   xhttp.send();
 }
+
+$("input[data-toggle='tooltip']").focus(function() {
+  console.log("inside");
+  $(this)
+    .parents("form")
+    .find("input[data-toggle=tooltip]")
+    .each(function() {
+      $(this).tooltip("hide");
+    });
+});
