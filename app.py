@@ -432,7 +432,7 @@ def login_check():
         user = User.query.filter_by(username=username).first()
         if user is None or not user.check_password(password):
             print('Wrong password')
-            return 'Wrong Username-Password Combination'
+            return 'False'
         login_user(user, remember = bool(remember))
         next_page = request.form.get('next')
         if not next_page or url_parse(next_page).netloc != '':

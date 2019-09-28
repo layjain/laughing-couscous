@@ -22,7 +22,7 @@ preContent %}
         <h2 class="bottom-border">Login to Privaz</h2>
       </header>
       <div class="login-form">
-        <form id="login" class="form" method="POST" action="/login_check">
+        <form id="login" class="form" method="POST" action="">
           <div class="form-group col-12 px-0">
             <label for="login-username" class="sr-only">Username</label>
             <input
@@ -41,6 +41,10 @@ preContent %}
               id="login-password"
               placeholder="Password"
               name="password"
+              data-toggle="tooltip"
+              data-trigger="manual"
+              data-placement="top"
+              data-title="Wrong Username-password combination"
             />
           </div>
           <div class="custom-control custom-checkbox text-left my-2">
@@ -262,5 +266,42 @@ preContent %}
   type="text/javascript"
   src="/static/js/home_script.js?bsigiggfiu"
 ></script>
-<script type="text/javascript" src="/static/js/login_script.js?bhb"></script>
+<!-- <script
+  type="text/javascript"
+  src="/static/js/login_script.js?bhb"
+  async
+></script> -->
+<script type="text/javascript" async>
+  $("#login").submit(function(e) {
+    e.preventDefault();
+    console.log("executing login_js");
+    var xhttp = new XMLHttpRequest();
+    var username = document.getElementById("login-username").value;
+    var password = document.getElementById("login-password").value;
+    var remember = document.getElementById("login-remember").checked;
+    var params =
+      "username=" +
+      username +
+      "&remember=" +
+      remember +
+      "&password=" +
+      password;
+
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        console.log("inside" + this.responseText);
+        if (this.responseText == false) {
+          console.log(this.responseText);
+          $("#login-password").tooltip("show");
+        } else {
+          document.open();
+          document.write(this.responseText);
+          document.close();
+        }
+      }
+    };
+    xhttp.open("POST", "/login_check?" + params, true);
+    xhttp.send();
+  });
+</script>
 {% endblock %}
