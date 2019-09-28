@@ -218,11 +218,22 @@ def upload_process():
             df = pandas.read_csv(os.path.join(UPLOAD_FOLDER, session.get('filename')))
             # filepath="https://raw.githubusercontent.com/privacytoolsproject/cs208/master/data/FultonPUMS5full.csv"
             # df=pandas.read_csv(filepath)
+            fields_list = []
             headers_list=list(df)
             print(headers_list)
+            for header in headers_list:
+                values = df[header]
+                for value in values:
+                    try:
+                        value = float(value)
+                    except:
+                        print("The field titled "+header+" cannot be converted to floats")
+                        break
+                fields_list.append(header)
+            
             session['headers_list'] = headers_list
             #OPTIONS_LIST=list_to_html(headers_list)
-            FIELDS_LIST = json.dumps(headers_list)
+            FIELDS_LIST = json.dumps(fields_list)
             return FIELDS_LIST
         return FIELDS_LIST
 
