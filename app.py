@@ -356,9 +356,9 @@ def dpml_process():
         filepath = "static/uploaded/logReg.txt"
         UPLOAD_STATUS='USED DEFAULT FILE'
         
-    name=logreg.generate_and_save_graph(filepath=filepath, epsilon=epsilon, Lambda=Lambda,\
+    name, theta=logreg.generate_and_save_graph(filepath=filepath, epsilon=epsilon, Lambda=Lambda,\
                                         degree=Degree, alpha=alpha, epochs=epochs)
-    return render_template('dpml.html', source=name, UPLOAD_STATUS=UPLOAD_STATUS)
+    return render_template('dpml.html', source=name, theta=theta)
 
 @app.route('/query', methods=['GET','POST'])
 def query():
