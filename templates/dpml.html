@@ -17,6 +17,7 @@ Learning {% endblock %} {% block formFields %}
             id="epsilon"
             min="0"
             max="100"
+            step="1"
           />
         </div>
       </div>
@@ -25,6 +26,7 @@ Learning {% endblock %} {% block formFields %}
         class="custom-range col"
         min="0"
         max="100"
+        step="1"
         id="epsilon-range"
       />
     </div>
@@ -35,97 +37,40 @@ Learning {% endblock %} {% block formFields %}
     <h6>Learning Hyperparameters</h6>
   </header>
   <div>
-    <div class="form-row align-items-center my-3">
-      <div class="col-auto">
+    <div class="form-row my-4 justify-content-around">
+      <div class="col-auto my-3">
         <div class="input-group parameter-input">
           <div class="input-group-prepend">
             <label for="lambda" class="input-group-text">Lambda</label>
           </div>
-          <input
-            type="number"
-            class="form-control range-value"
-            id="lambda"
-            min="0"
-            max="100"
-          />
+          <input type="number" class="form-control" id="lambda" required />
         </div>
       </div>
-      <input
-        type="range"
-        class="custom-range col"
-        min="0"
-        max="100"
-        id="lambda-range"
-      />
-    </div>
-    <div class="form-row align-items-center my-3">
-      <div class="col-auto">
+      <div class="col-auto my-3">
         <div class="input-group parameter-input">
           <div class="input-group-prepend">
             <label for="degree" class="input-group-text">Degree</label>
           </div>
-          <input
-            type="number"
-            class="form-control range-value"
-            id="degree"
-            min="0"
-            max="100"
-          />
+          <input type="number" class="form-control" id="degree" required />
         </div>
       </div>
-      <input
-        type="range"
-        class="custom-range col"
-        min="0"
-        max="100"
-        id="degree-range"
-      />
-    </div>
-    <div class="form-row align-items-center my-3">
-      <div class="col-auto">
+      <div class="col-12"></div>
+      <div class="col-auto my-3">
         <div class="input-group parameter-input">
           <div class="input-group-prepend">
             <label for="epochs" class="input-group-text">Epochs</label>
           </div>
-          <input
-            type="number"
-            class="form-control range-value"
-            id="epochs"
-            min="0"
-            max="100"
-          />
+          <input type="number" class="form-control" id="epochs" required />
         </div>
       </div>
-      <input
-        type="range"
-        class="custom-range col"
-        min="0"
-        max="100"
-        id="epochs-range"
-      />
-    </div>
-    <div class="form-row align-items-center my-3">
-      <div class="col-auto">
+      <div class="col-auto my-3">
         <div class="input-group parameter-input">
           <div class="input-group-prepend">
             <label for="alpha" class="input-group-text">Alpha</label>
           </div>
-          <input
-            type="number"
-            class="form-control range-value"
-            id="alpha"
-            min="0"
-            max="100"
-          />
+          <input type="number" class="form-control" id="alpha" required />
         </div>
       </div>
-      <input
-        type="range"
-        class="custom-range col"
-        min="0"
-        max="100"
-        id="alpha-range"
-      />
     </div>
   </div>
 </section>

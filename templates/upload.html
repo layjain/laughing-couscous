@@ -118,6 +118,8 @@
             id="epsilon"
             min="0"
             max="100"
+            placeholder="0"
+            step="1"
           />
         </div>
       </div>
@@ -127,6 +129,7 @@
         min="0"
         max="100"
         id="epsilon-range"
+        value="0"
       />
     </div>
     <div class="form-row align-items-center my-3" data-hide="laplace staircase">
@@ -140,7 +143,9 @@
             class="form-control range-value"
             id="delta"
             min="0"
-            max="100"
+            max="1"
+            placeholder="0"
+            step="0.01"
           />
         </div>
       </div>
@@ -149,8 +154,9 @@
         class="custom-range col"
         min="0"
         max="1"
-        step="0.5"
+        step="0.01"
         id="delta-range"
+        value="0"
       />
     </div>
     <div
@@ -167,7 +173,9 @@
             class="form-control range-value"
             id="gamma"
             min="0"
-            max="100"
+            max="1"
+            placeholder="0"
+            step="0.01"
           />
         </div>
       </div>
@@ -176,8 +184,9 @@
         class="custom-range col"
         min="0"
         max="1"
-        step="0.5"
+        step="0.01"
         id="gamma-range"
+        value="0"
       />
     </div>
   </div>
@@ -190,21 +199,33 @@
     <div class="d-flex justify-content-center fields flex-wrap tab-select">
       <div class="d-none tab-radios"></div>
     </div>
-    <div class="form-row my-4">
-      <div class="col-6">
+    <div class="form-row my-4 justify-content-around">
+      <div class="col-auto">
         <div class="input-group parameter-input">
           <div class="input-group-prepend">
             <label for="low" class="input-group-text">Low</label>
           </div>
-          <input type="number" class="form-control" id="low" required />
+          <input
+            type="number"
+            class="form-control"
+            id="low"
+            required
+            placeholder="0"
+          />
         </div>
       </div>
-      <div class="col-6">
+      <div class="col-auto">
         <div class="input-group parameter-input">
           <div class="input-group-prepend">
             <label for="high" class="input-group-text">High</label>
           </div>
-          <input type="number" class="form-control" id="high" required />
+          <input
+            type="number"
+            class="form-control"
+            id="high"
+            required
+            placeholder="100"
+          />
         </div>
       </div>
     </div>

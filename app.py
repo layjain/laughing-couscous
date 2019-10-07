@@ -226,13 +226,16 @@ def upload_process():
             print(headers_list)
             for header in headers_list:
                 values = df[header]
+                include = True
                 for value in values:
                     try:
                         value = float(value)
                     except:
                         print("The field titled "+header+" cannot be converted to floats")
+                        include = False
                         break
-                fields_list.append(header)
+                if include:
+                    fields_list.append(header)
             
             session['headers_list'] = headers_list
             #OPTIONS_LIST=list_to_html(headers_list)
