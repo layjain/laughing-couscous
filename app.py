@@ -176,6 +176,9 @@ app = Flask(__name__)
 def home():
     if current_user.is_authenticated:
         return render_template('index.html')
+    # next = request.args.get('next',None)
+    # if next !=None:
+    #     n
     return render_template('home.html')
 @app.route('/home_with_logout')
 def home_with_logout():
@@ -309,32 +312,12 @@ def dpml_upload():
     return render_template('dpml.html', UPLOAD_STATUS='CLICK TO UPLOAD')
 
 
-@app.route('/dpml_upload_php', methods=['GET','POST'])
-def dpml_upload_process():
-    print(request.files)
-    if request.method == 'POST':
-        if 'file' not in request.files:
-            flash('No file part')
-            return render_template('dpml.html', UPLOAD_STATUS='CLICK TO UPLOAD')
-        file = request.files['file']
-        if file.filename=='':
-            flash('No selected file')
-            return render_template('dpml.html', UPLOAD_STATUS='No File Selected')
-        if file and allowed_file(file.filename):
-            session['filename_dpml']=secure_filename(file.filename)
-            print(session.get('filename_dpml'), 'as dpml filename')
-            file.save(os.path.join(UPLOAD_FOLDER, session.get('filename_dpml')))
-            
-            return render_template('dpml.html', UPLOAD_STATUS='UPLOADED!')
-        flash('only txt and csv allowed, Try Again!')
-        return render_template('dpml.html', UPLOAD_STATUS='WrongExtension, Try a csv or txt')
-
 @app.route('/dpml_process', methods=['GET', "POST"])
 def dpml_process():
     print(request)
     print(dict(request.args))
     try:
-        filename_dpml=session.get('filename_dpml')
+        filename_dpml=session.get('filename')
     except:
         filename_dpml=None
     e = request.args.get('e','0.1')
@@ -349,16 +332,18 @@ def dpml_process():
     epochs=get_natural(epochs, 800)
     alpha=get_float(alpha, 1.0)
     if filename_dpml != None:
+        print('used new file '+filename_dpml)
         filepath = 'static/uploaded/'+filename_dpml
         UPLOAD_STATUS='UPLOADED!'
         filename_dpml=None
     else:
+        print('used default')
         filepath = "static/uploaded/logReg.txt"
         UPLOAD_STATUS='USED DEFAULT FILE'
         
     name, theta=logreg.generate_and_save_graph(filepath=filepath, epsilon=epsilon, Lambda=Lambda,\
                                         degree=Degree, alpha=alpha, epochs=epochs)
-    return render_template('dpml.html', source=name, theta=theta)
+    return [name, theta]
 
 @app.route('/query', methods=['GET','POST'])
 def query():
@@ -441,33 +426,19 @@ def login_check():
     if current_user.is_authenticated:
         print('already authenticated user')
         return render_template('index.html')
+    elif ('next' in request.args):
+        return render_template('home.html')
     else:
         user = User.query.filter_by(username=username).first()
         if user is None or not user.check_password(password):
             print('Wrong password')
             return 'False'
+        ##### THIS PART IS NOT REACHED, TODO: REDIRECT TO NEXT
         login_user(user, remember = bool(remember))
         next_page = request.form.get('next')
         if not next_page or url_parse(next_page).netloc != '':
             print('returning index')
             return render_template('index.html')
-        print('next_page was ', next_page)
-        return redirect(next_page)
-
-@app.route('/login_redirect', methods=['POST','GET'])
-def login_redirect():
-    print (request)
-    # username = request.form['username']
-    # print(username)
-    # password = request.form['password']
-    next_page = request.form.get('next')
-    if current_user.is_authenticated:
-        print('already authenticated user')
-        if not next_page or url_parse(next_page).netloc != '':
-            return render_template('index.html')
-        return redirect(next_page)
-    else:
-        login_user(user, remember = bool(remember))
         print('next_page was ', next_page)
         return redirect(next_page)
 
@@ -551,7 +522,7 @@ app.secret_key = 'super secret key'
 app.config.from_object(Config)
 app.config['SESSION_TYPE'] = 'filesystem'
 login = LoginManager(app)
-login.login_view = 'login_redirect'
+login.login_view = 'login_check'
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 class User(UserMixin, db.Model):

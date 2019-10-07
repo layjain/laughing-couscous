@@ -1,7 +1,6 @@
 $ = jQuery;
 
 $("#select-file").change(function(e) {
-  console.log(e.target.files[0]);
   file = e.target.files[0];
   $(".file-spec#file-name")
     .show()
@@ -37,7 +36,6 @@ $("#upload-data").click(function() {
     .hide();
   var form_data = new FormData();
   form_data.append("file", $("#select-file")[0].files[0]);
-  console.log(form_data);
   $.ajax({
     type: "POST",
     url: "/upload_process",
@@ -130,4 +128,29 @@ $("input[type='range']").on("input", function() {
 $(".range-value").on("input", function() {
   id = $(this).attr("id") + "-range";
   $("#" + id).val($(this).val());
+});
+
+$("input[type='number'][min]").change(function() {
+  console.log("change");
+  value = $(this).val();
+  low = $(this).attr("min");
+  high = $(this).attr("max");
+  if (value > high) $(this).val(high);
+  if (value < low) $(this).val(low);
+});
+
+$("input[type=range]").each(function() {
+  container = $("<div/>").addClass("col d-flex range-container");
+  range = $(this);
+  container.insertAfter(range);
+  end = $("<div/>").addClass("range-extreme");
+  end
+    .clone()
+    .text(range.attr("min"))
+    .appendTo(container);
+  range.appendTo(container);
+  end
+    .clone()
+    .text(range.attr("max"))
+    .appendTo(container);
 });
