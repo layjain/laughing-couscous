@@ -12,8 +12,11 @@ TODO:
 7. Routing {{source}} (**IMPORTANT)
 8. Limit on File Size < 1MB
 9. Remove Mode, Remove other things for median
-10. Train/test accuracy; Remove labels in DPML; Multi-dimensional DPML; Ask user for ratio-split
+10. Train/test accuracy; Remove labels in DPML; Multi-dimensional DPML; Ask user for ratio-split (Lay, Kafle)
 11. Display only numbers' headers (DONE)
-12. Code for Median using different Noises? (No) --> remove mechanism in median
-13. Display Weights
-14. Code Download
+12. Code for Median using different Noises? (No) --> remove mechanism in  front-end (Kafle)
+13. Display Weights (Done from back-end) ---> "theta" (Kafle)
+14. Code Download (Vaik)
+15. Change URL for DPVisualisation (Lay)
+16. Case-sensitiveness in DPViz (Kafle---> Lay)
+17. Handling error so that it does not load forever (Lay----> Kafle)

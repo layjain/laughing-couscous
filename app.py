@@ -183,7 +183,7 @@ def home():
 @app.route('/home_with_logout')
 def home_with_logout():
     logout_user()
-    return render_template('home.html')
+    return redirect("/")
 
 @app.route('/index')
 def index():
