@@ -2,12 +2,16 @@ $ = jQuery;
 
 $("#select-file").change(function(e) {
   file = e.target.files[0];
+  size = file.size;
+  console.log(file);
+  unit = "Bytes";
+  if (size > 1024) {
+    size = Math.floor(size / 1024);
+    unit = "KB";
+  }
   $(".file-spec#file-name")
     .show()
     .text(file.name);
-  $(".file-spec#file-size")
-    .show()
-    .text("(" + file.size + " bytes)");
 
   $("figcaption .upload-caption").hide();
   $(".dataset-upload label")
@@ -17,6 +21,17 @@ $("#select-file").change(function(e) {
   $("#upload-data")
     .parent()
     .show();
+  if (size >= 1024) {
+    $("#upload-data").addClass("disabled");
+    $(".size-error").show();
+    $(".file-spec#file-size").hide();
+  } else {
+    $("#upload-data").removeClass("disabled");
+    $(".size-error").hide();
+    $(".file-spec#file-size")
+      .show()
+      .text("(" + size + " " + unit + ")");
+  }
 });
 // trigger only when file is uploaded first time
 
@@ -47,15 +62,15 @@ $("#upload-data").click(function() {
       $.each(JSON.parse(data), function(key, item) {
         label = $("<label/>")
           .addClass("btn btn-outline")
-          .attr("for", "field-" + item.toLowerCase())
+          .attr("for", "field-" + item)
           .text(item);
         label.appendTo($(".tab-select.fields"));
         input = $("<input/>")
           .attr({
             type: "radio",
             name: "field",
-            id: "field-" + item.toLowerCase(),
-            value: item.toLowerCase(),
+            id: "field-" + item,
+            value: item,
             required: "required"
           })
           .addClass("tab-radio");

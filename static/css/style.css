@@ -39,7 +39,8 @@ h6 {
   color: #222;
 }
 .form .btn.disabled {
-  cursor: default;
+  pointer-events: none;
+  opacity: 0.5;
 }
 input[type="range"]::-webkit-slider-thumb {
   background: #f9f9f9;
@@ -356,6 +357,11 @@ section.home-features {
   max-height: 80px;
 }
 .upload-form #select-file {
+  display: none;
+}
+.size-error {
+  color: red;
+  font-size: 0.9em;
   display: none;
 }
 .upload-form .upload-btns {
