@@ -141,7 +141,7 @@ def generate_and_save_histogram (filepath="https://raw.githubusercontent.com/pri
     else:
         print('measure given : '+measure+' hence using: Mean')
         PUMSdata=pandas.read_csv(filepath)
-        data=np.array(PUMSdata[selection], dtype='float32')
+        data=np.array(PUMSdata[selection], dtype='float32') #### KEY ERROR
         count=0
         release=[None for _ in range(2000)]
         true=[None for _ in range(2000)]
@@ -297,21 +297,14 @@ def process():
         print('could not convert given epsilon to float')
         epsilon=0.1
     if session.get('filename')!=None:
-        # filepath = 'static/uploaded/'+session.get('filename')
-        filepath="https://raw.githubusercontent.com/privacytoolsproject/cs208/master/data/FultonPUMS5full.csv"
+        filepath = 'static/uploaded/'+session.get('filename')
         UPLOAD_STATUS='UPLOADED!'
-        try:
-            name=generate_and_save_histogram(filepath=filepath, epsilon=epsilon, measure=measure, selection=selection, low=low, high=high, delta=delta, mechanism=mechanism, gamma=gamma)
-        except Exception as e:
-            print(e)
-            return "ERROR"
+        name=generate_and_save_histogram(filepath=filepath, epsilon=epsilon, measure=measure, selection=selection, low=low, high=high, delta=delta, mechanism=mechanism, gamma=gamma)
+
     else:
         UPLOAD_STATUS='USED DEFAULT FILE'
-        try:
-            name=generate_and_save_histogram(filepath=filepath, epsilon=epsilon, measure=measure, selection=selection, low=low, high=high, delta=delta, mechanism=mechanism, gamma=gamma)
-        except:
-            print(e)
-            return "ERROR"
+
+        name=generate_and_save_histogram(filepath=filepath, epsilon=epsilon, measure=measure, selection=selection, low=low, high=high, delta=delta, mechanism=mechanism, gamma=gamma)
 
     return  name
 
@@ -350,14 +343,11 @@ def dpml_process():
         print('used default')
         filepath = "static/uploaded/logReg.txt"
         UPLOAD_STATUS='USED DEFAULT FILE'
-        
-    try:
-        name, theta=logreg.generate_and_save_graph(filepath=filepath, epsilon=epsilon, Lambda=Lambda,\
+    if not logreg.format_correct():
+        return {"ERROR":"ERROR"}
+    name, theta=logreg.generate_and_save_graph(filepath=filepath, epsilon=epsilon, Lambda=Lambda,\
                                         degree=Degree, alpha=alpha, epochs=epochs, split_ratio=split_ratio)
-    except Exception as e:
-        print(e)
-        return "ERROR"
-    return [name, theta]
+    return {'name':name, 'theta':theta}
 
 @app.route('/query', methods=['GET','POST'])
 def query():
