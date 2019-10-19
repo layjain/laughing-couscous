@@ -1,8 +1,39 @@
 {% extends 'form.html' %} {% block formTitle %} DP Visualization {% endblock %}
 {% block formFields %}
-<section class="parameter-section" id="function-type">
+<section class="parameter-section" id="measure-type">
   <header class="section-header">
-    <h6>Select Function</h6>
+    <h6>Select Measure</h6>
+  </header>
+  <div class="d-flex justify-content-center measures tab-select">
+    <label class="btn btn-outline" for="measure-mean" data-control="mean"
+      >Mean</label
+    >
+    <label class="btn btn-outline" for="measure-median" data-control="median"
+      >Median</label
+    >
+    <div class="d-none tab-radios">
+      <input
+        type="radio"
+        class="tab-radio"
+        value="mean"
+        id="measure-mean"
+        name="measure"
+        required
+      />
+      <input
+        type="radio"
+        value="median"
+        id="measure-median"
+        name="measure"
+        class="tab-radio"
+        required
+      />
+    </div>
+  </div>
+</section>
+<section class="parameter-section" id="function-type" data-hide="median">
+  <header class="section-header">
+    <h6>Select Mechanism</h6>
   </header>
   <div class="d-flex justify-content-center functions tab-select">
     <label class="btn btn-outline" for="function-laplace" data-control="laplace"
@@ -62,44 +93,6 @@
     </div>
   </div>
   <div class="invalid-feedback">Please select a regression mechanism.</div>
-</section>
-<section class="parameter-section" id="measure-type">
-  <header class="section-header">
-    <h6>Select Measure</h6>
-  </header>
-  <div class="d-flex justify-content-center measures tab-select">
-    <label class="btn btn-outline" for="measure-mean" data-hide="">Mean</label>
-    <label class="btn btn-outline" for="measure-median" data-hide=""
-      >Median</label
-    >
-    <label class="btn btn-outline" for="measure-mode" data-hide="">Mode</label>
-    <div class="d-none tab-radios">
-      <input
-        type="radio"
-        class="tab-radio"
-        value="mean"
-        id="measure-mean"
-        name="measure"
-        required
-      />
-      <input
-        type="radio"
-        value="median"
-        id="measure-median"
-        name="measure"
-        class="tab-radio"
-        required
-      />
-      <input
-        type="radio"
-        class="tab-radio"
-        value="mode"
-        id="measure-mode"
-        name="measure"
-        required
-      />
-    </div>
-  </div>
 </section>
 <section class="parameter-section" id="greek-parameters">
   <header class="section-header">
