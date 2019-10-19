@@ -302,8 +302,8 @@ def process():
         UPLOAD_STATUS='UPLOADED!'
         try:
             name=generate_and_save_histogram(filepath=filepath, epsilon=epsilon, measure=measure, selection=selection, low=low, high=high, delta=delta, mechanism=mechanism, gamma=gamma)
-        except exception as e:
-            return "ERROR"
+        except Exception as e:
+            return e
     else:
         UPLOAD_STATUS='USED DEFAULT FILE'
         try:
