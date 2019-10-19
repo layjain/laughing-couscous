@@ -6,7 +6,7 @@ import time
 
 
 def mapFeature(x1,x2,degree): # All possible Polynomial terms upto degree 'degree'
-
+    #Just handling 2 variables
     out = np.ones(len(x1)).reshape(len(x1),1)
     for i in range(1,degree+1):
         for j in range(i+1):
@@ -76,13 +76,13 @@ def mapFeaturePlot(x1,x2,degree):
             out= np.hstack((out,terms))
     return out
 
-def generate_and_save_graph(filepath="static/uploaded/logReg.txt", degree=6, epsilon=0.1, Lambda=1, alpha=1, epochs=800):
+def generate_and_save_graph(filepath="static/uploaded/logReg.txt", degree=6, epsilon=0.1, Lambda=1, alpha=1, epochs=800, split_ratio=1):
     print('making graph')
     df=pd.read_csv(filepath, header=None)
     df.head()
 
-    X=df.iloc[:,:-1].values
-    y=df.iloc[:,-1].values
+    X=df.iloc[:,:-1].values #features
+    y=df.iloc[:,-1].values #labels
 
     pos , neg = (y==1).reshape(-1,1) , (y==0).reshape(-1,1)
 
@@ -98,8 +98,8 @@ def generate_and_save_graph(filepath="static/uploaded/logReg.txt", degree=6, eps
     for i in range(len(theta)):
      theta_dp.append(theta[i]+noise[i])
     
-    plt.scatter(X[pos[:,0],1],X[pos[:,0],2],c="r",marker="+",label="Admitted")
-    plt.scatter(X[neg[:,0],1],X[neg[:,0],2],c="b",marker="x",label="Not admitted")
+    plt.scatter(X[pos[:,0],1],X[pos[:,0],2],c="r",marker="+",label="+1")
+    plt.scatter(X[neg[:,0],1],X[neg[:,0],2],c="b",marker="x",label="0")
 
     u_vals = np.linspace(-1,1.5,50)
     v_vals= np.linspace(-1,1.5,50)
@@ -111,11 +111,10 @@ def generate_and_save_graph(filepath="static/uploaded/logReg.txt", degree=6, eps
             z_dp[i,j] =mapFeaturePlot(u_vals[i],v_vals[j],degree) @ theta_dp
     plt.contour(u_vals,v_vals,z.T,0,colors='green')
     plt.contour(u_vals,v_vals,z_dp.T,0,colors='black')
-    plt.xlabel("Exam 1 score")
-    plt.ylabel("Exam 2 score")
+    plt.xlabel("")
+    plt.ylabel("")
     plt.legend(loc=0)
     name='static/images/Laplace'+str(time.time())+'.png'
     plt.savefig(name)
     plt.close()
-    return (name, list(theta))
-
+    return (name, list(theta_dp))

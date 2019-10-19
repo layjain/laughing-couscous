@@ -354,7 +354,8 @@ def dpml_process():
     try:
         name, theta=logreg.generate_and_save_graph(filepath=filepath, epsilon=epsilon, Lambda=Lambda,\
                                         degree=Degree, alpha=alpha, epochs=epochs, split_ratio=split_ratio)
-    except:
+    except Exception as e:
+        print(e)
         return "ERROR"
     return [name, theta]
 
