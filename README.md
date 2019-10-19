@@ -12,7 +12,9 @@ TODO:
 7. Routing {{source}} (**IMPORTANT)
 8. Limit on File Size < 1MB (Kafle)
 9. Remove Mode, Remove other things for median (Kafle)
-10. Train/test accuracy; Remove labels in DPML(DONE: what labels to put?(Vaik)); Multi-dimensional DPML(*IMPORTANT: code supports just 2 dims, lookup Messenger gc)(Vaik); Ask user for ratio-split (Lay, Kafle)
+
+10. Train/test accuracy; Remove labels in DPML(DONE: what labels to put?(Vaik)); Multi-dimensional DPML(*IMPORTANT: code supports just 2 dims)(Vaik); Ask user for ratio-split (Lay, Kafle)*
+
 11. Display only numbers' headers (DONE)
 12. Code for Median using different Noises? (No) --> remove mechanism in  front-end (Kafle)
 13. Display Weights (Done from back-end) ---> "theta" (Kafle)

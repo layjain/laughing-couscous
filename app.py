@@ -297,18 +297,18 @@ def process():
         print('could not convert given epsilon to float')
         epsilon=0.1
     if session.get('filename')!=None:
-        # filepath = 'static/uploaded/'+session.get('filename')
-        filepath="https://raw.githubusercontent.com/privacytoolsproject/cs208/master/data/FultonPUMS5full.csv"
-        UPLOAD_STATUS='UPLOADED!'
+        filepath = 'static/uploaded/'+session.get('filename')
         try:
             name=generate_and_save_histogram(filepath=filepath, epsilon=epsilon, measure=measure, selection=selection, low=low, high=high, delta=delta, mechanism=mechanism, gamma=gamma)
         except Exception as e:
+            print(e)
             return "ERROR"
     else:
         UPLOAD_STATUS='USED DEFAULT FILE'
         try:
             name=generate_and_save_histogram(filepath=filepath, epsilon=epsilon, measure=measure, selection=selection, low=low, high=high, delta=delta, mechanism=mechanism, gamma=gamma)
         except:
+            print(e)
             return "ERROR"
 
     return  name
@@ -331,12 +331,14 @@ def dpml_process():
     Degree=request.args.get('degree','6')
     epochs=request.args.get('epochs','800')
     alpha=request.args.get('alpha','1')
+    split_ratio=request.args.get('split_ratio', '1') #train:(total) must be (0,1]
     
     epsilon=get_float(e, 0.1)
     Lambda=get_float(Lambda, 1)
     Degree=get_natural(Degree, 6, 'Could not convert given degree to int')
     epochs=get_natural(epochs, 800)
     alpha=get_float(alpha, 1.0)
+    split_ratio = get_float(split_ratio, 1.0)
     if filename_dpml != None:
         print('used new file '+filename_dpml)
         filepath = 'static/uploaded/'+filename_dpml
@@ -349,10 +351,11 @@ def dpml_process():
         
     try:
         name, theta=logreg.generate_and_save_graph(filepath=filepath, epsilon=epsilon, Lambda=Lambda,\
-                                        degree=Degree, alpha=alpha, epochs=epochs)
-    except:
+                                        degree=Degree, alpha=alpha, epochs=epochs, split_ratio=split_ratio)
+    except Exception as e:
+        print(e)
         return "ERROR"
-    return [name, theta]
+    return {'image':name,'theta': theta}
 
 @app.route('/query', methods=['GET','POST'])
 def query():
