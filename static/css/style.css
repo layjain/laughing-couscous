@@ -467,6 +467,7 @@ section.home-features {
 
 .data-graph {
   display: none;
+  align-self: stretch;
 }
 .data-graph .graph-container {
   padding: 9px 16px;
@@ -476,7 +477,8 @@ section.home-features {
   background-image: url("/static/images/visual_bg.png");
   background-size: contain;
   background-position: center;
-  position: relative;
+  position: sticky;
+  top: 10vw;
   padding-top: 75%;
 }
 .data-graph.visual-available .graph-container {

@@ -3,7 +3,6 @@ $ = jQuery;
 $("#select-file").change(function(e) {
   file = e.target.files[0];
   size = file.size;
-  console.log(file);
   unit = "Bytes";
   if (size > 1024) {
     size = Math.floor(size / 1024);
@@ -114,7 +113,6 @@ $("label[data-control]").click(function() {
             .prop("selected", false)
             .prop("checked", false)
         : "";
-      console.log($("#" + $(this).attr("for")).val());
       $(this)
         .addClass("control-hidden")
         .hide();
@@ -146,10 +144,9 @@ $(".range-value").on("input", function() {
 });
 
 $("input[type='number'][min]").change(function() {
-  console.log("change");
-  value = $(this).val();
-  low = $(this).attr("min");
-  high = $(this).attr("max");
+  value = parseInt($(this).val());
+  low = parseInt($(this).attr("min"));
+  high = parseInt($(this).attr("max"));
   if (value > high) $(this).val(high);
   if (value < low) $(this).val(low);
 });
