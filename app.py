@@ -303,7 +303,7 @@ def process():
         try:
             name=generate_and_save_histogram(filepath=filepath, epsilon=epsilon, measure=measure, selection=selection, low=low, high=high, delta=delta, mechanism=mechanism, gamma=gamma)
         except Exception as e:
-            return e
+            return "ERROR"
     else:
         UPLOAD_STATUS='USED DEFAULT FILE'
         try:
