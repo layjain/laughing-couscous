@@ -3,5 +3,6 @@ templates/homeCopy.html
 templates/uploadCopy.html
 .vscode/
 __pycache__/
+static/uploaded/
 migrations/
 src/__pycache__/

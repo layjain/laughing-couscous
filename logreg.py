@@ -117,15 +117,17 @@ def generate_and_save_graph(filepath="static/uploaded/logReg.txt", degree=6, eps
     name='static/images/Laplace'+str(time.time())+'.png'
     plt.savefig(name)
     plt.close()
-    return (name, tuple(np.array(theta_dp).reshape((-1,)).tolist()))
+    print(np.array(theta_dp).tolist())
+    return (name, np.array(theta_dp).reshape((-1,)).tolist())
 
-    def format_correct(filepath):
-        df=pd.read_csv(filepath, header=None)
-        df.head()
+def format_correct(filepath):
+    df=pd.read_csv(filepath, header=None)
+    df.head()
 
-        X=df.iloc[:,:-1].values #features
-        y=df.iloc[:,-1].values.reshape((-1,)) #labels
-        for number in y:
-            if number not in (1,0):
-                return False
-        return True
+    X=df.iloc[:,:-1].values #features
+    y=df.iloc[:,-1].values.reshape((-1,)) #labels
+    for number in y:
+        if number not in (1,0):
+            return False
+    return True
+    

@@ -495,7 +495,9 @@ section.home-features {
   text-align: center;
   color: #aaa;
 }
-
+.data-weights {
+  display: none;
+}
 .loading-caption {
   display: none;
 }
