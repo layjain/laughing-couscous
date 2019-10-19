@@ -300,11 +300,17 @@ def process():
         # filepath = 'static/uploaded/'+session.get('filename')
         filepath="https://raw.githubusercontent.com/privacytoolsproject/cs208/master/data/FultonPUMS5full.csv"
         UPLOAD_STATUS='UPLOADED!'
-        name=generate_and_save_histogram(filepath=filepath, epsilon=epsilon, measure=measure, selection=selection, low=low, high=high, delta=delta, mechanism=mechanism, gamma=gamma)
+        try:
+            name=generate_and_save_histogram(filepath=filepath, epsilon=epsilon, measure=measure, selection=selection, low=low, high=high, delta=delta, mechanism=mechanism, gamma=gamma)
+        except exception as e:
+            return "ERROR"
     else:
         UPLOAD_STATUS='USED DEFAULT FILE'
-        name=generate_and_save_histogram(filepath=filepath, epsilon=epsilon, measure=measure, selection=selection, low=low, high=high, delta=delta, mechanism=mechanism, gamma=gamma)
-    
+        try:
+            name=generate_and_save_histogram(filepath=filepath, epsilon=epsilon, measure=measure, selection=selection, low=low, high=high, delta=delta, mechanism=mechanism, gamma=gamma)
+        except:
+            return "ERROR"
+
     return  name
 
 @app.route('/dpml',methods=['GET','POST'])
@@ -341,8 +347,11 @@ def dpml_process():
         filepath = "static/uploaded/logReg.txt"
         UPLOAD_STATUS='USED DEFAULT FILE'
         
-    name, theta=logreg.generate_and_save_graph(filepath=filepath, epsilon=epsilon, Lambda=Lambda,\
+    try:
+        name, theta=logreg.generate_and_save_graph(filepath=filepath, epsilon=epsilon, Lambda=Lambda,\
                                         degree=Degree, alpha=alpha, epochs=epochs)
+    except:
+        return "ERROR"
     return [name, theta]
 
 @app.route('/query', methods=['GET','POST'])
