@@ -298,17 +298,11 @@ def process():
         epsilon=0.1
     if session.get('filename')!=None:
         filepath = 'static/uploaded/'+session.get('filename')
-<<<<<<< HEAD
-        UPLOAD_STATUS='UPLOADED!'
-        name=generate_and_save_histogram(filepath=filepath, epsilon=epsilon, measure=measure, selection=selection, low=low, high=high, delta=delta, mechanism=mechanism, gamma=gamma)
-
-=======
         try:
             name=generate_and_save_histogram(filepath=filepath, epsilon=epsilon, measure=measure, selection=selection, low=low, high=high, delta=delta, mechanism=mechanism, gamma=gamma)
         except Exception as e:
             print(e)
             return "ERROR"
->>>>>>> 6fa84950e7dcc73402efe84d8f8acc9d769f766d
     else:
         UPLOAD_STATUS='USED DEFAULT FILE'
 
@@ -351,7 +345,7 @@ def dpml_process():
         print('used default')
         filepath = "static/uploaded/logReg.txt"
         UPLOAD_STATUS='USED DEFAULT FILE'
-    if not logreg.format_correct():
+    if not logreg.format_correct(filepath):
         return "ERROR"
     try:
         name, theta=logreg.generate_and_save_graph(filepath=filepath, epsilon=epsilon, Lambda=Lambda,\
@@ -359,7 +353,8 @@ def dpml_process():
     except Exception as e:
         print(e)
         return "ERROR"
-    return {'image':name,'theta': theta}
+    return name
+    #return {'image':name,'theta': theta}
 
 @app.route('/query', methods=['GET','POST'])
 def query():

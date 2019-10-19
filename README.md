@@ -11,9 +11,7 @@ TODO:
 13. Display Weights (Done from back-end) ---> "theta" (Kafle)
 14. Code Download (Vaik)
 15. Change URL for DPVisualisation (Lay)
-16. Case-sensitiveness in DPViz (Kafle---> Lay) (DONE-->?)
 17. Handling error so that it does not load forever (Lay ----> Kafle)
 18. Password-Reset, sending email (Lay)
 19. Split Ratio
 20. MultiDimensional Vaik
-21. Are we using default???????????????/
