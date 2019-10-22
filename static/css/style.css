@@ -468,6 +468,22 @@ section.home-features {
 .data-graph {
   display: none;
   align-self: stretch;
+  padding: 15px;
+}
+.data-graph .form {
+  position: sticky;
+  top: 10vw;
+}
+.displays.tab-select {
+  display: none;
+}
+.data-graph .data-weights {
+  padding: 9px 16px;
+  border-radius: 20px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.25);
+  background: white;
+  background-size: contain;
+  background-position: center;
 }
 .data-graph .graph-container {
   padding: 9px 16px;
@@ -477,8 +493,6 @@ section.home-features {
   background-image: url("/static/images/visual_bg.png");
   background-size: contain;
   background-position: center;
-  position: sticky;
-  top: 10vw;
   padding-top: 75%;
 }
 .data-graph.visual-available .graph-container {
@@ -501,6 +515,10 @@ section.home-features {
 .loading-caption {
   display: none;
 }
+.error-caption {
+  display: none;
+  color: rgba(200, 0, 0, 0.5);
+}
 .loading-animation {
   display: none;
   position: absolute;
@@ -515,6 +533,12 @@ section.home-features {
 .data-graph .graph-container img {
   width: 100%;
   display: none;
+}
+.data-graph.process-error .initial-caption {
+  display: none;
+}
+.data-graph.process-error .error-caption {
+  display: inline-block;
 }
 .data-graph.visual-available .graph-container img {
   display: block;

@@ -97,7 +97,9 @@ $(".tab-radios").on("change", ".tab-radio", function() {
 
 $("label[data-control]").click(function() {
   target = $(this).attr("data-control");
-  $(".control-hidden")
+  $(this)
+    .parents(".form")
+    .find(".control-hidden")
     .removeClass("control-hidden")
     .show();
   $(".control-hidden")

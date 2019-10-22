@@ -59,27 +59,62 @@
       </div>
     </form>
     <div class="data-graph col-6">
-      <div class="graph-container">
-        <div class="graph-pre-caption">
-          <span class="initial-caption"
-            >Your data will be visualized here after analyzing</span
+      <form class="form">
+        <div class="justify-content-center displays tab-select mt-4">
+          <label
+            class="btn btn-outline selected m-3"
+            for="display-visual"
+            data-control="visual"
+            >Visualization</label
           >
-          <span class="loading-caption">Generating preview</span>
+          <label
+            class="btn btn-outline m-3"
+            for="display-weights"
+            data-control="weights"
+            >Weights</label
+          >
+          <div class="d-none tab-radios">
+            <input
+              type="radio"
+              class="tab-radio"
+              value="visual"
+              id="display-visual"
+              name="display"
+              required
+              selected
+            />
+            <input
+              type="radio"
+              value="weights"
+              id="display-weights"
+              name="display"
+              class="tab-radio"
+              required
+            />
+          </div>
         </div>
-        <div
-          class="loading-animation justify-content-center align-items-center"
-        >
-          <div class="triple-spinner"></div>
+        <div class="graph-container" data-hide="weights">
+          <div class="graph-pre-caption">
+            <span class="initial-caption"
+              >Your data will be visualized here after analyzing</span
+            >
+            <span class="loading-caption">Generating preview</span>
+            <span class="error-caption"></span>
+          </div>
+          <div
+            class="loading-animation justify-content-center align-items-center"
+          >
+            <div class="triple-spinner"></div>
+          </div>
+          <img id="data-histogram" />
         </div>
-        <img id="data-histogram" />
-      </div>
-      <div class="data-weights">
-        <header>Weights</header>
-        <div id="weights"></div>
-      </div>
+        <div class="data-weights" data-hide="visual">
+          <div class="weights"></div>
+        </div>
+      </form>
     </div>
   </div>
 </section>
-{% endblock %} {% block scripts %} {% block analysisScript %} {% endblock %}
-<script type="text/javascript" src="/static/js/action.js"></script>
-{% endblock %}
+{% endblock %} {% block scripts %}
+<script type="text/javascript" src="/static/js/action.js"></script
+>{% block analysisScript %} {% endblock %} {% endblock %}

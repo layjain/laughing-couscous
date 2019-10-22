@@ -132,10 +132,23 @@ Learning {% endblock %} {% block formFields %}
 <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
 <script
   id="MathJax-script"
-  async
   src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
 ></script>
 <script type="text/javascript">
+  // $(document).load(MathJax.typeset());
+  function latex(a) {}
+  let promise = Promise.resolve(); // Used to hold chain of typesetting calls
+
+  function typeset(code) {
+    promise = promise
+      .then(() => {
+        code();
+        console.log(code());
+        return MathJax.typesetPromise();
+      })
+      .catch(err => console.log("Typeset failed: " + err.message));
+    return promise;
+  }
   function Analysis3() {
     var xhttp = new XMLHttpRequest();
     var e = document.getElementById("epsilon").value;
@@ -147,22 +160,47 @@ Learning {% endblock %} {% block formFields %}
 
     $(".data-graph")
       .addClass("visual-loading")
-      .removeClass("visual-available");
+      .removeClass("visual-available process-error");
     $("#Analyze-Button")
       .prop("disabled", true)
       .addClass("disabled");
 
     xhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
+        console.log(this.responseText);
         result = JSON.parse(this.responseText);
-        $("#data-histogram")
-          .attr("src", result["image"])
-          .show();
-        $(".data-weights #weights").text(result["theta"]);
-        $(".data-weights").show();
-        $(".data-graph")
-          .addClass("visual-available")
-          .removeClass("visual-loading");
+        if (result["error"]) {
+          $(".graph-container").css(
+            "background-image",
+            "url('/static/images/404.png')"
+          );
+
+          $(".data-graph").addClass("process-error");
+          $(".graph-pre-caption .error-caption").text(
+            "Oops! " + result["text"]
+          );
+        } else {
+          typeset(() => {
+            a = result["theta"];
+            t = "$$Weights=\\left[\\begin{array}{cc} ";
+            $.each(a, function(index, value) {
+              t += value + " \\\\ ";
+            });
+            console.log(t);
+            // t = t.substring(1, -2);
+            t += "\\end{array}\\right]$$";
+            const math = document.querySelector(".weights");
+            math.innerHTML = t;
+            console.log(a);
+            return math;
+          });
+          $(".displays.tab-select").css("display", "flex");
+          $("#data-histogram")
+            .attr("src", result["image"])
+            .show();
+          $(".data-graph").addClass("visual-available");
+        }
+        $(".data-graph").removeClass("visual-loading");
         $("#Analyze-Button")
           .prop("disabled", false)
           .removeClass("disabled");

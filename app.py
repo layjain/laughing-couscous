@@ -346,15 +346,15 @@ def dpml_process():
         filepath = "static/uploaded/logReg.txt"
         UPLOAD_STATUS='USED DEFAULT FILE'
     if not logreg.format_correct(filepath):
-        return "ERROR"
+        return {"error":True, "text":"Incorrect File Format"}
     try:
         name, theta=logreg.generate_and_save_graph(filepath=filepath, epsilon=epsilon, Lambda=Lambda,\
                                         degree=Degree, alpha=alpha, epochs=epochs, split_ratio=split_ratio)
     except Exception as e:
         print(e)
-        return "ERROR"
-    return name
-    #return {'image':name,'theta': theta}
+        return {"error":True, "text":"Oops! Something went wrong"}
+    # return name
+    return {"error":False,'image':name,'theta': theta}
 
 @app.route('/query', methods=['GET','POST'])
 def query():
