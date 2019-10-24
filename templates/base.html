@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="utf-8" />
+    <meta
+      name="description"
+      content="Differentially Private Machine Learning Made Simple, Secure, and Free!"
+    />
+    <meta
+      name="keywords"
+      content="machine learning, differential privacy, ML, DPML"
+    />
+    <link rel="icon" href="/static/images/icon.png" type="image/x-icon" />
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
@@ -13,7 +23,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/static/css/style.css" />
-    <title>Welcome</title>
+    <title>{% block title %}{% endblock %} - privaZ</title>
   </head>
   <body class="{% block bodyClass %}{% endblock %}">
     {% block preContent %}{% endblock %}

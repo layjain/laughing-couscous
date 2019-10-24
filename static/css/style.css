@@ -530,9 +530,19 @@ section.home-features {
 .data-graph.visual-available .graph-pre-caption {
   display: none;
 }
-.data-graph .graph-container img {
+.data-graph .graph-container img,
+.data-graph.process-error .graph-container img {
   width: 100%;
   display: none;
+}
+.data-graph.process-error .graph-container img,
+.data-graph.visual-loading .graph-container img,
+.data-graph.process-error .displays.tab-select,
+.data-graph.process-error .data-weights {
+  display: none !important;
+}
+.data-graph.process-error .graph-container {
+  display: block !important;
 }
 .data-graph.process-error .initial-caption {
   display: none;

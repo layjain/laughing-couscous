@@ -19,6 +19,7 @@ Learning {% endblock %} {% block formFields %}
             max="100"
             step="1"
             placeholder="0"
+            required
           />
         </div>
       </div>
@@ -51,6 +52,7 @@ Learning {% endblock %} {% block formFields %}
             id="lambda"
             required
             placeholder="0"
+            required
           />
         </div>
       </div>
@@ -98,7 +100,7 @@ Learning {% endblock %} {% block formFields %}
         </div>
       </div>
     </div>
-    <div class="form-row align-items-center my-3">
+    <!-- <div class="form-row align-items-center my-3">
       <div class="col-auto">
         <div class="input-group parameter-input">
           <div class="input-group-prepend">
@@ -124,7 +126,7 @@ Learning {% endblock %} {% block formFields %}
         id="split-range"
         value="0"
       />
-    </div>
+    </div> -->
   </div>
 </section>
 {% endblock %} {% block analysisScript %}
@@ -150,13 +152,17 @@ Learning {% endblock %} {% block formFields %}
     return promise;
   }
   function Analysis3() {
+    if ($(".upload-form")[0].checkValidity() === false) {
+      $(".upload-form").addClass("was-validated");
+      return;
+    }
     var xhttp = new XMLHttpRequest();
     var e = document.getElementById("epsilon").value;
     var lambda = document.getElementById("lambda").value;
     var degree = document.getElementById("degree").value;
     var epochs = document.getElementById("epochs").value;
     var alpha = document.getElementById("alpha").value;
-    var split = document.getElementById("split").value;
+    // var split = document.getElementById("split").value;
 
     $(".data-graph")
       .addClass("visual-loading")
@@ -164,7 +170,7 @@ Learning {% endblock %} {% block formFields %}
     $("#Analyze-Button")
       .prop("disabled", true)
       .addClass("disabled");
-
+    $("label[for='display-visual']").click();
     xhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
         console.log(this.responseText);
@@ -194,6 +200,7 @@ Learning {% endblock %} {% block formFields %}
             console.log(a);
             return math;
           });
+          $(".weights").show();
           $(".displays.tab-select").css("display", "flex");
           $("#data-histogram")
             .attr("src", result["image"])
@@ -216,8 +223,8 @@ Learning {% endblock %} {% block formFields %}
         degree +
         "&epochs=" +
         epochs +
-        "&split=" +
-        split +
+        // "&split=" +
+        // split +
         "&alpha=" +
         alpha,
       true

@@ -99,7 +99,7 @@ $("label[data-control]").click(function() {
   target = $(this).attr("data-control");
   $(this)
     .parents(".form")
-    .find(".control-hidden")
+    .find("*[data-hide]")
     .removeClass("control-hidden")
     .show();
   $(".control-hidden")
