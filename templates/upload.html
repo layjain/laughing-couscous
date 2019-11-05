@@ -125,7 +125,10 @@
         value="0"
       />
     </div>
-    <div class="form-row align-items-center my-3" data-hide="laplace staircase median">
+    <div
+      class="form-row align-items-center my-3"
+      data-hide="laplace staircase median"
+    >
       <div class="col-auto">
         <div class="input-group parameter-input">
           <div class="input-group-prepend">
@@ -136,18 +139,22 @@
             class="form-control range-value"
             id="delta"
             min="0"
-            max="1"
+            max="10"
+            data-order-magnitude="-4"
             placeholder="0"
-            step="0.01"
+            step="0.1"
+            style="border-right: none;"
           />
+          <div class="input-group-append">&times;10<sup>-4</sup></div>
         </div>
       </div>
       <input
         type="range"
         class="custom-range col"
         min="0"
-        max="1"
-        step="0.01"
+        max="10"
+        step="0.1"
+        data-order-magnitude="-4"
         id="delta-range"
         value="0"
       />
@@ -192,6 +199,13 @@
     <div class="d-flex justify-content-center fields flex-wrap tab-select">
       <div class="d-none tab-radios"></div>
     </div>
+  </div>
+</section>
+<section class="parameter-section" id="global-sensitivity">
+  <header class="section-header">
+    <h6>Global Sensitivity</h6>
+  </header>
+  <div>
     <div class="form-row my-4 justify-content-around">
       <div class="col-auto">
         <div class="input-group parameter-input">
@@ -275,7 +289,9 @@
     }
     var xhttp = new XMLHttpRequest();
     var e = document.getElementById("epsilon").value;
-    var d = document.getElementById("delta").value;
+    var d =
+      document.getElementById("delta").value *
+      10 ** parseInt($("#delta").attr("data-order-magnitude"));
     var g = document.getElementById("gamma").value;
     var mechanism = $("input[name='function']:checked").val();
     var selection = $("input[name='field']:checked").val();
