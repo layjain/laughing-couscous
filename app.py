@@ -73,7 +73,7 @@ def meanDP(x, lower, upper, epsilon, mechanism, delta, gamma):
     elif mechanism=="staircase":
         DPrelease=sensitiveValue+DPMechanisms.staircase(0, sensitivity, epsilon, gamma)
     elif mechanism=="gaussian":
-        DPrelease=sensitiveValue+DPMechanisms.staircase(0, sensitivity, epsilon, delta)
+        DPrelease=sensitiveValue+DPMechanisms.gaussian(0, sensitivity, epsilon, delta)
     return {'release':DPrelease, 'true':sensitiveValue}
 
 def medianRelease(x, lower, upper, epsilon, nbins=0):
@@ -113,18 +113,22 @@ def generate_and_save_histogram (filepath="https://raw.githubusercontent.com/pri
     print('called generate_and_save_histogram')
     upper=high
     if measure=='Median':
+        print("Getting data using pandas df")
         PUMSdata=pandas.read_csv(filepath)
         data=np.array(PUMSdata[selection], dtype='float32')
         populationTrue=float(np.median(data))
-        sample_index=np.random.choice(range(1, len(data)+1, 1), size=100, replace=False)
+        print("100 random choices for samnple_index")
+        sample_index=np.random.choice(range(1, len(data), 1), size=100, replace=False)
         x=data[sample_index]
         n_sims=2000
         history=[None for _ in range(n_sims)]
+        print("Starting the loop")
         for i in (range(n_sims)):
             history[i]=medianRelease(x=x, lower=low, upper=high, epsilon=1)['release']
-
+        print("Loop over")
         x_clipped=clip(x, lower=low, upper=high)
         breaks=np.arange(0.5, upper+1)
+        print("Plotting the Histogram")
         fig, axs=plt.subplots(2, 1)
         axs[0].hist(x_clipped, bins=breaks)
         axs[0].set_title('Histogram of Private Data')
@@ -290,18 +294,20 @@ def process():
     selection = request.args.get('selection', 'age')
     print('Selection being', selection)
     measure = request.args.get('measure').capitalize()
+
     try:
         epsilon=float(e)
     except:
         print('could not convert given epsilon to float')
         epsilon=0.1
+
     if session.get('filename')!=None:
         filepath = 'static/uploaded/'+session.get('filename')
         try:
             name=generate_and_save_histogram(filepath=filepath, epsilon=epsilon, measure=measure, selection=selection, low=low, high=high, delta=delta, mechanism=mechanism, gamma=gamma)
         except Exception as e:
             print(e)
-            return "ERROR"
+            return {"error":True, "text":"Oops! Something went wrong!"}
     else:
         UPLOAD_STATUS='USED DEFAULT FILE'
 
@@ -540,36 +546,40 @@ def check_email_available():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    print('Args at register')
-    print(request.args)
-    print(request.form)
-    print('request type:---->', request.method)
-    username = request.args.get('username')
-    password = request.args.get('password')
-    remember = request.args.get('remember')
-    email = request.args.get('email')
-    ###Check if duplicate
-    user = User.query.filter_by(username=username).first()
+    try:
+        print('Args at register')
+        print(request.args)
+        print(request.form)
+        print('request type:---->', request.method)
+        username = request.args.get('username')
+        password = request.args.get('password')
+        email = request.args.get('email')
+        ###Check if duplicate
+        user = User.query.filter_by(username=username).first()
 
-    if user is not None and user.username is not None:
-        print(user.username)
-        return 'Please use a different Username'
-    if email == '':
-        return 'Please enter a valid email'
-    user = User.query.filter_by(email=email).first()
-    if user is not None and user.username is not None:
-        return 'Please use a different email address'
+        if user is not None and user.username is not None:
+            print(user.username)
+            return 'Please use a different Username'
+        if email == '':
+            return 'Please enter a valid email'
+        user = User.query.filter_by(email=email).first()
+        if user is not None and user.username is not None:
+            return 'Please use a different email address'
 
-    user = User(username=username, email=email)
-    print('Adding New User')
-    print('username==', username)
-    print('password==', password)
-    print('remember==', remember)
-    print('email==', email)
-    user.set_password(password)
-    db.session.add(user)
-    db.session.commit()
-    return render_template('index.html')
+        user = User(username=username, email=email)
+        print('Adding New User')
+        print('username==', username)
+        print('password==', password)
+        print('remember==', remember)
+        print('email==', email)
+        user.set_password(password)
+        db.session.add(user)
+        db.session.commit()
+        return True
+    except Exception as e:
+        print("THE FOLLOWING EXCEPTION OCCURED AT /REGISTER")
+        print(e)
+        return {"error":True, "text": 'Account could not be created. Please contact us if the issue persists!'}
 
 @app.route('/joinFederatedProject', methods=['GET', 'POST'])
 def joinFederatedProject():

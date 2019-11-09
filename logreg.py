@@ -117,7 +117,7 @@ def generate_and_save_graph(filepath="static/uploaded/logReg.txt", degree=6, eps
     name='static/images/Laplace'+str(time.time())+'.png'
     plt.savefig(name)
     plt.close()
-    print(np.array(theta_dp).tolist())
+    #print(np.array(theta_dp).tolist())
     return (name, np.array(theta_dp).reshape((-1,)).tolist())
 
 def format_correct(filepath):
