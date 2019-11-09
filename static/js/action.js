@@ -158,13 +158,19 @@ $("input[type=range]").each(function() {
   range = $(this);
   container.insertAfter(range);
   end = $("<div/>").addClass("range-extreme");
+  min = range.attr("min");
+  max = range.attr("max");
+  if (range.attr("data-order-magnitude")) {
+    max = max * 10 ** parseInt(range.attr("data-order-magnitude"));
+    min = min * 10 ** parseInt(range.attr("data-order-magnitude"));
+  }
   end
     .clone()
-    .text(range.attr("min"))
+    .html(min)
     .appendTo(container);
   range.appendTo(container);
   end
     .clone()
-    .text(range.attr("max"))
+    .html(max)
     .appendTo(container);
 });

@@ -429,6 +429,23 @@ section.home-features {
   border: 1px solid #333;
   color: white;
 }
+#greek-parameters .form-control {
+  box-shadow: none;
+}
+.input-group .input-group-append {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+#greek-parameters .input-group .input-group-append {
+  background: white;
+  border: 1px solid #aaa;
+  border-left: none;
+  font-size: 0.8em;
+  padding: 8px 2px;
+}
+.input-group .input-group-append sup {
+  line-height: unset;
+}
 .upload-form .tab-select label.btn {
   margin: 05px;
   box-shadow: none;
