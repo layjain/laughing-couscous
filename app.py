@@ -178,7 +178,6 @@ def home():
         return render_template('index.html')
     # next = request.args.get('next',None)
     # if next !=None:
-    #     n
     return render_template('home.html')
 @app.route('/home_with_logout')
 def home_with_logout():
@@ -355,6 +354,73 @@ def dpml_process():
         return {"error":True, "text":"Oops! Something went wrong"}
     # return name
     return {"error":False,'image':name,'theta': theta}
+
+@app.route('/NaiveBayes_plot_process', methods=["GET","POST"])
+def NaiveBayes_plot_process():
+    print(request)
+    print(dict(request.args))
+    try:
+        filename_nb=session.get('filename')
+    except:
+        filename_nb=None
+    e = request.args.get('e','0.1')
+    split_ratio=request.args.get('split_ratio', '1') #train:(total) must be (0,1]
+    
+    epsilon=get_float(e, 0.1)
+    split_ratio = get_float(split_ratio, 1.0)
+
+    if filename_dpml != None:
+        print('used new file '+filename_dpml)
+        filepath = 'static/uploaded/'+filename_dpml
+        filename_dpml=None
+    else:
+        print('used default')
+        filepath = "static/uploaded/logReg.txt"
+
+    if not logreg.format_correct(filepath):
+        return {"error":True, "text":"Incorrect File Format"}
+    try:
+        name = NaiveBayes.generate_and_save_graph(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio)
+    
+    except Exception as e:
+        print(e)
+        return {"error":True, "text":"Oops! Something went wrong"}
+    # return name
+    return {"error":False,'image':name}
+
+@app.route('/NaiveBayes_accuracies_process', methods=["GET","POST"])
+def NaiveBayes_accuracies_process():
+    print(request)
+    print(dict(request.args))
+    try:
+        filename_nb=session.get('filename')
+    except:
+        filename_nb=None
+    e = request.args.get('e','0.1')
+    split_ratio=request.args.get('split_ratio', '1') #train:(total) must be (0,1]
+    
+    epsilon=get_float(e, 0.1)
+    split_ratio = get_float(split_ratio, 1.0)
+
+    if filename_dpml != None:
+        print('used new file '+filename_dpml)
+        filepath = 'static/uploaded/'+filename_dpml
+        filename_dpml=None
+    else:
+        print('used default')
+        filepath = "static/uploaded/logReg.txt"
+
+    if not logreg.format_correct(filepath):
+        return {"error":True, "text":"Incorrect File Format"}
+    try:
+        train_accuracy, test_accuracy = NaiveBayes.train_and_test(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio)
+    
+    except Exception as e:
+        print(e)
+        return {"error":True, "text":"Oops! Something went wrong"}
+    # return name
+    return {"error":False,'train_accuracy':train_accuracy, "test_accuracy":test_accuracy}
+
 
 @app.route('/query', methods=['GET','POST'])
 def query():

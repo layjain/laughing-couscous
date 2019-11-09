@@ -15,3 +15,6 @@ TODO:
 18. Password-Reset, sending email (Lay)
 19. Split Ratio
 20. MultiDimensional Vaik
+21. 3 mechanisms: Generalize Logistic Regression  (Lay)
+			    : Naive Byas (Lay, Kafle --> parameters: epsilon)
+			    : K-means (Lay, Kafle)
