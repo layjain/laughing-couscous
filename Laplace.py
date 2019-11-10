@@ -32,10 +32,9 @@ def meanDP(x, lower, upper, epsilon):
     return {'release':DPrelease, 'true':sensitiveValue}
 
 #Mean Release    
-def generate_and_save_histogram (filepath="https://raw.githubusercontent.com/privacytoolsproject/cs208/master/data/FultonPUMS5full.csv",
-                                 label='age',
+def generate_and_save_histogram (filepath,
+                                 label,
                                  epsilon=1):
-    #filepath="https://raw.githubusercontent.com/privacytoolsproject/cs208/master/data/FultonPUMS5full.csv"
     PUMSdata=pandas.read_csv(filepath)
     data=np.array(PUMSdata['age'])
     count=0

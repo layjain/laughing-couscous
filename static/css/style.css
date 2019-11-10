@@ -573,6 +573,8 @@ section.home-features {
 .data-graph.visual-loading .graph-container,
 .data-graph.visual-available .graph-container {
   background-image: none;
+}.data-graph.process-error .graph-container {
+  background-image: url('/static/images/404.png')
 }
 .data-graph.visual-loading .loading-caption {
   display: inline-block;

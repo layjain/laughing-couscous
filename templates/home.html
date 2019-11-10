@@ -89,7 +89,7 @@ endblock %} {% block bodyClass %}home-page{% endblock %} {% block preContent %}
             <em>Its totally free to use!</em>
           </header>
           <div class="signup-form px-3 pt-2">
-            <form id="signup" class="form needs-validation">
+            <form id="signup" class="form needs-validation" novalidate>
               <div class="form-group col-12 px-0">
                 <label for="signup-username" class="sr-only">Username</label>
                 <input
@@ -115,7 +115,7 @@ endblock %} {% block bodyClass %}home-page{% endblock %} {% block preContent %}
                   data-toggle="tooltip"
                   data-trigger="manual"
                   data-placement="top"
-                  title="Email already signed-up"
+                  data-title="Email already signed-up"
                 />
               </div>
               <div class="form-group col-12 px-0">
@@ -133,6 +133,7 @@ endblock %} {% block bodyClass %}home-page{% endblock %} {% block preContent %}
                   type="checkbox"
                   class="custom-control-input"
                   id="signup-agree"
+                  required
                 />
                 <label class="custom-control-label" for="signup-agree"
                   >I have read and agree to the
@@ -143,6 +144,17 @@ endblock %} {% block bodyClass %}home-page{% endblock %} {% block preContent %}
                 <button type="submit" class="btn" id="SignUpButton">
                   Sign Up
                 </button>
+                <div class="pt-2 signup-feedback small" style="display: none;">
+                  <span class="signup-success text-success"
+                    >Signed Up Successfully!
+                    <a href="#login-modal" data-toggle="modal">
+                      Login
+                    </a>
+                  </span>
+                  <span class="signup-error text-danger"
+                    >Error signing you up!</span
+                  >
+                </div>
               </div>
             </form>
           </div>
@@ -264,10 +276,7 @@ endblock %} {% block bodyClass %}home-page{% endblock %} {% block preContent %}
 </section>
 {% endblock %} {% block scripts %}
 
-<script
-  type="text/javascript"
-  src="/static/js/home_script.js?bsigiggfiu"
-></script>
+<script type="text/javascript" src="/static/js/home_script.js"></script>
 <!-- <script
   type="text/javascript"
   src="/static/js/login_script.js?bhb"

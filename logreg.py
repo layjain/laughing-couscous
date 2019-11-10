@@ -76,7 +76,7 @@ def mapFeaturePlot(x1,x2,degree):
             out= np.hstack((out,terms))
     return out
 
-def generate_and_save_graph(filepath="static/uploaded/logReg.txt", degree=6, epsilon=0.1, Lambda=1, alpha=1, epochs=800, split_ratio=1):
+def generate_and_save_graph(filepath, degree=6, epsilon=0.1, Lambda=1, alpha=1, epochs=800, split_ratio=1):
     print('making graph')
     df=pd.read_csv(filepath, header=None)
     df.head()

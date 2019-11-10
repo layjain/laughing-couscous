@@ -176,10 +176,6 @@ Learning {% endblock %} {% block formFields %}
         console.log(this.responseText);
         result = JSON.parse(this.responseText);
         if (result["error"]) {
-          $(".graph-container").css(
-            "background-image",
-            "url('/static/images/404.png')"
-          );
 
           $(".data-graph").addClass("process-error");
           $(".graph-pre-caption .error-caption").text(

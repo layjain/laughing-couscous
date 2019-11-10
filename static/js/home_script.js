@@ -1,45 +1,45 @@
 $ = jQuery;
-document.getElementById("SignUpButton").addEventListener("click", signup_js);
 
-function signup_js() {
+$("#SignUpButton").click(function(e) {
+  if (
+    check_email_available_js() == "True" &&
+    check_username_available_js() == "True"
+  ) {
+    console.log("checked");
+    signup(e);
+  }
+});
+function signup(e) {
+  signup_form = $("#signup");
+  username = $("#signup-username").val();
+  password = $("#signup-password").val();
+  email = $("#signup-email").val();
+  signup_form.addClass("was-validated");
+  console.log($("#signup .is-invalid")[0]);
+  if (
+    signup_form[0].checkValidity() === false ||
+    $("#signup .is-invalid").length != 0
+  ) {
+    console.log("invalid");
+    $("input[data-toggle=tooltip].is-invalid").tooltip("show");
+    e.preventDefault();
+    e.stopPropagation();
+    return;
+  }
   var xhttp = new XMLHttpRequest();
-  var username = document.getElementById("name").value;
-  console.log("here it its-->");
-  console.log(username);
-  var password = document.getElementById("pass1").value;
-  var remember = document.getElementById("checkpoint").value;
-  var email = document.getElementById("email1").value;
   var params =
-    "username=" +
-    username +
-    "&password=" +
-    password +
-    "&remember=" +
-    remember +
-    "&email=" +
-    email;
-  // xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  if (email === "") {
-    document.getElementById("password_errors").innerHTML =
-      "Email Cannot be Empty";
-    return;
-  }
-  if (username === "") {
-    document.getElementById("password_errors").innerHTML =
-      "Username Cannot be Empty";
-    return;
-  }
-  if (password === "") {
-    document.getElementById("password_errors").innerHTML =
-      "Password Cannot be Empty";
-    return;
-  }
-
+    "username=" + username + "&password=" + password + "&email=" + email;
+  e.preventDefault();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-      document.open();
-      document.write(this.responseText);
-      document.close();
+      $(".signup-feedback").show();
+      if (this.responseText == "True") {
+        $(".signup-feedback .signup-success").show();
+        $(".signup-feedback .signup-error").hide();
+      } else {
+        $(".signup-feedback .signup-success").hide();
+        $(".signup-feedback .signup-error").show();
+      }
     }
   };
   xhttp.open("GET", "/register?" + params, true);
@@ -56,16 +56,18 @@ function check_username_available_js() {
 
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-      console.log(this.responseText + "'");
       if (this.responseText != "") {
         $("#signup-username").tooltip("show");
+        $("#signup-username").addClass("is-invalid");
       } else {
         $("#signup-username").tooltip("hide");
+        $("#signup-username").removeClass("is-invalid");
       }
     }
   };
   xhttp.open("GET", "/check_username_available?" + params, true);
   xhttp.send("username=" + username);
+  return "True";
 }
 
 document
@@ -74,19 +76,27 @@ document
 function check_email_available_js() {
   var xhttp = new XMLHttpRequest();
   var value = document.getElementById("signup-email").value;
+  if (value == "") return;
   var params = "email=" + value;
 
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
       if (this.responseText != "") {
         $("#signup-email").tooltip("show");
+        $("#signup-email")
+          .addClass("is-invalid")
+          .removeClass("is-valid");
       } else {
         $("#signup-email").tooltip("hide");
+        $("#signup-email")
+          .removeClass("is-invalid")
+          .addClass("is-valid");
       }
     }
   };
   xhttp.open("GET", "/check_email_available?" + params, true);
   xhttp.send();
+  return "True";
 }
 
 $("input[data-toggle='tooltip']").focus(function() {
