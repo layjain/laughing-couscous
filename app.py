@@ -419,13 +419,13 @@ def NaiveBayes_accuracies_process():
     if not logreg.format_correct(filepath):
         return {"error":True, "text":"Incorrect File Format"}
     try:
-        train_accuracy, test_accuracy = NaiveBayes.train_and_test(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio)
+        train_accuracy, test_accuracy, params = NaiveBayes.train_and_test(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio)
     
     except Exception as e:
         print(e)
         return {"error":True, "text":"Oops! Something went wrong"}
     # return name
-    return {"error":False,'train_accuracy':train_accuracy, "test_accuracy":test_accuracy}
+    return {"error":False,'train_accuracy':train_accuracy, "test_accuracy":test_accuracy, "theta":params}
 
 
 @app.route('/query', methods=['GET','POST'])

@@ -28,3 +28,4 @@ TODO:
 28. Can handle high less than low from frontend? (Prabhakar?)
 29. Disallow: e=0,d=0 in Laplace, BoundedLaplace, gaussian, Staircase (Prabhakar)
 30. Is gamma = 1 / (1 + np.exp(epsilon / 2)) in staircase? (Vaik)
+31. Add weights to NaiveBayes and Kmeans

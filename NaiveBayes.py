@@ -24,7 +24,8 @@ def train_and_test(filepath="static/uploaded/logReg.txt", epsilon=0.1, split_rat
     dp_clf.fit(X_train,Y_train)
 	test_accuracy = (dp_clf2.predict(X_test) == Y_test).sum() / Y_test.shape[0] * 100
 	train_accuracy =  (dp_clf2.predict(X_train) == Y_train).sum() / Y_train.shape[0] * 100
-	return (train_accuracy, test_accuracy)
+	params = dp_clf.get_params()
+	return (train_accuracy, test_accuracy, params)
 
 def make_and_save_graph(filepath="static/uploaded/logReg.txt", split_ratio=1, **unused_args):
 	print("making pandas dataframe")
