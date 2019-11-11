@@ -11,9 +11,9 @@ Learning {% endblock %} {% block formFields %}
     >
     <label
       class="btn btn-outline"
-      for="function-naiveBays"
-      data-control="naiveBays"
-      >Naive Bays</label
+      for="function-NaiveBayes"
+      data-control="NaiveBayes"
+      >Naive Bayes</label
     >
     <label class="btn btn-outline" for="function-kMeans" data-control="kMeans"
       >k-means</label
@@ -30,8 +30,8 @@ Learning {% endblock %} {% block formFields %}
       <input
         type="radio"
         class="tab-radio"
-        value="naiveBays"
-        id="function-naiveBays"
+        value="NaiveBayes"
+        id="function-NaiveBayes"
         name="function"
         required
       />
@@ -63,7 +63,7 @@ Learning {% endblock %} {% block formFields %}
             id="epsilon"
             min="0"
             max="100"
-            step="1"
+            step="0.001"
             placeholder="0"
             required
           />
@@ -74,7 +74,7 @@ Learning {% endblock %} {% block formFields %}
         class="custom-range col"
         min="0"
         max="100"
-        step="1"
+        step="0.5"
         id="epsilon-range"
         value="0"
       />
@@ -87,7 +87,7 @@ Learning {% endblock %} {% block formFields %}
   </header>
   <div>
     <div class="form-row my-4 justify-content-around">
-      <div class="col-auto my-3" data-hide="naiveBays kMeans">
+      <div class="col-auto my-3" data-hide="NaiveBayes kMeans">
         <div class="input-group parameter-input">
           <div class="input-group-prepend">
             <label for="lambda" class="input-group-text">Lambda</label>
@@ -102,7 +102,7 @@ Learning {% endblock %} {% block formFields %}
           />
         </div>
       </div>
-      <div class="col-auto my-3" data-hide="naiveBays kMeans">
+      <div class="col-auto my-3" data-hide="NaiveBayes kMeans">
         <div class="input-group parameter-input">
           <div class="input-group-prepend">
             <label for="degree" class="input-group-text">Degree</label>
@@ -117,7 +117,7 @@ Learning {% endblock %} {% block formFields %}
         </div>
       </div>
       <div class="col-12"></div>
-      <div class="col-auto my-3" data-hide="naiveBays kMeans">
+      <div class="col-auto my-3" data-hide="NaiveBayes kMeans">
         <div class="input-group parameter-input">
           <div class="input-group-prepend">
             <label for="epochs" class="input-group-text">Epochs</label>
@@ -131,7 +131,7 @@ Learning {% endblock %} {% block formFields %}
           />
         </div>
       </div>
-      <div class="col-auto my-3" data-hide="naiveBays kMeans">
+      <div class="col-auto my-3" data-hide="NaiveBayes kMeans">
         <div class="input-group parameter-input">
           <div class="input-group-prepend">
             <label for="alpha" class="input-group-text">Alpha</label>
@@ -145,7 +145,7 @@ Learning {% endblock %} {% block formFields %}
           />
         </div>
       </div>
-      <div class="col-auto my-3" data-hide="naiveBays logreg">
+      <div class="col-auto my-3" data-hide="NaiveBayes logreg">
         <div class="input-group parameter-input">
           <div class="input-group-prepend">
             <label for="clusters" class="input-group-text">Clusters</label>
@@ -217,13 +217,13 @@ Learning {% endblock %} {% block formFields %}
       return;
     }
     var xhttp = new XMLHttpRequest();
+    var func = $("input[name='function']:checked").val();
     var e = document.getElementById("epsilon").value;
     var lambda = document.getElementById("lambda").value;
     var degree = document.getElementById("degree").value;
     var epochs = document.getElementById("epochs").value;
     var alpha = document.getElementById("alpha").value;
     var split = document.getElementById("split").value;
-
     $(".data-graph")
       .addClass("visual-loading")
       .removeClass("visual-available process-error");
@@ -256,10 +256,10 @@ Learning {% endblock %} {% block formFields %}
           });
           $(".weights").show();
           $(".data.weights .training-accuracy").html(
-            "Training Accuracy: " + result["trainingAccuracy"]
+            "Training Accuracy: " + result["train_accuracy"]
           );
           $(".data.weights .test-accuracy").html(
-            "Test Accuracy: " + result["testAccuracy"]
+            "Test Accuracy: " + result["test_accuracy"]
           );
           $(".displays.tab-select").css("display", "flex");
           $("#data-histogram")
@@ -275,7 +275,9 @@ Learning {% endblock %} {% block formFields %}
     };
     xhttp.open(
       "GET",
-      "/dpml_process?e=" +
+      "/" +
+        func +
+        "_process?e=" +
         e +
         "&lambda=" +
         lambda +

@@ -112,7 +112,7 @@
             min="0"
             max="100"
             placeholder="0"
-            step="0.5"
+            step="0.001"
             data-inclusive-min="False"
           />
         </div>
@@ -122,6 +122,7 @@
         class="custom-range col"
         min="0"
         max="100"
+        step="0.5"
         id="epsilon-range"
         value="0"
       />
@@ -272,20 +273,6 @@
         measure,
       true
     );
-    xhttp.send();
-  }
-</script>
-<script type="text/javascript">
-  function Analysis2() {
-    var xhttp = new XMLHttpRequest();
-    var e = document.getElementById("epsilon").value;
-    var d = document.getElementById("delta").value;
-    xhttp.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        document.getElementById("figure").innerHTML = this.responseText;
-      }
-    };
-    xhttp.open("GET", "/process?e=" + e + "&d=" + d, true);
     xhttp.send();
   }
 </script>
