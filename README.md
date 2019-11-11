@@ -29,3 +29,5 @@ TODO:
 29. Disallow: e=0,d=0 in Laplace, BoundedLaplace, gaussian, Staircase (Prabhakar)
 30. Is gamma = 1 / (1 + np.exp(epsilon / 2)) in staircase? (Vaik)
 31. Add weights to NaiveBayes and Kmeans
+32. Prabhakar: Handle dictionaries, for example, in /process
+33. Vaik: Replace=True in Median??
