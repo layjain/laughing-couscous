@@ -117,7 +117,7 @@ def generate_and_save_graph(filepath, degree=6, epsilon=0.1, Lambda=1, alpha=1, 
     name='static/images/Laplace'+str(time.time())+'.png'
     plt.savefig(name)
     plt.close()
-    print(np.array(theta_dp).tolist())
+    #print(np.array(theta_dp).tolist())
     return (name, np.array(theta_dp).reshape((-1,)).tolist())
 
 def format_correct(filepath):

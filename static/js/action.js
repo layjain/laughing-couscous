@@ -146,9 +146,11 @@ $(".range-value").on("input", function() {
 });
 
 $("input[type='number'][min]").change(function() {
-  value = parseInt($(this).val());
+  value = parseFloat($(this).val());
   low = parseInt($(this).attr("min"));
   high = parseInt($(this).attr("max"));
+  step = parseFloat($(this).attr("step"));
+  if ($(this).attr("data-inclusive-min") == "False") low = low + step;
   if (value > high) $(this).val(high);
   if (value < low) $(this).val(low);
 });

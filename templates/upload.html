@@ -112,7 +112,8 @@
             min="0"
             max="100"
             placeholder="0"
-            step="1"
+            step="0.5"
+            data-inclusive-min="False"
           />
         </div>
       </div>
@@ -144,6 +145,7 @@
             placeholder="0"
             step="0.1"
             style="border-right: none;"
+            data-inclusive-min="False"
           />
           <div class="input-group-append">&times;10<sup>-4</sup></div>
         </div>
@@ -237,6 +239,12 @@
       </div>
     </div>
   </div>
+  <footer
+    class="sensitivity-error text-danger small text-center"
+    style="display: none; font-style: italic;"
+  >
+    High must be greater than low!
+  </footer>
 </section>
 {% endblock %} {% block analysisScript %}
 <script type="text/javascript">
@@ -296,26 +304,34 @@
     var mechanism = $("input[name='function']:checked").val();
     var selection = $("input[name='field']:checked").val();
     var measure = $("input[name='measure']:checked").val();
-    // var mechanism = document.getElementsByName("function").value;
-    // var selection = document.getElementsByName("field").value;
-    // var measure = document.getElementsByName("measure").value;
     var low = document.getElementById("low").value;
     var high = document.getElementById("high").value;
-
+    if (high < low) {
+      $(".sensitivity-error").show();
+      return;
+    }
     $(".data-graph")
       .addClass("visual-loading")
-      .removeClass("visual-available");
+      .removeClass("visual-available process-error");
     $("#Analyze-Button")
       .prop("disabled", true)
       .addClass("disabled");
     xhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
-        $("#data-histogram")
-          .attr("src", this.responseText)
-          .show();
-        $(".data-graph")
-          .addClass("visual-available")
-          .removeClass("visual-loading");
+        console.log(this.responseText);
+        result = JSON.parse(this.responseText);
+        if (result["error"]) {
+          $(".data-graph").addClass("process-error");
+          $(".graph-pre-caption .error-caption").text(
+            "Oops! " + result["text"]
+          );
+        } else {
+          $("#data-histogram")
+            .attr("src", result["image"])
+            .show();
+          $(".data-graph").addClass("visual-available");
+        }
+        $(".data-graph").removeClass("visual-loading");
         $("#Analyze-Button")
           .prop("disabled", false)
           .removeClass("disabled");

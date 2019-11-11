@@ -1,0 +1,31 @@
+HUMAN TESTS:
+
+1. Login (1)
+2. Signup (0)
+3. Signup with the same username/email should not be allowed,
+   and such a request should not change the current SQL database 
+3. Logistic Regression, Naive Bayes, K-means
+	-Variation with different values of epsilon/hyperparameterts
+	-File with -1
+			   -2
+			   >2 dimensional input data
+4. Mean with all the 4 mechanisms, no NaN
+	-Laplace (1)
+	-Bounded Laplace (1)
+	-Staircase (1)
+	-Gaussian (1)
+5. Median, no NaN
+6. With nan values in input file:
+	-Mean
+	-Median
+	-DPML (all three mechs)
+   throw an error from backend to front-end
+7. With wrong file format in DPML
+	- an error message explaining the correct format
+8. Uploading a file with existing name does not delete the existing file
+9. Check good errors when:
+	- high<low
+	-File Size bigg
+	-File format wrong
+	-Datafile is empty
+	-e=0, d=0 not allowed in: Laplace, BoundedLaplace, 

@@ -1,21 +1,13 @@
 $ = jQuery;
 
 $("#SignUpButton").click(function(e) {
-  if (
-    check_email_available_js() == "True" &&
-    check_username_available_js() == "True"
-  ) {
-    console.log("checked");
-    signup(e);
-  }
-});
-function signup(e) {
+  check_email_available_js();
+  check_username_available_js();
   signup_form = $("#signup");
   username = $("#signup-username").val();
   password = $("#signup-password").val();
   email = $("#signup-email").val();
   signup_form.addClass("was-validated");
-  console.log($("#signup .is-invalid")[0]);
   if (
     signup_form[0].checkValidity() === false ||
     $("#signup .is-invalid").length != 0
@@ -37,6 +29,7 @@ function signup(e) {
         $(".signup-feedback .signup-success").show();
         $(".signup-feedback .signup-error").hide();
       } else {
+        console.log(this.responseText);
         $(".signup-feedback .signup-success").hide();
         $(".signup-feedback .signup-error").show();
       }
@@ -44,7 +37,7 @@ function signup(e) {
   };
   xhttp.open("GET", "/register?" + params, true);
   xhttp.send();
-}
+});
 
 document
   .getElementById("signup-username")

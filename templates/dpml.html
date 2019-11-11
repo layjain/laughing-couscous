@@ -1,5 +1,51 @@
 {% extends 'form.html' %} {% block formTitle %} Differentially Private Machine
 Learning {% endblock %} {% block formFields %}
+
+<section class="parameter-section" id="function-type">
+  <header class="section-header">
+    <h6>Select Mechanism</h6>
+  </header>
+  <div class="d-flex justify-content-center functions tab-select">
+    <label class="btn btn-outline" for="function-logreg" data-control="logreg"
+      >Logistic Regression</label
+    >
+    <label
+      class="btn btn-outline"
+      for="function-naiveBays"
+      data-control="naiveBays"
+      >Naive Bays</label
+    >
+    <label class="btn btn-outline" for="function-kMeans" data-control="kMeans"
+      >k-means</label
+    >
+    <div class="d-none tab-radios">
+      <input
+        type="radio"
+        class="tab-radio"
+        value="logreg"
+        id="function-logreg"
+        name="function"
+        required
+      />
+      <input
+        type="radio"
+        class="tab-radio"
+        value="naiveBays"
+        id="function-naiveBays"
+        name="function"
+        required
+      />
+      <input
+        type="radio"
+        value="kMeans"
+        id="function-kMeans"
+        name="function"
+        class="tab-radio"
+        required
+      />
+    </div>
+  </div>
+</section>
 <section class="parameter-section" id="privacy-parameters">
   <header class="section-header">
     <h6>Privacy parameters</h6>
@@ -41,7 +87,7 @@ Learning {% endblock %} {% block formFields %}
   </header>
   <div>
     <div class="form-row my-4 justify-content-around">
-      <div class="col-auto my-3">
+      <div class="col-auto my-3" data-hide="naiveBays kMeans">
         <div class="input-group parameter-input">
           <div class="input-group-prepend">
             <label for="lambda" class="input-group-text">Lambda</label>
@@ -56,7 +102,7 @@ Learning {% endblock %} {% block formFields %}
           />
         </div>
       </div>
-      <div class="col-auto my-3">
+      <div class="col-auto my-3" data-hide="naiveBays kMeans">
         <div class="input-group parameter-input">
           <div class="input-group-prepend">
             <label for="degree" class="input-group-text">Degree</label>
@@ -71,7 +117,7 @@ Learning {% endblock %} {% block formFields %}
         </div>
       </div>
       <div class="col-12"></div>
-      <div class="col-auto my-3">
+      <div class="col-auto my-3" data-hide="naiveBays kMeans">
         <div class="input-group parameter-input">
           <div class="input-group-prepend">
             <label for="epochs" class="input-group-text">Epochs</label>
@@ -85,7 +131,7 @@ Learning {% endblock %} {% block formFields %}
           />
         </div>
       </div>
-      <div class="col-auto my-3">
+      <div class="col-auto my-3" data-hide="naiveBays kMeans">
         <div class="input-group parameter-input">
           <div class="input-group-prepend">
             <label for="alpha" class="input-group-text">Alpha</label>
@@ -99,8 +145,22 @@ Learning {% endblock %} {% block formFields %}
           />
         </div>
       </div>
+      <div class="col-auto my-3" data-hide="naiveBays logreg">
+        <div class="input-group parameter-input">
+          <div class="input-group-prepend">
+            <label for="clusters" class="input-group-text">Clusters</label>
+          </div>
+          <input
+            type="number"
+            class="form-control"
+            id="clusters"
+            required
+            placeholder="0"
+          />
+        </div>
+      </div>
     </div>
-    <!-- <div class="form-row align-items-center my-3">
+    <div class="form-row align-items-center my-3">
       <div class="col-auto">
         <div class="input-group parameter-input">
           <div class="input-group-prepend">
@@ -126,7 +186,7 @@ Learning {% endblock %} {% block formFields %}
         id="split-range"
         value="0"
       />
-    </div> -->
+    </div>
   </div>
 </section>
 {% endblock %} {% block analysisScript %}
@@ -162,7 +222,7 @@ Learning {% endblock %} {% block formFields %}
     var degree = document.getElementById("degree").value;
     var epochs = document.getElementById("epochs").value;
     var alpha = document.getElementById("alpha").value;
-    // var split = document.getElementById("split").value;
+    var split = document.getElementById("split").value;
 
     $(".data-graph")
       .addClass("visual-loading")
@@ -173,10 +233,8 @@ Learning {% endblock %} {% block formFields %}
     $("label[for='display-visual']").click();
     xhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
-        console.log(this.responseText);
         result = JSON.parse(this.responseText);
         if (result["error"]) {
-
           $(".data-graph").addClass("process-error");
           $(".graph-pre-caption .error-caption").text(
             "Oops! " + result["text"]
@@ -197,6 +255,12 @@ Learning {% endblock %} {% block formFields %}
             return math;
           });
           $(".weights").show();
+          $(".data.weights .training-accuracy").html(
+            "Training Accuracy: " + result["trainingAccuracy"]
+          );
+          $(".data.weights .test-accuracy").html(
+            "Test Accuracy: " + result["testAccuracy"]
+          );
           $(".displays.tab-select").css("display", "flex");
           $("#data-histogram")
             .attr("src", result["image"])
@@ -219,8 +283,8 @@ Learning {% endblock %} {% block formFields %}
         degree +
         "&epochs=" +
         epochs +
-        // "&split=" +
-        // split +
+        "&split=" +
+        split +
         "&alpha=" +
         alpha,
       true
