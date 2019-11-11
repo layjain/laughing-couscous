@@ -58,6 +58,7 @@ $("#upload-data").click(function() {
     cache: false,
     processData: false,
     success: function(data) {
+      $(".tab-select.fields").html($("<div/>").addClass("d-none tab-radios"));
       $.each(JSON.parse(data), function(key, item) {
         label = $("<label/>")
           .addClass("btn btn-outline")

@@ -24,6 +24,8 @@ import shutil
 from flask_login import LoginManager, current_user, login_user, logout_user
 from flask_login import UserMixin, login_required
 import json
+import NaiveBayes
+import Kmeans
 
 ALLOWED_EXTENSIONS = set(['txt', 'csv'])
 UPLOAD_FOLDER = 'static/uploaded'
@@ -366,9 +368,9 @@ def NaiveBayes_process():
     print(request)
     print(dict(request.args))
     try:
-        filename_nb=session.get('filename')
+        filename_dpml=session.get('filename')
     except:
-        filename_nb=None
+        filename_dpml=None
     e = request.args.get('e','0.1')
     split_ratio=request.args.get('split_ratio', '1') #train:(total) must be (0,1]
     
