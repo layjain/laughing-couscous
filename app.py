@@ -388,11 +388,11 @@ def NaiveBayes_process():
     if not logreg.format_correct(filepath):
         return {"error":True, "text":"Incorrect File Format"}
     try:
-        name = NaiveBayes.generate_and_save_graph(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio)
+        name = NaiveBayes.make_and_save_graph(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio)
     
     except Exception as e:
         print(e)
-        return {"error":True, "text":"Oops! Something went wrong"}
+        return {"error":True, "text":"Something went wrong"}
 
     try:
         train_accuracy, test_accuracy, params = NaiveBayes.train_and_test(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio)
@@ -400,7 +400,7 @@ def NaiveBayes_process():
     except Exception as e:
         print(e)
         return {"error":True, "image":name,"text":"Oops! Something went wrong"}
-    # return name
+
     return {"error":False,'image':name, "train_accuracy":train_accuracy, "test_accuracy":test_accuracy, 'theta':list(params.keys())}
 
 
