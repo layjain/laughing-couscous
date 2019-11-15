@@ -372,7 +372,7 @@ def NaiveBayes_process():
     except:
         filename_dpml=None
     e = request.args.get('e','0.1')
-    split_ratio=request.args.get('split_ratio', '1') #train:(total) must be (0,1]
+    split_ratio=request.args.get('split', '1') #train:(total) must be (0,1]
     
     epsilon=get_float(e, 0.1)
     split_ratio = get_float(split_ratio, 1.0)
@@ -401,7 +401,7 @@ def NaiveBayes_process():
         print(e)
         return {"error":True, "image":name,"text":"Oops! Something went wrong"}
 
-    return {"error":False,'image':name, "train_accuracy":train_accuracy, "test_accuracy":test_accuracy, 'theta':list(params.keys())}
+    return {"error":False,'image':name, "train_accuracy":train_accuracy, "test_accuracy":test_accuracy, 'theta':params.tolist()}
 
 
 @app.route('/query', methods=['GET','POST'])
