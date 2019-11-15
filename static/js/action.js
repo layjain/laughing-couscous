@@ -81,7 +81,7 @@ $("#upload-data").click(function() {
   });
 });
 
-$(".tab-radios").on("change", ".tab-radio", function() {
+$(".tab-select").on("change", ".tab-radio", function() {
   $(this)
     .parents(".tab-select")
     .find("label.btn")
@@ -98,16 +98,18 @@ $(".tab-radios").on("change", ".tab-radio", function() {
 
 $("label[data-control]").click(function() {
   target = $(this).attr("data-control");
-  $(this)
-    .parents(".form")
+  container = $(this).parents(".form");
+  container
+    .find(".control-hidden")
+    .find("input")
+    .each(function() {
+      $(this).prop("required", true);
+    });
+  container
     .find("*[data-hide]")
     .removeClass("control-hidden")
     .show();
-  $(".control-hidden")
-    .find("input")
-    .prop("required", true);
-  // });
-  $("*[data-hide]").each(function() {
+  container.find("*[data-hide]").each(function() {
     source = $(this).attr("data-hide");
     if (source.indexOf(target) >= 0) {
       $(this).removeClass("selected");
@@ -121,7 +123,16 @@ $("label[data-control]").click(function() {
         .hide();
       $(this)
         .find("input")
-        .prop("required", false);
+        .each(function() {
+          $(this).prop("required", false);
+        });
+      $(this)
+        .find("label.selected")
+        .each(function() {
+          $(this).removeClass("selected");
+          src = $(this).attr("for");
+          $("#" + src).prop("checked", false);
+        });
     }
   });
 });
@@ -150,10 +161,19 @@ $("input[type='number'][min]").change(function() {
   value = parseFloat($(this).val());
   low = parseInt($(this).attr("min"));
   high = parseInt($(this).attr("max"));
-  step = parseFloat($(this).attr("step"));
-  if ($(this).attr("data-inclusive-min") == "False") low = low + step;
+  if ($(this).attr("data-inclusive-min") == "False" && value === low) {
+    $(this).tooltip("show");
+    $(this).addClass("data-invalid");
+    return;
+  }
+  $(this).removeClass("data-invalid");
   if (value > high) $(this).val(high);
   if (value < low) $(this).val(low);
+});
+
+$("input[data-toggle='tooltip']").focus(function() {
+  $(this).tooltip("hide");
+  console.log("in");
 });
 
 $("input[type=range]").each(function() {

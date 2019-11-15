@@ -352,6 +352,7 @@ section.home-features {
 }
 .upload-container .file-icon {
   padding: 10px 0 0;
+  max-width: 100%;
 }
 .upload-container .file-icon img {
   max-height: 80px;
@@ -573,8 +574,9 @@ section.home-features {
 .data-graph.visual-loading .graph-container,
 .data-graph.visual-available .graph-container {
   background-image: none;
-}.data-graph.process-error .graph-container {
-  background-image: url('/static/images/404.png')
+}
+.data-graph.process-error .graph-container {
+  background-image: url("/static/images/404.png");
 }
 .data-graph.visual-loading .loading-caption {
   display: inline-block;
@@ -681,4 +683,9 @@ section.home-features {
 .range-container div.range-extreme:last-of-type:after {
   left: -16px;
   border-color: transparent #aaa transparent transparent;
+}
+
+.upload-form.was-validated .form-control:valid {
+  background: white;
+  padding: 0.375rem 0.75rem;
 }

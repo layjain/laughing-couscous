@@ -65,7 +65,12 @@ Learning {% endblock %} {% block formFields %}
             max="100"
             step="0.001"
             placeholder="0"
+            data-inclusive-min="False"
             required
+            data-toggle="tooltip"
+            data-trigger="manual"
+            data-placement="top"
+            data-title="Epsilon cannot be 0!"
           />
         </div>
       </div>
@@ -174,6 +179,7 @@ Learning {% endblock %} {% block formFields %}
             max="1"
             placeholder="0"
             step="0.05"
+            required
           />
         </div>
       </div>
@@ -189,6 +195,62 @@ Learning {% endblock %} {% block formFields %}
     </div>
   </div>
 </section>
+<section
+  class="parameter-section"
+  id="learning-parameters"
+  data-hide="logreg kMeans"
+>
+  <header class="section-header">
+    <h6>Bounds</h6>
+  </header>
+  <div>
+    <div class="form-row my-4 justify-content-around">
+      <div class="col-auto my-3">
+        <div class="input-group parameter-input">
+          <div class="input-group-prepend">
+            <label for="upper-bound" class="input-group-text">Upper</label>
+          </div>
+          <input
+            type="number"
+            class="form-control"
+            id="upper-bound"
+            placeholder="0"
+            required
+          />
+        </div>
+      </div>
+      <div class="col-auto my-3">
+        <div class="input-group parameter-input">
+          <div class="input-group-prepend">
+            <label for="lower-bound" class="input-group-text">Lower</label>
+          </div>
+          <input
+            type="number"
+            class="form-control"
+            id="lower-bound"
+            required
+            placeholder="0"
+          />
+        </div>
+      </div>
+      <div class="col-12"></div>
+      <div class="col-auto my-3">
+        <div class="input-group parameter-input">
+          <div class="input-group-prepend">
+            <label for="dimensions" class="input-group-text">Dimensions</label>
+          </div>
+          <input
+            type="number"
+            class="form-control"
+            id="dimensions"
+            required
+            placeholder="0"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 {% endblock %} {% block analysisScript %}
 
 <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
@@ -197,8 +259,6 @@ Learning {% endblock %} {% block formFields %}
   src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
 ></script>
 <script type="text/javascript">
-  // $(document).load(MathJax.typeset());
-  function latex(a) {}
   let promise = Promise.resolve(); // Used to hold chain of typesetting calls
 
   function typeset(code) {
@@ -212,10 +272,8 @@ Learning {% endblock %} {% block formFields %}
     return promise;
   }
   function Analysis3() {
-    if ($(".upload-form")[0].checkValidity() === false) {
-      $(".upload-form").addClass("was-validated");
-      return;
-    }
+    console.log("in");
+    console.log($(".upload-form"));
     var xhttp = new XMLHttpRequest();
     var func = $("input[name='function']:checked").val();
     var e = document.getElementById("epsilon").value;
@@ -224,6 +282,14 @@ Learning {% endblock %} {% block formFields %}
     var epochs = document.getElementById("epochs").value;
     var alpha = document.getElementById("alpha").value;
     var split = document.getElementById("split").value;
+    upper_bound = $("#upper-bound").val();
+    lower_bound = $("#lower-bound").val();
+    dimensions = $("#dimensions").val();
+    if (!$(".upload-form")[0].checkValidity()) {
+      console.log("false");
+      $(".upload-form").addClass("was-validated");
+      return;
+    }
     $(".data-graph")
       .addClass("visual-loading")
       .removeClass("visual-available process-error");
@@ -242,13 +308,22 @@ Learning {% endblock %} {% block formFields %}
         } else {
           typeset(() => {
             a = result["theta"];
+            if (a.length > 10) {
+              b = a.slice(0, 8);
+              b.push("\\vdots");
+              console.log("more");
+              console.log(b);
+            } else {
+              b = a.slice(0, -1);
+              console.log("less");
+            }
             t = "$$Weights=\\left[\\begin{array}{cc} ";
-            $.each(a, function(index, value) {
+            $.each(b, function(index, value) {
               t += value + " \\\\ ";
             });
-            console.log(t);
             // t = t.substring(1, -2);
-            t += "\\end{array}\\right]$$";
+            t += a.pop() + " \\end{array}\\right]$$";
+            console.log(t);
             const math = document.querySelector(".weights");
             math.innerHTML = t;
             console.log(a);
@@ -285,10 +360,16 @@ Learning {% endblock %} {% block formFields %}
         degree +
         "&epochs=" +
         epochs +
+        "&alpha=" +
+        alpha +
         "&split=" +
         split +
-        "&alpha=" +
-        alpha,
+        "&upper=" +
+        upper_bound +
+        "&lower=" +
+        lower_bound +
+        "&dimensions=" +
+        dimensions,
       true
     );
     xhttp.send();
