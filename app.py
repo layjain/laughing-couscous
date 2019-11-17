@@ -400,7 +400,6 @@ def NaiveBayes_process():
     except Exception as e:
         print(e)
         return {"error":True, "image":name,"text":"Oops! Something went wrong"}
-
     return {"error":False,'image':name, "train_accuracy":train_accuracy, "test_accuracy":test_accuracy, 'theta':params.tolist()}
 
 

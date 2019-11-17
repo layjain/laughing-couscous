@@ -265,11 +265,21 @@ Learning {% endblock %} {% block formFields %}
     promise = promise
       .then(() => {
         code();
-        console.log(code());
         return MathJax.typesetPromise();
       })
-      .catch(err => console.log("Typeset failed: " + err.message));
+      .catch(err => console.log(err));
     return promise;
+  }
+  function get_row(row, last = 0) {
+    result = [];
+    if (typeof row == "number") {
+      return parseFloat(row).toPrecision(4);
+    } else {
+      $.each(row, function(index, value) {
+        result.push(parseFloat(value).toPrecision(4));
+      });
+      return result.join(" & ");
+    }
   }
   function Analysis3() {
     console.log("in");
@@ -298,49 +308,62 @@ Learning {% endblock %} {% block formFields %}
       .addClass("disabled");
     $("label[for='display-visual']").click();
     xhttp.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        result = JSON.parse(this.responseText);
-        if (result["error"]) {
+      if (this.readyState == 4) {
+        if (this.status == 200) {
+          result = JSON.parse(this.responseText);
+          console.log(result);
+          if (result["error"]) {
+            $(".data-graph").addClass("process-error");
+            $(".graph-pre-caption .error-caption").text(
+              "Oops! " + result["text"]
+            );
+          } else {
+            typeset(() => {
+              a = result["theta"];
+              console.log(a);
+              last = a.pop();
+              if (a.length >= 10) {
+                a = a.slice(0, 8);
+                a.push("\\vdots");
+                console.log("more");
+                console.log(b);
+              }
+              t = "$$Weights=\\left[\\begin{array}{cc} ";
+              $.each(a, function(index, value) {
+                t += get_row(value) + " \\\\ ";
+              });
+              // t = t.substring(1, -2);
+              t += get_row(last) + " \\end{array}\\right]$$";
+              console.log(t);
+              math = $(".weights");
+              math.empty();
+              a = $("<p/>");
+              a.html(t).appendTo(math);
+              return math[0];
+            });
+            $(".weights").show();
+            console.log();
+            $(".training-accuracy").html(
+              "Training Accuracy: " +
+                parseFloat(result["train_accuracy"]).toFixed(3) +
+                "%"
+            );
+            $(".test-accuracy").text(
+              "Test Accuracy: " +
+                parseFloat(result["test_accuracy"]).toFixed(3) +
+                "%"
+            );
+            $(".displays.tab-select").css("display", "flex");
+            $("#data-histogram")
+              .attr("src", result["image"])
+              .show();
+            $(".data-graph").addClass("visual-available");
+          }
+        } else {
           $(".data-graph").addClass("process-error");
           $(".graph-pre-caption .error-caption").text(
-            "Oops! " + result["text"]
+            "Oops! Something went wrong on our side!"
           );
-        } else {
-          typeset(() => {
-            a = result["theta"];
-            if (a.length > 10) {
-              b = a.slice(0, 8);
-              b.push("\\vdots");
-              console.log("more");
-              console.log(b);
-            } else {
-              b = a.slice(0, -1);
-              console.log("less");
-            }
-            t = "$$Weights=\\left[\\begin{array}{cc} ";
-            $.each(b, function(index, value) {
-              t += value + " \\\\ ";
-            });
-            // t = t.substring(1, -2);
-            t += a.pop() + " \\end{array}\\right]$$";
-            console.log(t);
-            const math = document.querySelector(".weights");
-            math.innerHTML = t;
-            console.log(a);
-            return math;
-          });
-          $(".weights").show();
-          $(".data.weights .training-accuracy").html(
-            "Training Accuracy: " + result["train_accuracy"]
-          );
-          $(".data.weights .test-accuracy").html(
-            "Test Accuracy: " + result["test_accuracy"]
-          );
-          $(".displays.tab-select").css("display", "flex");
-          $("#data-histogram")
-            .attr("src", result["image"])
-            .show();
-          $(".data-graph").addClass("visual-available");
         }
         $(".data-graph").removeClass("visual-loading");
         $("#Analyze-Button")
