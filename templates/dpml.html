@@ -195,11 +195,7 @@ Learning {% endblock %} {% block formFields %}
     </div>
   </div>
 </section>
-<section
-  class="parameter-section"
-  id="learning-parameters"
-  data-hide="logreg kMeans"
->
+<section class="parameter-section" id="learning-parameters" data-hide="logreg">
   <header class="section-header">
     <h6>Bounds</h6>
   </header>
@@ -228,21 +224,6 @@ Learning {% endblock %} {% block formFields %}
             type="number"
             class="form-control"
             id="lower-bound"
-            required
-            placeholder="0"
-          />
-        </div>
-      </div>
-      <div class="col-12"></div>
-      <div class="col-auto my-3">
-        <div class="input-group parameter-input">
-          <div class="input-group-prepend">
-            <label for="dimensions" class="input-group-text">Dimensions</label>
-          </div>
-          <input
-            type="number"
-            class="form-control"
-            id="dimensions"
             required
             placeholder="0"
           />
@@ -292,9 +273,9 @@ Learning {% endblock %} {% block formFields %}
     var epochs = document.getElementById("epochs").value;
     var alpha = document.getElementById("alpha").value;
     var split = document.getElementById("split").value;
+    clusters = $("#clusters").val();
     upper_bound = $("#upper-bound").val();
     lower_bound = $("#lower-bound").val();
-    dimensions = $("#dimensions").val();
     if (!$(".upload-form")[0].checkValidity()) {
       console.log("false");
       $(".upload-form").addClass("was-validated");
@@ -387,12 +368,12 @@ Learning {% endblock %} {% block formFields %}
         alpha +
         "&split=" +
         split +
+        "&clusters=" +
+        clusters +
         "&upper=" +
         upper_bound +
         "&lower=" +
-        lower_bound +
-        "&dimensions=" +
-        dimensions,
+        lower_bound,
       true
     );
     xhttp.send();
