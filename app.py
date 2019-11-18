@@ -383,7 +383,7 @@ def NaiveBayes_process():
         filename_dpml=None
     else:
         print('used default')
-        filepath = "static/uploaded/logReg.txt"
+        filepath = "static/uploaded/logRegNoNaN.txt"
 
     if not logreg.format_correct(filepath):
         return {"error":True, "text":"Incorrect File Format"}
@@ -403,6 +403,46 @@ def NaiveBayes_process():
 
     return {"error":False,'image':name, "train_accuracy":train_accuracy, "test_accuracy":test_accuracy, 'theta':params.tolist()}
 
+@app.route('/kMeans_process', methods=["GET","POST"])
+def Kmeans_process():
+    print(request)
+    print(dict(request.args))
+    try:
+        filename_dpml=session.get('filename')
+    except:
+        filename_dpml=None
+    e = request.args.get('e','0.1')
+    split_ratio=request.args.get('split', '1') #train:(total) must be (0,1]
+    n_clusters = request.args.get('Clusters','8')
+    epsilon=get_float(e, 0.1)
+    split_ratio = get_float(split_ratio, 1.0)
+    n_clusters = get_natural(n_clusters,8)
+
+    if filename_dpml != None:
+        print('used new file '+filename_dpml)
+        filepath = 'static/uploaded/'+filename_dpml
+        filename_dpml=None
+    else:
+        print('used default')
+        filepath = "static/uploaded/logRegNoNaN.txt"
+
+    if not logreg.format_correct(filepath):
+        return {"error":True, "text":"Incorrect File Format"}
+    try:
+        name = Kmeans.make_and_save_graph(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio, n_clusters=n_clusters)
+    
+    except Exception as e:
+        print("EXCEPTION RAISED:",e)
+        return {"error":True, "text":"Something went wrong"}
+
+    try:
+        train_accuracy, test_accuracy, params = Kmeans.train_and_test(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio, n_clusters=n_clusters)
+    
+    except Exception as e:
+        print("EXCEPTION RAISED:",e)
+        return {"error":True, "image":name,"text":"Oops! Something went wrong"}
+
+    return {"error":False,'image':name, "train_accuracy":train_accuracy, "test_accuracy":test_accuracy, 'theta':params.tolist()}
 
 @app.route('/query', methods=['GET','POST'])
 def query():

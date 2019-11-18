@@ -18,9 +18,10 @@ def train_and_test(filepath="static/uploaded/logReg.txt", epsilon=0.1, split_rat
 
 	dp_clf = dp.KMeans(epsilon=epsilon, n_clusters=n_clusters)
 	dp_clf.fit(X_train,Y_train)
-	test_accuracy = (dp_clf2.predict(X_test) == Y_test).sum() / Y_test.shape[0] * 100
-	train_accuracy =  (dp_clf2.predict(X_train) == Y_train).sum() / Y_train.shape[0] * 100
-	return (train_accuracy, test_accuracy)
+	test_accuracy = (dp_clf.predict(X_test) == Y_test).sum() / Y_test.shape[0] * 100
+	train_accuracy =  (dp_clf.predict(X_train) == Y_train).sum() / Y_train.shape[0] * 100
+	params = dp_clf.sigma_
+	return (train_accuracy, test_accuracy, params)
 
 def make_and_save_graph(filepath="static/uploaded/logReg.txt", split_ratio=1, n_clusters=8, **unused_args):
 	print("making pandas dataframe")
@@ -47,7 +48,7 @@ def make_and_save_graph(filepath="static/uploaded/logReg.txt", split_ratio=1, n_
 	plt.title("Differentially private Naive Bayes accuracy")
 	plt.xlabel("epsilon")
 	plt.ylabel("Accuracy")
-	name='static/images/NaiveBayes'+str(time.time())+'.png'
+	name='static/images/KMeans'+str(time.time())+'.png'
 	plt.savefig(name)
 	plt.close()
 	return name
