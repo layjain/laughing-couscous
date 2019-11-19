@@ -373,9 +373,12 @@ def NaiveBayes_process():
         filename_dpml=None
     e = request.args.get('e','0.1')
     split_ratio=request.args.get('split', '1') #train:(total) must be (0,1]
+    lower=get_float(request.args.get('lower'),-1)
+    upper=get_float(request.args.get('upper'),1)
     
     epsilon=get_float(e, 0.1)
     split_ratio = get_float(split_ratio, 1.0)
+    bounds=(lower,upper)
 
     if filename_dpml != None:
         print('used new file '+filename_dpml)
@@ -388,25 +391,25 @@ def NaiveBayes_process():
     if not logreg.format_correct(filepath):
         return {"error":True, "text":"Incorrect File Format"}
     try:
-        name = NaiveBayes.make_and_save_graph(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio)
+        name = NaiveBayes.make_and_save_graph(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio, bounds=bounds)
     
     except Exception as e:
         print(e)
         return {"error":True, "text":"Something went wrong"}
 
     try:
-        train_accuracy, test_accuracy, params = NaiveBayes.train_and_test(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio)
+        train_accuracy, test_accuracy, params = NaiveBayes.train_and_test(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio, bounds=bounds)
     
     except Exception as e:
         print(e)
         return {"error":True, "image":name,"text":"Oops! Something went wrong"}
-
     return {"error":False,'image':name, "train_accuracy":train_accuracy, "test_accuracy":test_accuracy, 'theta':params.tolist()}
 
 @app.route('/kMeans_process', methods=["GET","POST"])
 def Kmeans_process():
     print(request)
     print(dict(request.args))
+
     try:
         filename_dpml=session.get('filename')
     except:
@@ -418,6 +421,11 @@ def Kmeans_process():
     split_ratio = get_float(split_ratio, 1.0)
     n_clusters = get_natural(n_clusters,8)
 
+    lower=get_float(request.args.get('lower'),-1)
+    upper=get_float(request.args.get('upper'),1)
+    
+    bounds=(lower,upper)
+
     if filename_dpml != None:
         print('used new file '+filename_dpml)
         filepath = 'static/uploaded/'+filename_dpml
@@ -429,20 +437,21 @@ def Kmeans_process():
     if not logreg.format_correct(filepath):
         return {"error":True, "text":"Incorrect File Format"}
     try:
-        name = Kmeans.make_and_save_graph(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio, n_clusters=n_clusters)
+
+        name = Kmeans.make_and_save_graph(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio, n_clusters= clusters, bounds=bounds)
     
     except Exception as e:
         print("EXCEPTION RAISED:",e)
         return {"error":True, "text":"Something went wrong"}
 
     try:
-        train_accuracy, test_accuracy, params = Kmeans.train_and_test(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio, n_clusters=n_clusters)
+        train_accuracy, test_accuracy = Kmeans.train_and_test(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio, n_clusters=n_clusters, bounds=bounds)
     
     except Exception as e:
         print("EXCEPTION RAISED:",e)
-        return {"error":True, "image":name,"text":"Oops! Something went wrong"}
-
+        return {"error":True, "image":name,"text":"Something went wrong"}
     return {"error":False,'image':name, "train_accuracy":train_accuracy, "test_accuracy":test_accuracy, 'theta':params.tolist()}
+
 
 @app.route('/query', methods=['GET','POST'])
 def query():

@@ -4,6 +4,7 @@ import numpy as np
 from sklearn.naive_bayes import GaussianNB
 import pandas as pd
 import matplotlib.pyplot as plt
+import time
 
 def train_and_test(filepath="static/uploaded/logReg.txt", epsilon=0.1, split_ratio=1, n_clusters=8, **unused_args):
 	print("making pandas dataframe")
@@ -52,4 +53,3 @@ def make_and_save_graph(filepath="static/uploaded/logReg.txt", split_ratio=1, n_
 	plt.savefig(name)
 	plt.close()
 	return name
-
