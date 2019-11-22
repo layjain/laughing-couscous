@@ -20,7 +20,7 @@ $("#select-file").change(function(e) {
   $("#upload-data")
     .parent()
     .show();
-  if (size >= 1024) {
+  if (size >= 1024 * 5) {
     $("#upload-data").addClass("disabled");
     $(".size-error").show();
     $(".file-spec#file-size").hide();
@@ -59,6 +59,8 @@ $("#upload-data").click(function() {
     processData: false,
     success: function(data) {
       $(".tab-select.fields").html($("<div/>").addClass("d-none tab-radios"));
+      input_type = $(".tab-select.fields").attr("data-childType");
+      require = input_type == "radio" ? true : false;
       $.each(JSON.parse(data), function(key, item) {
         label = $("<label/>")
           .addClass("btn btn-outline")
@@ -67,12 +69,12 @@ $("#upload-data").click(function() {
         label.appendTo($(".tab-select.fields"));
         input = $("<input/>")
           .attr({
-            type: "radio",
+            type: input_type,
             name: "field",
             id: "field-" + item,
-            value: item,
-            required: "required"
+            value: item
           })
+          .prop({ required: require })
           .addClass("tab-radio");
         input.appendTo($(".tab-select.fields .tab-radios"));
       });
@@ -82,16 +84,19 @@ $("#upload-data").click(function() {
 });
 
 $(".tab-select").on("change", ".tab-radio", function() {
-  $(this)
-    .parents(".tab-select")
-    .find("label.btn")
-    .each(function() {
-      $(this).removeClass("selected");
-    });
+  node = $(this).attr("type");
+  if (node === "radio") {
+    $(this)
+      .parents(".tab-select")
+      .find("label.btn")
+      .each(function() {
+        $(this).removeClass("selected");
+      });
+  }
   type = $(this).attr("name");
   value = $(this).val();
 
-  $("." + type + "s label.btn[for='" + type + "-" + value + "']").addClass(
+  $("." + type + "s label.btn[for='" + type + "-" + value + "']").toggleClass(
     "selected"
   );
 });

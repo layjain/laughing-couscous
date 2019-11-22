@@ -50,39 +50,28 @@ Learning {% endblock %} {% block formFields %}
   <header class="section-header">
     <h6>Privacy parameters</h6>
   </header>
-  <div>
-    <div class="form-row align-items-center my-3">
-      <div class="col-auto">
-        <div class="input-group parameter-input">
-          <div class="input-group-prepend">
-            <label for="epsilon" class="input-group-text">Epsilon</label>
-          </div>
-          <input
-            type="number"
-            class="form-control range-value"
-            id="epsilon"
-            min="0"
-            max="100"
-            step="0.001"
-            placeholder="0"
-            data-inclusive-min="False"
-            required
-            data-toggle="tooltip"
-            data-trigger="manual"
-            data-placement="top"
-            data-title="Epsilon cannot be 0!"
-          />
+  <div class="form-row align-items-center justify-content-around my-3">
+    <div class="col-auto">
+      <div class="input-group parameter-input">
+        <div class="input-group-prepend">
+          <label for="epsilon" class="input-group-text">Epsilon</label>
         </div>
+        <input
+          type="number"
+          class="form-control"
+          id="epsilon"
+          min="0"
+          max="100"
+          step="0.001"
+          placeholder="0"
+          data-inclusive-min="False"
+          required
+          data-toggle="tooltip"
+          data-trigger="manual"
+          data-placement="top"
+          data-title="Epsilon cannot be 0!"
+        />
       </div>
-      <input
-        type="range"
-        class="custom-range col"
-        min="0"
-        max="100"
-        step="0.5"
-        id="epsilon-range"
-        value="0"
-      />
     </div>
   </div>
 </section>
@@ -110,21 +99,6 @@ Learning {% endblock %} {% block formFields %}
       <div class="col-auto my-3" data-hide="NaiveBayes kMeans">
         <div class="input-group parameter-input">
           <div class="input-group-prepend">
-            <label for="degree" class="input-group-text">Degree</label>
-          </div>
-          <input
-            type="number"
-            class="form-control"
-            id="degree"
-            required
-            placeholder="0"
-          />
-        </div>
-      </div>
-      <div class="col-12"></div>
-      <div class="col-auto my-3" data-hide="NaiveBayes kMeans">
-        <div class="input-group parameter-input">
-          <div class="input-group-prepend">
             <label for="epochs" class="input-group-text">Epochs</label>
           </div>
           <input
@@ -136,6 +110,7 @@ Learning {% endblock %} {% block formFields %}
           />
         </div>
       </div>
+      <div class="col-12"></div>
       <div class="col-auto my-3" data-hide="NaiveBayes kMeans">
         <div class="input-group parameter-input">
           <div class="input-group-prepend">
@@ -165,7 +140,7 @@ Learning {% endblock %} {% block formFields %}
         </div>
       </div>
     </div>
-    <div class="form-row align-items-center my-3">
+    <div class="form-row align-items-center my-3" data-hide="kMeans">
       <div class="col-auto">
         <div class="input-group parameter-input">
           <div class="input-group-prepend">
@@ -195,7 +170,22 @@ Learning {% endblock %} {% block formFields %}
     </div>
   </div>
 </section>
-<section class="parameter-section" id="learning-parameters" data-hide="logreg">
+<section class="parameter-section" id="field-type">
+  <header class="section-header">
+    <h6>SeLect Feature</h6>
+  </header>
+  <div>
+    <div
+      class="d-flex justify-content-center fields flex-wrap tab-select"
+      data-childType="checkbox"
+    ></div>
+  </div>
+</section>
+<section
+  class="parameter-section"
+  id="learning-parameters"
+  data-hide="logreg kMeans"
+>
   <header class="section-header">
     <h6>Bounds</h6>
   </header>
@@ -269,10 +259,14 @@ Learning {% endblock %} {% block formFields %}
     var func = $("input[name='function']:checked").val();
     var e = document.getElementById("epsilon").value;
     var lambda = document.getElementById("lambda").value;
-    var degree = document.getElementById("degree").value;
     var epochs = document.getElementById("epochs").value;
     var alpha = document.getElementById("alpha").value;
     var split = document.getElementById("split").value;
+    features = [];
+    $("input[name='field']:checked").each(function() {
+      features.push($(this).val());
+    });
+    features = features.join("+");
     clusters = $("#clusters").val();
     upper_bound = $("#upper-bound").val();
     lower_bound = $("#lower-bound").val();
@@ -339,6 +333,7 @@ Learning {% endblock %} {% block formFields %}
               .attr("src", result["image"])
               .show();
             $(".data-graph").addClass("visual-available");
+            $("label[for='display-weights']").click();
           }
         } else {
           $(".data-graph").addClass("process-error");
@@ -360,16 +355,16 @@ Learning {% endblock %} {% block formFields %}
         e +
         "&lambda=" +
         lambda +
-        "&degree=" +
-        degree +
         "&epochs=" +
         epochs +
         "&alpha=" +
         alpha +
-        "&split=" +
-        split +
         "&clusters=" +
         clusters +
+        "&split=" +
+        split +
+        "&features=" +
+        features +
         "&upper=" +
         upper_bound +
         "&lower=" +

@@ -120,7 +120,7 @@ def generate_and_save_histogram (filepath="https://raw.githubusercontent.com/pri
         data=np.array(PUMSdata[selection], dtype='float32')
         populationTrue=float(np.median(data))
         print("100 random choices for samnple_index")
-        sample_index=np.random.choice(range(1, len(data), 1), size=100, replace=False)
+        sample_index=np.random.choice(range(1, len(data), 1), size=99, replace=False)
         x=data[sample_index]
         n_sims=2000
         history=[None for _ in range(n_sims)]
@@ -139,7 +139,6 @@ def generate_and_save_histogram (filepath="https://raw.githubusercontent.com/pri
         axs[1].set_title('Histogram of released DP medians')
         name='static/images/Laplace'+str(time.time())+'.png'
         plt.savefig(name)
-        plt.show()
         plt.close()
         print('fig saved')
         return name
@@ -416,7 +415,7 @@ def Kmeans_process():
         filename_dpml=None
     e = request.args.get('e','0.1')
     split_ratio=request.args.get('split', '1') #train:(total) must be (0,1]
-    n_clusters = request.args.get('Clusters','8')
+    n_clusters = request.args.get('clusters','8')
     epsilon=get_float(e, 0.1)
     split_ratio = get_float(split_ratio, 1.0)
     n_clusters = get_natural(n_clusters,8)
@@ -438,14 +437,14 @@ def Kmeans_process():
         return {"error":True, "text":"Incorrect File Format"}
     try:
 
-        name = Kmeans.make_and_save_graph(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio, n_clusters= clusters, bounds=bounds)
+        name = Kmeans.make_and_save_graph(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio, n_clusters= n_clusters, bounds=bounds)
     
     except Exception as e:
         print("EXCEPTION RAISED:",e)
         return {"error":True, "text":"Something went wrong"}
 
     try:
-        train_accuracy, test_accuracy = Kmeans.train_and_test(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio, n_clusters=n_clusters, bounds=bounds)
+        train_accuracy, test_accuracy, params = Kmeans.train_and_test(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio, n_clusters=n_clusters, bounds=bounds)
     
     except Exception as e:
         print("EXCEPTION RAISED:",e)
