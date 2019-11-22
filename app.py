@@ -139,7 +139,7 @@ def generate_and_save_histogram (filepath="https://raw.githubusercontent.com/pri
         axs[1].set_title('Histogram of released DP medians')
         name='static/images/Laplace'+str(time.time())+'.png'
         plt.savefig(name)
-        plt.show()
+        #plt.show()
         plt.close()
         print('fig saved')
         return name
@@ -228,6 +228,7 @@ def upload_process():
             # df=pandas.read_csv(filepath)
             fields_list = []
             headers_list=list(df)
+            field_min_maxes={}
             print(headers_list)
             for header in headers_list:
                 values = df[header]
@@ -240,13 +241,21 @@ def upload_process():
                         include = False
                         break
                 if include:
+                    min_value = min(df[header])
+                    max_value = max(df[header])
+                    field_min_maxes[header] = [min_value, max_value]
                     fields_list.append(header)
             
             session['headers_list'] = headers_list
             #OPTIONS_LIST=list_to_html(headers_list)
             FIELDS_LIST = json.dumps(fields_list)
-            return FIELDS_LIST
-        return FIELDS_LIST
+            HEADERS_LIST = json.dumps(headers_list)
+
+            to_ret = {"__x_options__":FIELDS_LIST, "__y_options__":HEADERS_LIST}
+            to_ret.update(field_min_maxes)
+            return to_ret
+
+        return {"error":True, "text":"File not allowed"}
 
 @app.route('/query_upload_process', methods=['GET','POST'])
 def query_upload_process():
@@ -416,7 +425,7 @@ def Kmeans_process():
         filename_dpml=None
     e = request.args.get('e','0.1')
     split_ratio=request.args.get('split', '1') #train:(total) must be (0,1]
-    n_clusters = request.args.get('Clusters','8')
+    n_clusters = request.args.get('clusters','8')
     epsilon=get_float(e, 0.1)
     split_ratio = get_float(split_ratio, 1.0)
     n_clusters = get_natural(n_clusters,8)
@@ -438,7 +447,7 @@ def Kmeans_process():
         return {"error":True, "text":"Incorrect File Format"}
     try:
 
-        name = Kmeans.make_and_save_graph(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio, n_clusters= clusters, bounds=bounds)
+        name = Kmeans.make_and_save_graph(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio, n_clusters= n_clusters, bounds=bounds)
     
     except Exception as e:
         print("EXCEPTION RAISED:",e)

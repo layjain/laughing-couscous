@@ -30,4 +30,6 @@ TODO:
 30. Is gamma = 1 / (1 + np.exp(epsilon / 2)) in staircase? (Vaik)
 31. Add weights to NaiveBayes and Kmeans
 32. Prabhakar: Handle dictionaries, for example, in /process
-33. Vaik: Replace=True in Median??
+33. Vaik: Replace=True in Median?? BOUNDS: After noise?? Sample size: 100, 2000 ?? Shuffle for test/train??
+35. sigma_, theta_
+36. safety, Robustness: se
