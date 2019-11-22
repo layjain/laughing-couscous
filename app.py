@@ -227,6 +227,7 @@ def upload_process():
             # df=pandas.read_csv(filepath)
             fields_list = []
             headers_list=list(df)
+            field_min_maxes={}
             print(headers_list)
             for header in headers_list:
                 values = df[header]
@@ -239,13 +240,21 @@ def upload_process():
                         include = False
                         break
                 if include:
+                    min_value = min(df[header])
+                    max_value = max(df[header])
+                    field_min_maxes[header] = [min_value, max_value]
                     fields_list.append(header)
             
             session['headers_list'] = headers_list
             #OPTIONS_LIST=list_to_html(headers_list)
             FIELDS_LIST = json.dumps(fields_list)
-            return FIELDS_LIST
-        return FIELDS_LIST
+            HEADERS_LIST = json.dumps(headers_list)
+
+            to_ret = {"__x_options__":FIELDS_LIST, "__y_options__":HEADERS_LIST}
+            to_ret.update(field_min_maxes)
+            return to_ret
+
+        return {"error":True, "text":"File not allowed"}
 
 @app.route('/query_upload_process', methods=['GET','POST'])
 def query_upload_process():
