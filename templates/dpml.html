@@ -172,25 +172,60 @@ Learning {% endblock %} {% block formFields %}
 </section>
 <section class="parameter-section" id="field-type">
   <header class="section-header">
-    <h6>SeLect Feature</h6>
+    <h6>SeLect Features</h6>
   </header>
-  <div>
+  <div class="sub-section" data-hide="kMeans">
+    <div class="sub-section-header">Select Y</div>
+    <div
+      class="d-flex justify-content-center fields flex-wrap tab-select"
+      data-childType="radio"
+      data-type="y"
+      data-linked="x"
+      data-bounds="true"
+    ></div>
+  </div>
+  <div class="sub-section">
+    <div class="sub-section-header">Select X</div>
     <div
       class="d-flex justify-content-center fields flex-wrap tab-select"
       data-childType="checkbox"
+      data-type="x"
+      data-linked="y"
+      data-bounds="true"
     ></div>
   </div>
 </section>
 <section
   class="parameter-section"
-  id="learning-parameters"
+  id="bounds"
   data-hide="logreg kMeans"
+  style="display: none;"
 >
   <header class="section-header">
     <h6>Bounds</h6>
   </header>
   <div>
-    <div class="form-row my-4 justify-content-around">
+    <table class="table table-striped bounds-table">
+      <thead>
+        <tr>
+          <th scope="col">Features</th>
+          <th scope="col">Low</th>
+          <th scope="col">High</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr id="bound-template" style="display: none;">
+          <th scope="row" class="bound-feature"></th>
+          <td class="input-bound-lower">
+            <input type="number" class="form-control" id="lower-bound" />
+          </td>
+          <td class="input-bound-upper">
+            <input type="number" class="form-control" id="upper-bound" />
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <!-- <div class="form-row my-4 justify-content-around">
       <div class="col-auto my-3">
         <div class="input-group parameter-input">
           <div class="input-group-prepend">
@@ -219,7 +254,7 @@ Learning {% endblock %} {% block formFields %}
           />
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </section>
 {% endblock %} {% block analysisScript %}
@@ -253,8 +288,6 @@ Learning {% endblock %} {% block formFields %}
     }
   }
   function Analysis3() {
-    console.log("in");
-    console.log($(".upload-form"));
     var xhttp = new XMLHttpRequest();
     var func = $("input[name='function']:checked").val();
     var e = document.getElementById("epsilon").value;
@@ -262,14 +295,20 @@ Learning {% endblock %} {% block formFields %}
     var epochs = document.getElementById("epochs").value;
     var alpha = document.getElementById("alpha").value;
     var split = document.getElementById("split").value;
-    features = [];
+    var features = [];
     $("input[name='field']:checked").each(function() {
       features.push($(this).val());
     });
     features = features.join("+");
-    clusters = $("#clusters").val();
-    upper_bound = $("#upper-bound").val();
-    lower_bound = $("#lower-bound").val();
+    var clusters = $("#clusters").val();
+    var y = $("input[name='field-y']:checked").val();
+    var x = [];
+    $("input[name='field-x']:checked").each(function() {
+      val = $(this).val();
+      low = $("*[id='lower-bound-" + val + "']").val();
+      high = $("*[id='upper-bound-" + val + "']").val();
+      x.push([val, low, high]);
+    });
     if (!$(".upload-form")[0].checkValidity()) {
       console.log("false");
       $(".upload-form").addClass("was-validated");
@@ -363,12 +402,10 @@ Learning {% endblock %} {% block formFields %}
         clusters +
         "&split=" +
         split +
-        "&features=" +
-        features +
-        "&upper=" +
-        upper_bound +
-        "&lower=" +
-        lower_bound,
+        "&y=" +
+        y +
+        "&x=" +
+        JSON.stringify(x),
       true
     );
     xhttp.send();

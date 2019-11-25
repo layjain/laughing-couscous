@@ -58,25 +58,49 @@ $("#upload-data").click(function() {
     cache: false,
     processData: false,
     success: function(data) {
-      $(".tab-select.fields").html($("<div/>").addClass("d-none tab-radios"));
-      input_type = $(".tab-select.fields").attr("data-childType");
-      require = input_type == "radio" ? true : false;
-      $.each(JSON.parse(data), function(key, item) {
-        label = $("<label/>")
-          .addClass("btn btn-outline")
-          .attr("for", "field-" + item)
-          .text(item);
-        label.appendTo($(".tab-select.fields"));
-        input = $("<input/>")
-          .attr({
-            type: input_type,
-            name: "field",
-            id: "field-" + item,
-            value: item
-          })
-          .prop({ required: require })
-          .addClass("tab-radio");
-        input.appendTo($(".tab-select.fields .tab-radios"));
+      // data = JSON.parse(data);
+      $(".tab-select.fields").each(function() {
+        radios = $("<div/>").addClass("d-none tab-radios");
+        $(this).html(radios);
+        input_type = $(this).attr("data-childType");
+        type = $(this).attr("data-type");
+        data_attr = null;
+        require = input_type == "radio" ? true : false;
+        $.each(JSON.parse(data["__" + type + "_options__"]), (key, item) => {
+          label = $("<label/>")
+            .addClass("btn btn-outline")
+            .attr("for", "field-" + type + "-" + item.trim())
+            .text(item.trim());
+          if ($(this).attr("data-linked")) {
+            label.attr({
+              "data-title":
+                item.trim() +
+                " is already selected as " +
+                $(this)
+                  .attr("data-linked")
+                  .toUpperCase() +
+                ". Please unselect that to select this as " +
+                type.toUpperCase(),
+              "data-toggle": "tooltip",
+              "data-trigger": "manual",
+              "data-placement": "top"
+            });
+          }
+          label.appendTo($(this));
+          input = $("<input/>")
+            .attr({
+              type: input_type,
+              name: "field-" + type,
+              id: "field-" + type + "-" + item.trim(),
+              value: item.trim()
+            })
+            .prop({ required: require })
+            .addClass("tab-radio");
+          input.appendTo(radios);
+        });
+        window.min_max = data;
+        template = $("#bound-template").clone();
+        $(".bounds-table tbody").html(template);
       });
       $("#field-type").show();
     }
@@ -84,21 +108,90 @@ $("#upload-data").click(function() {
 });
 
 $(".tab-select").on("change", ".tab-radio", function() {
-  node = $(this).attr("type");
+  var node = $(this).attr("type");
+  var tab_select = $(this).parents(".tab-select");
   if (node === "radio") {
-    $(this)
-      .parents(".tab-select")
-      .find("label.btn")
-      .each(function() {
-        $(this).removeClass("selected");
-      });
+    tab_select.find("label.btn").each(function() {
+      $(this).removeClass("selected");
+    });
   }
-  type = $(this).attr("name");
-  value = $(this).val();
+  var type = $(this).attr("name");
+  var value = $(this).val();
+  $("label.btn[for='" + type + "-" + value + "']").toggleClass("selected");
+  if (tab_select.attr("data-linked")) {
+    var linked_type = type.replace(
+      "-" + tab_select.attr("data-type"),
+      "-" + tab_select.attr("data-linked")
+    );
+    if ($("input[id='" + linked_type + "-" + value + "']")) {
+      $("label.btn[for='" + linked_type + "-" + value + "']").addClass(
+        "disabled"
+      );
+      $("input[id='" + linked_type + "-" + value + "']").prop("disabled", true);
+      disabled_check();
+    }
+  }
+  if (tab_select.is("[data-bounds]") && tab_select.attr("data-type") == "x") {
+    if (!$("*[id='bound-" + value + "']").length) {
+      var row = $("#bound-template").clone();
+      row.attr({ id: "bound-" + value, "data-feature-type": type }).show();
+      row.find(".bound-feature").text(value);
+      var step = (window.min_max[value][1] - window.min_max[value][0]) / 200;
+      row.find("#lower-bound").attr({
+        id: "lower-bound-" + value,
+        value: window.min_max[value][0],
+        step: step
+      });
+      row.find("#upper-bound").attr({
+        id: "upper-bound-" + value,
+        value: window.min_max[value][1],
+        step: step
+      });
+      row.appendTo($(".bounds-table tbody"));
+      $("#bounds").show();
+      console.log(window.min_max);
+    }
+    // Check rows
+    var rows = $(".bounds-table tbody tr").slice(1);
+    rows.each(function() {
+      var val = $(this)
+        .attr("id")
+        .replace("bound-", "");
+      var type = $(this).attr("data-feature-type");
+      if (!$("*[id='" + type + "-" + val + "']").prop("checked"))
+        $(this).remove();
+    });
+    if ($(".bounds-table tbody tr").length <= 1) {
+      $("#bounds").hide();
+    }
+  }
+});
 
-  $("." + type + "s label.btn[for='" + type + "-" + value + "']").toggleClass(
-    "selected"
-  );
+disabled_check = function() {
+  $(".tab-select label.btn.disabled").each(function() {
+    var select = $(this).parents(".tab-select");
+    console.log($("input[id='" + $(this).attr("for") + "']"));
+    var radio = $("input[id='" + $(this).attr("for") + "']");
+    var type = $(radio).attr("name");
+    var linked_type = type.replace(
+      "-" + select.attr("data-type"),
+      "-" + select.attr("data-linked")
+    );
+    var value = $(radio).val();
+    if (!$("*[id='" + linked_type + "-" + value + "']").prop("checked")) {
+      $(radio).prop("disabled", false);
+      $("label.btn[for='" + type + "-" + value + "']").removeClass("disabled");
+    }
+  });
+};
+
+check_bounds_row = function() {};
+
+$(".tab-select").on("mouseenter", "label.btn.disabled", function() {
+  $(this).tooltip("show");
+});
+$(".tab-select").on("mouseleave", "label.btn.disabled", function() {
+  $(this).tooltip("hide");
 });
 
 $("label[data-control]").click(function() {
