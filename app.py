@@ -7,6 +7,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.urls import url_parse
 import DPMechanisms
 #import Laplace
+import LogisticRegression
 import pandas
 import numpy as np
 import matplotlib.pyplot as plt
@@ -160,9 +161,6 @@ def generate_and_save_histogram (filepath="https://raw.githubusercontent.com/pri
                 count+=1
         print('loop finished')
         plt.hist(release, bins=10)
-    ##    plt.title("Histogram of released DP means")
-    ##    plt.xlabel(" Differentially Private Mean Age")
-    ##    plt.ylabel("frequency")
         print('Plot made')
         #plt.show()
         print(true[0])
@@ -339,54 +337,13 @@ def logreg_process():
     except:
         filename_dpml=None
     e = request.args.get('e','0.1')
-    Lambda = request.args.get('lambda', '1')
-    Degree=request.args.get('degree','6')
-    epochs=request.args.get('epochs','800')
-    alpha=request.args.get('alpha','1')
-    split_ratio=request.args.get('split_ratio', '1') #train:(total) must be (0,1]
-    
-    epsilon=get_float(e, 0.1)
-    Lambda=get_float(Lambda, 1)
-    Degree=get_natural(Degree, 6, 'Could not convert given degree to int')
-    epochs=get_natural(epochs, 800)
-    alpha=get_float(alpha, 1.0)
-    split_ratio = get_float(split_ratio, 1.0)
-    if filename_dpml != None:
-        print('used new file '+filename_dpml)
-        filepath = 'static/uploaded/'+filename_dpml
-        UPLOAD_STATUS='UPLOADED!'
-        filename_dpml=None
-    else:
-        print('used default')
-        filepath = "static/uploaded/logReg.txt"
-        UPLOAD_STATUS='USED DEFAULT FILE'
-    if not logreg.format_correct(filepath):
-        return {"error":True, "text":"Incorrect File Format"}
-    try:
-        name, theta=logreg.generate_and_save_graph(filepath=filepath, epsilon=epsilon, Lambda=Lambda,\
-                                        degree=Degree, alpha=alpha, epochs=epochs, split_ratio=split_ratio)
-    except Exception as e:
-        print(e)
-        return {"error":True, "text":"Oops! Something went wrong"}
-    # return name
-    return {"error":False,'image':name,'theta': theta}
-
-@app.route('/NaiveBayes_process', methods=["GET","POST"])
-def NaiveBayes_process():
-    print(request)
-    print(dict(request.args))
-    try:
-        filename_dpml=session.get('filename')
-    except:
-        filename_dpml=None
-    e = request.args.get('e','0.1')
     split_ratio=request.args.get('split', '1') #train:(total) must be (0,1]
-    lower=get_float(request.args.get('lower'),-1)
-    upper=get_float(request.args.get('upper'),1)
-    
+
+    y_field_name = request.args.get('y')
+    x_fields_list = [[e[0],float(e[1]),float(e[2])] for e in list(request.args.get('x'))]
+
     epsilon=get_float(e, 0.1)
     split_ratio = get_float(split_ratio, 1.0)
-    bounds=(lower,upper)
 
     if filename_dpml != None:
         print('used new file '+filename_dpml)
@@ -399,19 +356,100 @@ def NaiveBayes_process():
     if not logreg.format_correct(filepath):
         return {"error":True, "text":"Incorrect File Format"}
     try:
-        name = NaiveBayes.make_and_save_graph(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio, bounds=bounds)
+        name = LogisticRegression.make_and_save_graph(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio, y_field_name = y_field_name, x_fields_list = x_fields_list)
     
     except Exception as e:
         print(e)
         return {"error":True, "text":"Something went wrong"}
 
     try:
-        train_accuracy, test_accuracy, params = NaiveBayes.train_and_test(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio, bounds=bounds)
+        train_accuracy, test_accuracy, params, x_list = LogisticRegression.train_and_test(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio, y_field_name=y_field_name, x_fields_list=x_fields_list)
     
     except Exception as e:
         print(e)
         return {"error":True, "image":name,"text":"Oops! Something went wrong"}
-    return {"error":False,'image':name, "train_accuracy":train_accuracy, "test_accuracy":test_accuracy, 'theta':params.tolist()}
+    return {"error":False,'image':name, "train_accuracy":train_accuracy, "test_accuracy":test_accuracy, 'theta':params.tolist(), 'x_list':x_list}
+# def logreg_process():
+#     print(request)
+#     print(dict(request.args))
+#     try:
+#         filename_dpml=session.get('filename')
+#     except:
+#         filename_dpml=None
+#     e = request.args.get('e','0.1')
+#     Lambda = request.args.get('lambda', '1')
+#     Degree=request.args.get('degree','6')
+#     epochs=request.args.get('epochs','800')
+#     alpha=request.args.get('alpha','1')
+#     split_ratio=request.args.get('split_ratio', '1') #train:(total) must be (0,1]
+    
+#     epsilon=get_float(e, 0.1)
+#     Lambda=get_float(Lambda, 1)
+#     Degree=get_natural(Degree, 6, 'Could not convert given degree to int')
+#     epochs=get_natural(epochs, 800)
+#     alpha=get_float(alpha, 1.0)
+#     split_ratio = get_float(split_ratio, 1.0)
+#     if filename_dpml != None:
+#         print('used new file '+filename_dpml)
+#         filepath = 'static/uploaded/'+filename_dpml
+#         UPLOAD_STATUS='UPLOADED!'
+#         filename_dpml=None
+#     else:
+#         print('used default')
+#         filepath = "static/uploaded/logReg.txt"
+#         UPLOAD_STATUS='USED DEFAULT FILE'
+#     if not logreg.format_correct(filepath):
+#         return {"error":True, "text":"Incorrect File Format"}
+#     try:
+#         name =logreg.generate_and_save_graph(filepath=filepath, epsilon=epsilon, Lambda=Lambda,\
+#                                         degree=Degree, alpha=alpha, epochs=epochs, split_ratio=split_ratio)
+#     except Exception as e:
+#         print(e)
+#         return {"error":True, "text":"Oops! Something went wrong"}
+#     # return name
+#     return {"error":False,'image':name,'theta': theta}
+
+@app.route('/NaiveBayes_process', methods=["GET","POST"])
+def NaiveBayes_process():
+    print(request)
+    print(dict(request.args))
+    try:
+        filename_dpml=session.get('filename')
+    except:
+        filename_dpml=None
+    e = request.args.get('e','0.1')
+    split_ratio=request.args.get('split', '1') #train:(total) must be (0,1]
+
+    y_field_name = request.args.get('y')
+    x_fields_list = [[e[0],float(e[1]),float(e[2])] for e in list(request.args.get('x'))]
+
+    epsilon=get_float(e, 0.1)
+    split_ratio = get_float(split_ratio, 1.0)
+
+    if filename_dpml != None:
+        print('used new file '+filename_dpml)
+        filepath = 'static/uploaded/'+filename_dpml
+        filename_dpml=None
+    else:
+        print('used default')
+        filepath = "static/uploaded/logRegNoNaN.txt"
+
+    if not logreg.format_correct(filepath):
+        return {"error":True, "text":"Incorrect File Format"}
+    try:
+        name = NaiveBayes.make_and_save_graph(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio, y_field_name = y_field_name, x_fields_list = x_fields_list)
+    
+    except Exception as e:
+        print(e)
+        return {"error":True, "text":"Something went wrong"}
+
+    try:
+        train_accuracy, test_accuracy, params, x_list = NaiveBayes.train_and_test(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio, y_field_name=y_field_name, x_fields_list=x_fields_list)
+    
+    except Exception as e:
+        print(e)
+        return {"error":True, "image":name,"text":"Oops! Something went wrong"}
+    return {"error":False,'image':name, "train_accuracy":train_accuracy, "test_accuracy":test_accuracy, 'theta':params.tolist(), 'x_list':x_list}
 
 @app.route('/kMeans_process', methods=["GET","POST"])
 def Kmeans_process():
@@ -429,10 +467,7 @@ def Kmeans_process():
     split_ratio = get_float(split_ratio, 1.0)
     n_clusters = get_natural(n_clusters,8)
 
-    lower=get_float(request.args.get('lower'),-1)
-    upper=get_float(request.args.get('upper'),1)
-    
-    bounds=(lower,upper)
+    x_fields_list = list(request.args.get('x'))
 
     if filename_dpml != None:
         print('used new file '+filename_dpml)
@@ -446,19 +481,19 @@ def Kmeans_process():
         return {"error":True, "text":"Incorrect File Format"}
     try:
 
-        name = Kmeans.make_and_save_graph(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio, n_clusters= n_clusters, bounds=bounds)
+        name = Kmeans.make_and_save_graph(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio, n_clusters= n_clusters, x_fields_list=x_fields_list)
     
     except Exception as e:
         print("EXCEPTION RAISED:",e)
         return {"error":True, "text":"Something went wrong"}
 
     try:
-        train_accuracy, test_accuracy, params = Kmeans.train_and_test(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio, n_clusters=n_clusters, bounds=bounds)
+        train_accuracy, test_accuracy, params, x_list, y_list = Kmeans.train_and_test(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio, n_clusters=n_clusters, x_fields_list=x_fields_list)
     
     except Exception as e:
         print("EXCEPTION RAISED:",e)
         return {"error":True, "image":name,"text":"Something went wrong"}
-    return {"error":False,'image':name, "train_accuracy":train_accuracy, "test_accuracy":test_accuracy, 'theta':params.tolist()}
+    return {"error":False,'image':name, "train_accuracy":train_accuracy, "test_accuracy":test_accuracy, 'theta':params.tolist(), 'x_list':x_list, 'y_list':y_list}
 
 
 @app.route('/query', methods=['GET','POST'])
@@ -636,7 +671,7 @@ def get_natural(var, default, failure_message=None):
         print(failure_message)
         var=default
     return var
-	
+
 app.secret_key = 'super secret key'
 app.config.from_object(Config)
 app.config['SESSION_TYPE'] = 'filesystem'

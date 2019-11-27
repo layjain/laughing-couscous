@@ -1,4 +1,4 @@
-import numpy as np
+import numpy as n
 import diffprivlib.models as dp
 import numpy as np
 from sklearn.naive_bayes import GaussianNB
@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import time
 
 
-def train_and_test(filepath="static/uploaded/logReg.txt", epsilon=0.1, bounds=(1e-7, 1e7), split_ratio=1, **unused_args):
+def train_and_test(filepath="static/uploaded/logReg.txt", epsilon=0.1, split_ratio=1, x_fields_list, y_field_name, **unused_args):
     '''
     returns the train and test accuracy in %
     @Split_ratio = train:(test+train) should be in (0,1]
@@ -15,15 +15,20 @@ def train_and_test(filepath="static/uploaded/logReg.txt", epsilon=0.1, bounds=(1
     print("making pandas dataframe")
     df = pd.read_csv(filepath, header=None)
     print("head:", df.head())
-    X = df.iloc[:, :-1].values  # features, np array
-    Y = df.iloc[:, -1].values  # labels, np array
+
+    headers = list(df)
+    y_index = headers.index(y_field_name)
+    x_indices = [headers.index(field[0]) for field in x_fields_list]
+    
+    X = df.iloc[:, x_indices].values  # features, np array
+    Y = df.iloc[:, y_index].values  # labels, np array
     print("splitting at ")
     split_index = int(X.shape[0]*split_ratio)
     print("Split_index =", split_index)
     X_train, X_test = X[:split_index], X[split_index:]
     Y_train, Y_test = Y[:split_index], Y[split_index:]
     # bounds=None will throw warning; no Priors
-    dp_clf = dp.GaussianNB(epsilon=epsilon, bounds=[bounds]*X.shape[1])
+    dp_clf = dp.GaussianNB(epsilon=epsilon, bounds=[(e[1], e[2]) for e in x_fields_list])
     dp_clf.fit(X_train, Y_train)
     test_accuracy = (dp_clf.predict(X_test) == Y_test).sum() / \
         Y_test.shape[0] * 100
@@ -32,15 +37,22 @@ def train_and_test(filepath="static/uploaded/logReg.txt", epsilon=0.1, bounds=(1
     print("ACCURACIES:", test_accuracy, train_accuracy)
     params = dp_clf.sigma_
     print("params", params)
-    return (train_accuracy, test_accuracy, params)
+    x_list = [e[0] for e in x_fields_list]
+    return (train_accuracy, test_accuracy, params, x_list)
 
 
-def make_and_save_graph(filepath="static/uploaded/logReg.txt", split_ratio=1, bounds=(1e-7, 1e7),  **unused_args):
+def make_and_save_graph(filepath="static/uploaded/logReg.txt", split_ratio=1, x_fields_list, y_field_name,  **unused_args):
     print("making pandas dataframe")
     df = pd.read_csv(filepath, header=None)
     print("head:", df.head())
-    X = df.iloc[:, :-1].values  # features, np array
-    Y = df.iloc[:, -1].values  # labels, np array
+
+    headers = list(df)
+    y_index = headers.index(y_field_name)
+    x_indices = [headers.index(field[0]) for field in x_fields_list]
+    
+    X = df.iloc[:, x_indices].values  # features, np array
+    Y = df.iloc[:, y_index].values  # labels, np array
+
     split_index = int(X.shape[0]*split_ratio)
     print("splitting at ", split_index, "for arrays of size ", X.shape, Y.shape)
     X_train, X_test = X[:split_index], X[split_index:]

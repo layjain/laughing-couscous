@@ -7,30 +7,35 @@ import matplotlib.pyplot as plt
 import time
 
 
-def train_and_test(filepath="static/uploaded/logReg.txt", epsilon=0.1, split_ratio=1, n_clusters=8, **unused_args):
+def train_and_test(filepath="static/uploaded/logReg.txt", epsilon=0.1, split_ratio=1, n_clusters=8, x_fiels_list, y_field_name, **unused_args):
     print("making pandas dataframe")
     df = pd.read_csv(filepath, header=None)
     print("head:", df.head())
-    X = df.iloc[:, :-1].values  # features, np array
-    Y = df.iloc[:, -1].values  # labels, np array
+
+    headers = list(df)
+    x_indices = [headers.index(field[0]) for field in x_fields_list]
+    
+    X = df.iloc[:, x_indices].values  # features, np array
+
     print("splitting")
     split_index = int(X.shape[0]*split_ratio)
     X_train, X_test = X[:split_index], X[split_index:]
-    Y_train, Y_test = Y[:split_index], Y[split_index:]
 
     dp_clf = dp.KMeans(epsilon=epsilon, n_clusters=n_clusters)
-    dp_clf.fit(X_train, Y_train)
-    test_accuracy = (dp_clf.predict(X_test) == Y_test).sum() / \
-        Y_test.shape[0] * 100
-    train_accuracy = (dp_clf.predict(X_train) ==
-                      Y_train).sum() / Y_train.shape[0] * 100
+    dp_clf.fit(X_train)
+
     params = dp_clf.cluster_centers_
-    print(dp_clf.predict(X_train))
-    print(Y_train)
-    return (train_accuracy, test_accuracy, params)
+
+    x_list = [e[0] for e in x_indices]
+    y_list = ["Cluster "+str(i+1) for i in range(n_clusters)]
+
+    return (train_accuracy, test_accuracy, params, x_list, y_list)
 
 
-def make_and_save_graph(filepath="static/uploaded/logReg.txt", split_ratio=1, n_clusters=8, **unused_args):
+def make_and_save_graph(filepath="static/uploaded/logReg.txt", split_ratio=1, n_clusters=8, x_fiels_list, y_field_name, **unused_args):
+    '''
+    This function is not called for now
+    '''
     print("making pandas dataframe")
     df = pd.read_csv(filepath, header=None)
     print("head:", df.head())
