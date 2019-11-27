@@ -240,7 +240,7 @@ def upload_process():
                 if include:
                     min_value = min(df[header])
                     max_value = max(df[header])
-                    field_min_maxes[header] = [min_value, max_value]
+                    field_min_maxes[header.strip()] = [min_value, max_value]
                     fields_list.append(header)
             
             session['headers_list'] = headers_list
