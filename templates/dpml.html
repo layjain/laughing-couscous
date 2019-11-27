@@ -60,6 +60,7 @@ Learning {% endblock %} {% block formFields %}
           type="number"
           class="form-control"
           id="epsilon"
+          name="Epsilon"
           min="0"
           max="100"
           step="0.001"
@@ -90,6 +91,7 @@ Learning {% endblock %} {% block formFields %}
             type="number"
             class="form-control"
             id="lambda"
+            name="Lambda"
             required
             placeholder="0"
             required
@@ -105,6 +107,7 @@ Learning {% endblock %} {% block formFields %}
             type="number"
             class="form-control"
             id="epochs"
+            name="Epochs"
             required
             placeholder="0"
           />
@@ -120,6 +123,7 @@ Learning {% endblock %} {% block formFields %}
             type="number"
             class="form-control"
             id="alpha"
+            name="Alpha"
             required
             placeholder="0"
           />
@@ -134,6 +138,7 @@ Learning {% endblock %} {% block formFields %}
             type="number"
             class="form-control"
             id="clusters"
+            name="Clusters"
             required
             placeholder="0"
           />
@@ -150,6 +155,7 @@ Learning {% endblock %} {% block formFields %}
             type="number"
             class="form-control range-value"
             id="split"
+            name="Split Ratio"
             min="0"
             max="1"
             placeholder="0"
@@ -174,7 +180,7 @@ Learning {% endblock %} {% block formFields %}
   <header class="section-header">
     <h6>SeLect Features</h6>
   </header>
-  <div class="sub-section" data-hide="kMeans">
+  <section class="sub-section" data-hide="kMeans">
     <div class="sub-section-header">Select Y</div>
     <div
       class="d-flex justify-content-center fields flex-wrap tab-select"
@@ -183,8 +189,8 @@ Learning {% endblock %} {% block formFields %}
       data-linked="x"
       data-bounds="true"
     ></div>
-  </div>
-  <div class="sub-section">
+  </section>
+  <section class="sub-section">
     <div class="sub-section-header">Select X</div>
     <div
       class="d-flex justify-content-center fields flex-wrap tab-select"
@@ -193,7 +199,7 @@ Learning {% endblock %} {% block formFields %}
       data-linked="y"
       data-bounds="true"
     ></div>
-  </div>
+  </section>
 </section>
 <section
   class="parameter-section"
@@ -217,10 +223,10 @@ Learning {% endblock %} {% block formFields %}
         <tr id="bound-template" style="display: none;">
           <th scope="row" class="bound-feature"></th>
           <td class="input-bound-lower">
-            <input type="number" class="form-control" id="lower-bound" />
+            <input type="number" class="form-control" id="lower-bound" value="0"/>
           </td>
           <td class="input-bound-upper">
-            <input type="number" class="form-control" id="upper-bound" />
+            <input type="number" class="form-control" id="upper-bound" value="0"/>
           </td>
         </tr>
       </tbody>
@@ -309,9 +315,8 @@ Learning {% endblock %} {% block formFields %}
       high = $("*[id='upper-bound-" + val + "']").val();
       x.push([val, low, high]);
     });
-    if (!$(".upload-form")[0].checkValidity()) {
-      console.log("false");
-      $(".upload-form").addClass("was-validated");
+    if (!form_validity($(".upload-form"))) {
+      // $(".upload-form").addClass("was-validated");
       return;
     }
     $(".data-graph")

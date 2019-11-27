@@ -136,7 +136,10 @@ $(".tab-select").on("change", ".tab-radio", function() {
       var row = $("#bound-template").clone();
       row.attr({ id: "bound-" + value, "data-feature-type": type }).show();
       row.find(".bound-feature").text(value);
-      var step = (window.min_max[value][1] - window.min_max[value][0]) / 200;
+      var step = (
+        (window.min_max[value][1] - window.min_max[value][0]) /
+        50
+      ).toPrecision(1);
       row.find("#lower-bound").attr({
         id: "lower-bound-" + value,
         value: window.min_max[value][0],
@@ -149,7 +152,6 @@ $(".tab-select").on("change", ".tab-radio", function() {
       });
       row.appendTo($(".bounds-table tbody"));
       $("#bounds").show();
-      console.log(window.min_max);
     }
     // Check rows
     var rows = $(".bounds-table tbody tr").slice(1);
@@ -164,6 +166,17 @@ $(".tab-select").on("change", ".tab-radio", function() {
     if ($(".bounds-table tbody tr").length <= 1) {
       $("#bounds").hide();
     }
+  } else if ($("#global-sensitivity").length) {
+    var step = (
+      (window.min_max[value][1] - window.min_max[value][0]) /
+      50
+    ).toPrecision(1);
+    $("#low")
+      .attr("step", step)
+      .val(window.min_max[value][0]);
+    $("#high")
+      .attr("step", step)
+      .val(window.min_max[value][1]);
   }
 });
 
@@ -185,7 +198,59 @@ disabled_check = function() {
   });
 };
 
-check_bounds_row = function() {};
+form_validity = function(form) {
+  var valid = true;
+  var error_msg;
+  // console.log(form[0].elements.reverse());
+  var scroll = window.scrollY;
+  $(Array.from(form[0].elements).reverse()).each(function() {
+    if ($(this).attr("required")) {
+      validity = this.validity;
+      if (
+        validity.badInput ||
+        validity.rangeOverflow ||
+        validity.rangeUnderflow ||
+        validity.typeMismatch ||
+        validity.valueMissing
+      ) {
+        var to_do = $(this).attr("type") == "number" ? "enter" : "select";
+        var type =
+          $(this).attr("type") == "number" ? "a valid value" : "an option";
+        var name = $(this).attr("name");
+        error_msg = "Please " + to_do + " " + type + " for " + name;
+        valid = false;
+        $(this)
+          .closest("section")
+          .addClass("custom-invalid");
+        if (
+          !$(this)
+            .closest("section")
+            .find(".custom-validation").length
+        ) {
+          msg = $("<div/>")
+            .addClass("custom-validation")
+            .text(error_msg);
+          msg.appendTo($(this).closest("section"));
+        } else {
+          $(this)
+            .closest("section")
+            .find(".custom-validation")
+            .text(error_msg);
+        }
+        scroll = $(this)
+          .closest("section")
+          .position().top;
+      }
+    }
+  });
+  $(window).scrollTop(scroll);
+  // if (!form[0].checkValidity()) {
+  //   form.addClass("was-validated");
+  //   return false;
+  // }
+  // return true;
+  return valid;
+};
 
 $(".tab-select").on("mouseenter", "label.btn.disabled", function() {
   $(this).tooltip("show");

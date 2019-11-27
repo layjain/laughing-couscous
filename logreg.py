@@ -121,13 +121,9 @@ def generate_and_save_graph(filepath, degree=6, epsilon=0.1, Lambda=1, alpha=1, 
     return (name, np.array(theta_dp).reshape((-1,)).tolist())
 
 def format_correct(filepath):
-    df=pd.read_csv(filepath, header=None)
-    df.head()
+    # df=pd.read_csv(filepath, header=None)
+    # df.head()
 
-    X=df.iloc[:,:-1].values #features
-    y=df.iloc[:,-1].values.reshape((-1,)) #labels
-    for number in y:
-        if number not in (1,0):
-            return False
+    # X=df.iloc[:,:-1].values #features
     return True
     

@@ -23,6 +23,8 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/static/css/style.css" />
+    {% block linkRel %}{% endblock %}
+
     <title>{% block title %}{% endblock %} - privaZ</title>
   </head>
   <body class="{% block bodyClass %}{% endblock %}">

@@ -709,3 +709,9 @@ section.home-features {
   font-size: 0.9em;
   margin-top: 20px;
 }
+.custom-validation {
+  text-align: center;
+  font-size: 0.85em;
+  font-style: italic;
+  color: #dc3545;
+}

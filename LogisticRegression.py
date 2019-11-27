@@ -7,19 +7,19 @@ import matplotlib.pyplot as plt
 import time
 
 
-def train_and_test(filepath="static/uploaded/logReg.txt", epsilon=0.1, split_ratio=1, x_fields_list, y_field_name, **unused_args):
+def train_and_test(x_fields_list, y_field_name, filepath="static/uploaded/logReg.txt", epsilon=0.1, split_ratio=1,  **unused_args):
     '''
     returns the train and test accuracy in %
     @Split_ratio = train:(test+train) should be in (0,1]
     '''
     print("making pandas dataframe")
-    df = pd.read_csv(filepath, header=None)
+    df = pd.read_csv(filepath, header=0)
     print("head:", df.head())
 
     headers = list(df)
     y_index = headers.index(y_field_name)
     x_indices = [headers.index(field[0]) for field in x_fields_list]
-    
+
     X = df.iloc[:, x_indices].values  # features, np array
     Y = df.iloc[:, y_index].values  # labels, np array
     print("splitting at ")
@@ -28,7 +28,7 @@ def train_and_test(filepath="static/uploaded/logReg.txt", epsilon=0.1, split_rat
     X_train, X_test = X[:split_index], X[split_index:]
     Y_train, Y_test = Y[:split_index], Y[split_index:]
     # bounds=None will throw warning; no Priors
-    
+
     dp_clf = Pipeline([
         ('scaler', MinMaxScaler()),
         ('clf', dp.LogisticRegression(epsilon=epsilon))
@@ -45,15 +45,15 @@ def train_and_test(filepath="static/uploaded/logReg.txt", epsilon=0.1, split_rat
     return (train_accuracy, test_accuracy, params, x_list)
 
 
-def make_and_save_graph(filepath="static/uploaded/logReg.txt", split_ratio=1, x_fields_list, y_field_name,  **unused_args):
+def make_and_save_graph(x_fields_list, y_field_name, filepath="static/uploaded/logReg.txt", split_ratio=1,   **unused_args):
     print("making pandas dataframe")
-    df = pd.read_csv(filepath, header=None)
+    df = pd.read_csv(filepath, header=0)
     print("head:", df.head())
 
     headers = list(df)
     y_index = headers.index(y_field_name)
     x_indices = [headers.index(field[0]) for field in x_fields_list]
-    
+
     X = df.iloc[:, x_indices].values  # features, np array
     Y = df.iloc[:, y_index].values  # labels, np array
 
@@ -70,8 +70,8 @@ def make_and_save_graph(filepath="static/uploaded/logReg.txt", split_ratio=1, x_
 
     for epsilon in epsilons:
         clf = Pipeline([
-        ('scaler', MinMaxScaler()),
-        ('clf', dp.LogisticRegression(epsilon=epsilon))
+            ('scaler', MinMaxScaler()),
+            ('clf', dp.LogisticRegression(epsilon=epsilon))
         ])
         clf.fit(X_train, Y_train)
 

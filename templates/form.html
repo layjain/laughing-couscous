@@ -1,5 +1,7 @@
-{% extends 'base.html' %} {% block title %}{% block formTitle %}{% endblock %}{%
-endblock %} {% block content %}
+{% extends 'base.html' %}{% block linkRel %}
+<link rel="prefetch" href="/static/images/404.png" />
+{% endblock %} {% block title %}{% block formTitle %}{% endblock %}{% endblock
+%} {% block content %}
 <section class="upload-full container">
   <header class="section-header pt-5 pb-4">
     <h2 class="bottom-border">{{ self.formTitle() }}</h2>

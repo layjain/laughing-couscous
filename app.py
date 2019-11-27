@@ -7,6 +7,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.urls import url_parse
 import DPMechanisms
 #import Laplace
+import ast
 import LogisticRegression
 import pandas
 import numpy as np
@@ -421,7 +422,7 @@ def NaiveBayes_process():
     split_ratio=request.args.get('split', '1') #train:(total) must be (0,1]
 
     y_field_name = request.args.get('y')
-    x_fields_list = [[e[0],float(e[1]),float(e[2])] for e in list(request.args.get('x'))]
+    x_fields_list = [[e[0],float(e[1]),float(e[2])] for e in ast.literal_eval(request.args.get('x'))]
 
     epsilon=get_float(e, 0.1)
     split_ratio = get_float(split_ratio, 1.0)
@@ -436,19 +437,19 @@ def NaiveBayes_process():
 
     if not logreg.format_correct(filepath):
         return {"error":True, "text":"Incorrect File Format"}
-    try:
-        name = NaiveBayes.make_and_save_graph(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio, y_field_name = y_field_name, x_fields_list = x_fields_list)
-    
-    except Exception as e:
-        print(e)
-        return {"error":True, "text":"Something went wrong"}
+    # try:
+    name = NaiveBayes.make_and_save_graph(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio, y_field_name = y_field_name, x_fields_list = x_fields_list)
+    print(name)    
+    # except Exception as e:
+    #     print(e)
+    #     return {"error":True, "text":"Something went wrong"}
 
-    try:
-        train_accuracy, test_accuracy, params, x_list = NaiveBayes.train_and_test(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio, y_field_name=y_field_name, x_fields_list=x_fields_list)
+    # try:
+    train_accuracy, test_accuracy, params, x_list = NaiveBayes.train_and_test(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio, y_field_name=y_field_name, x_fields_list=x_fields_list)
     
-    except Exception as e:
-        print(e)
-        return {"error":True, "image":name,"text":"Oops! Something went wrong"}
+    # except Exception as e:
+    #     print(e)
+    #     return {"error":True, "image":name,"text":"Oops! Something went wrong"}
     return {"error":False,'image':name, "train_accuracy":train_accuracy, "test_accuracy":test_accuracy, 'theta':params.tolist(), 'x_list':x_list}
 
 @app.route('/kMeans_process', methods=["GET","POST"])
@@ -467,7 +468,8 @@ def Kmeans_process():
     split_ratio = get_float(split_ratio, 1.0)
     n_clusters = get_natural(n_clusters,8)
 
-    x_fields_list = list(request.args.get('x'))
+    x_fields_list = ast.literal_eval(request.args.get('x'))
+    print("evaluated using ast:", x_fields_list)
 
     if filename_dpml != None:
         print('used new file '+filename_dpml)
@@ -479,21 +481,21 @@ def Kmeans_process():
 
     if not logreg.format_correct(filepath):
         return {"error":True, "text":"Incorrect File Format"}
-    try:
+    # try:
 
-        name = Kmeans.make_and_save_graph(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio, n_clusters= n_clusters, x_fields_list=x_fields_list)
+    #     name = Kmeans.make_and_save_graph(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio, n_clusters= n_clusters, x_fields_list=x_fields_list)
+    
+    # except Exception as e:
+    #     print("EXCEPTION RAISED:",e)
+    #     return {"error":True, "text":"Something went wrong"}
+
+    try:
+        params, x_list, y_list = Kmeans.train_and_test(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio, n_clusters=n_clusters, x_fields_list=x_fields_list)
     
     except Exception as e:
         print("EXCEPTION RAISED:",e)
         return {"error":True, "text":"Something went wrong"}
-
-    try:
-        train_accuracy, test_accuracy, params, x_list, y_list = Kmeans.train_and_test(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio, n_clusters=n_clusters, x_fields_list=x_fields_list)
-    
-    except Exception as e:
-        print("EXCEPTION RAISED:",e)
-        return {"error":True, "image":name,"text":"Something went wrong"}
-    return {"error":False,'image':name, "train_accuracy":train_accuracy, "test_accuracy":test_accuracy, 'theta':params.tolist(), 'x_list':x_list, 'y_list':y_list}
+    return {"error":False,'theta':params.tolist(), 'x_list':x_list, 'y_list':y_list}
 
 
 @app.route('/query', methods=['GET','POST'])
