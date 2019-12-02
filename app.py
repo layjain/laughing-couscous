@@ -341,10 +341,16 @@ def logreg_process():
     split_ratio=request.args.get('split', '1') #train:(total) must be (0,1]
 
     y_field_name = request.args.get('y')
-    x_fields_list = [[e[0],float(e[1]),float(e[2])] for e in list(request.args.get('x'))]
+    x_fields_list = [[e[0],float(e[1]),float(e[2])] for e in ast.literal_eval(request.args.get('x'))]
 
     epsilon=get_float(e, 0.1)
     split_ratio = get_float(split_ratio, 1.0)
+
+    epochs=request.args.get('epochs','10')
+    epochs=get_natural(epochs, 10)
+
+    Lambda = request.args.get('lambda', '1')
+    Lambda=get_float(Lambda, 1)
 
     if filename_dpml != None:
         print('used new file '+filename_dpml)
@@ -357,19 +363,19 @@ def logreg_process():
     if not logreg.format_correct(filepath):
         return {"error":True, "text":"Incorrect File Format"}
     try:
-        name = LogisticRegression.make_and_save_graph(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio, y_field_name = y_field_name, x_fields_list = x_fields_list)
+        name = LogisticRegression.make_and_save_graph(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio, y_field_name = y_field_name, x_fields_list = x_fields_list, epochs=epochs, Lambda=Lambda)
     
     except Exception as e:
         print(e)
         return {"error":True, "text":"Something went wrong"}
 
     try:
-        train_accuracy, test_accuracy, params, x_list = LogisticRegression.train_and_test(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio, y_field_name=y_field_name, x_fields_list=x_fields_list)
+        train_accuracy, test_accuracy, params, x_list, y_list = LogisticRegression.train_and_test(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio, y_field_name=y_field_name, x_fields_list=x_fields_list, epochs=epochs, Lambda=Lambda)
     
     except Exception as e:
         print(e)
         return {"error":True, "image":name,"text":"Oops! Something went wrong"}
-    return {"error":False,'image':name, "train_accuracy":train_accuracy, "test_accuracy":test_accuracy, 'theta':params.tolist(), 'x_list':x_list}
+    return {"error":False,'image':name, "train_accuracy":train_accuracy, "test_accuracy":test_accuracy, 'theta':params.tolist(), 'x_list':x_list, 'y_list' : y_list}
 # def logreg_process():
 #     print(request)
 #     print(dict(request.args))
