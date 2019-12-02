@@ -108,6 +108,7 @@
           type="number"
           class="form-control"
           id="epsilon"
+          name="Epsilon"
           min="0"
           max="100"
           placeholder="0"
@@ -130,6 +131,7 @@
           type="number"
           class="form-control"
           id="delta"
+          name="Delta"
           min="0"
           max="10"
           data-order-magnitude="-4"
@@ -158,6 +160,7 @@
           type="number"
           class="form-control"
           id="gamma"
+          name="Gamma"
           min="0"
           max="1"
           placeholder="0"
@@ -195,6 +198,7 @@
             type="number"
             class="form-control"
             id="low"
+            name="Lower bound"
             required
             placeholder="0"
           />
@@ -209,6 +213,7 @@
             type="number"
             class="form-control"
             id="high"
+            name="Upper bound"
             required
             placeholder="100"
           />
@@ -254,8 +259,12 @@
 </script>
 <script type="text/javascript">
   function Analysis3() {
-    if ($(".upload-form")[0].checkValidity() === false) {
-      $(".upload-form").addClass("was-validated");
+    // if ($(".upload-form")[0].checkValidity() === false) {
+    //   $(".upload-form").addClass("was-validated");
+    //   return;
+    // }
+    if (!form_validity($(".upload-form"))) {
+      // $(".upload-form").addClass("was-validated");
       return;
     }
     var xhttp = new XMLHttpRequest();
@@ -265,7 +274,7 @@
       10 ** parseInt($("#delta").attr("data-order-magnitude"));
     var g = document.getElementById("gamma").value;
     var mechanism = $("input[name='function']:checked").val();
-    var selection = $("input[name='field']:checked").val();
+    var selection = $("input[name='field-x']:checked").val();
     var measure = $("input[name='measure']:checked").val();
     var low = document.getElementById("low").value;
     var high = document.getElementById("high").value;
@@ -281,7 +290,6 @@
       .addClass("disabled");
     xhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
-        console.log(this.responseText);
         result = JSON.parse(this.responseText);
         if (result["error"]) {
           $(".data-graph").addClass("process-error");

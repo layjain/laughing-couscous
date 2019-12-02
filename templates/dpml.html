@@ -292,7 +292,6 @@ Learning {% endblock %} {% block formFields %}
   //   return promise;
   // }
   function weights(result) {
-    console.log("making weights");
     var theta = result["theta"];
     var x = result["x_list"];
     var y = result.hasOwnProperty("y_list") ? result["y_list"] : false;
@@ -334,6 +333,7 @@ Learning {% endblock %} {% block formFields %}
       row.appendTo(tbl.find("tbody"));
     });
     tbl.appendTo($(".weights"));
+    //applying the rotated css
   }
   function Analysis3() {
     var xhttp = new XMLHttpRequest();
@@ -371,7 +371,6 @@ Learning {% endblock %} {% block formFields %}
       if (this.readyState == 4) {
         if (this.status == 200) {
           result = JSON.parse(this.responseText);
-          console.log(result);
           if (result["error"]) {
             $(".data-graph").addClass("process-error");
             $(".graph-pre-caption .error-caption").text(
@@ -379,7 +378,6 @@ Learning {% endblock %} {% block formFields %}
             );
           } else {
             if (result.hasOwnProperty("theta")) {
-              console.log("has theta");
               weights(result);
               $(".weights").show();
             } else {

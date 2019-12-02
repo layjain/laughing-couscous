@@ -118,75 +118,79 @@ $(".tab-select").on("change", ".tab-radio", function() {
   var type = $(this).attr("name");
   var value = $(this).val();
   $("label.btn[for='" + type + "-" + value + "']").toggleClass("selected");
-  if (tab_select.attr("data-linked")) {
-    var linked_type = type.replace(
-      "-" + tab_select.attr("data-type"),
-      "-" + tab_select.attr("data-linked")
-    );
-    if ($("input[id='" + linked_type + "-" + value + "']")) {
-      $("label.btn[for='" + linked_type + "-" + value + "']").addClass(
-        "disabled"
+  if (type.includes("field")) {
+    if (tab_select.attr("data-linked")) {
+      var linked_type = type.replace(
+        "-" + tab_select.attr("data-type"),
+        "-" + tab_select.attr("data-linked")
       );
-      $("input[id='" + linked_type + "-" + value + "']").prop("disabled", true);
-      disabled_check();
+      if ($("input[id='" + linked_type + "-" + value + "']")) {
+        $("label.btn[for='" + linked_type + "-" + value + "']").addClass(
+          "disabled"
+        );
+        $("input[id='" + linked_type + "-" + value + "']").prop(
+          "disabled",
+          true
+        );
+        disabled_check();
+      }
     }
-  }
-  if (tab_select.is("[data-bounds]") && tab_select.attr("data-type") == "x") {
-    if (!$("*[id='bound-" + value + "']").length) {
-      var row = $("#bound-template").clone();
-      row.attr({ id: "bound-" + value, "data-feature-type": type }).show();
-      row.find(".bound-feature").text(value);
+    if (tab_select.is("[data-bounds]") && tab_select.attr("data-type") == "x") {
+      if (!$("*[id='bound-" + value + "']").length) {
+        var row = $("#bound-template").clone();
+        row.attr({ id: "bound-" + value, "data-feature-type": type }).show();
+        row.find(".bound-feature").text(value);
+        var step = (
+          (window.min_max[value][1] - window.min_max[value][0]) /
+          50
+        ).toPrecision(1);
+        row.find("#lower-bound").attr({
+          id: "lower-bound-" + value,
+          value: window.min_max[value][0],
+          step: step
+        });
+        row.find("#upper-bound").attr({
+          id: "upper-bound-" + value,
+          value: window.min_max[value][1],
+          step: step
+        });
+        row.appendTo($(".bounds-table tbody"));
+        $("#bounds").show();
+      }
+      // Check rows
+      var rows = $(".bounds-table tbody tr").slice(1);
+      rows.each(function() {
+        var val = $(this)
+          .attr("id")
+          .replace("bound-", "");
+        var type = $(this).attr("data-feature-type");
+        if (!$("*[id='" + type + "-" + val + "']").prop("checked"))
+          $(this).remove();
+      });
+      if (
+        $(".bounds-table tbody tr").length <= 1 ||
+        $("input[name='function']:checked").val() == "logreg"
+      ) {
+        $("#bounds").hide();
+      }
+    } else if ($("#global-sensitivity").length) {
       var step = (
         (window.min_max[value][1] - window.min_max[value][0]) /
         50
       ).toPrecision(1);
-      row.find("#lower-bound").attr({
-        id: "lower-bound-" + value,
-        value: window.min_max[value][0],
-        step: step
-      });
-      row.find("#upper-bound").attr({
-        id: "upper-bound-" + value,
-        value: window.min_max[value][1],
-        step: step
-      });
-      row.appendTo($(".bounds-table tbody"));
-      $("#bounds").show();
+      $("#low")
+        .attr("step", step)
+        .val(window.min_max[value][0]);
+      $("#high")
+        .attr("step", step)
+        .val(window.min_max[value][1]);
     }
-    // Check rows
-    var rows = $(".bounds-table tbody tr").slice(1);
-    rows.each(function() {
-      var val = $(this)
-        .attr("id")
-        .replace("bound-", "");
-      var type = $(this).attr("data-feature-type");
-      if (!$("*[id='" + type + "-" + val + "']").prop("checked"))
-        $(this).remove();
-    });
-    if (
-      $(".bounds-table tbody tr").length <= 1 ||
-      $("input[name='function']:checked").val() == "logreg"
-    ) {
-      $("#bounds").hide();
-    }
-  } else if ($("#global-sensitivity").length) {
-    var step = (
-      (window.min_max[value][1] - window.min_max[value][0]) /
-      50
-    ).toPrecision(1);
-    $("#low")
-      .attr("step", step)
-      .val(window.min_max[value][0]);
-    $("#high")
-      .attr("step", step)
-      .val(window.min_max[value][1]);
   }
 });
 
 disabled_check = function() {
   $(".tab-select label.btn.disabled").each(function() {
     var select = $(this).parents(".tab-select");
-    console.log($("input[id='" + $(this).attr("for") + "']"));
     var radio = $("input[id='" + $(this).attr("for") + "']");
     var type = $(radio).attr("name");
     var linked_type = type.replace(
@@ -333,7 +337,6 @@ $("input[type='number'][min]").change(function() {
 
 $("input[data-toggle='tooltip']").focus(function() {
   $(this).tooltip("hide");
-  console.log("in");
 });
 
 $("input[type=range]").each(function() {
