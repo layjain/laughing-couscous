@@ -163,7 +163,10 @@ $(".tab-select").on("change", ".tab-radio", function() {
       if (!$("*[id='" + type + "-" + val + "']").prop("checked"))
         $(this).remove();
     });
-    if ($(".bounds-table tbody tr").length <= 1) {
+    if (
+      $(".bounds-table tbody tr").length <= 1 ||
+      $("input[name='function']:checked").val() == "logreg"
+    ) {
       $("#bounds").hide();
     }
   } else if ($("#global-sensitivity").length) {
@@ -201,7 +204,6 @@ disabled_check = function() {
 form_validity = function(form) {
   var valid = true;
   var error_msg;
-  // console.log(form[0].elements.reverse());
   var scroll = window.scrollY;
   $(Array.from(form[0].elements).reverse()).each(function() {
     if ($(this).attr("required")) {
@@ -244,11 +246,6 @@ form_validity = function(form) {
     }
   });
   $(window).scrollTop(scroll);
-  // if (!form[0].checkValidity()) {
-  //   form.addClass("was-validated");
-  //   return false;
-  // }
-  // return true;
   return valid;
 };
 

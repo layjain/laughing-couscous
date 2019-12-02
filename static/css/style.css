@@ -715,3 +715,42 @@ section.home-features {
   font-style: italic;
   color: #dc3545;
 }
+table#weights-container {
+  width: auto;
+  border: 2px solid rgba(0, 0, 0, 0.15);
+  margin: 10px auto 20px;
+}
+
+#weights-container td,
+#weights-container th {
+  border-top: none;
+  padding: 7px 10px;
+}
+
+#weights-container th {
+  background: #eee;
+}
+#weights-container thead.rotate th {
+  /* Something you can count on */
+  height: 140px;
+  white-space: nowrap;
+}
+
+#weights-container thead.rotate th > div {
+  transform: translate(25px, 51px) rotate(315deg);
+  width: 30px;
+}
+#weights-container thead.rotate th > div > span {
+  border-bottom: 1px solid #ccc;
+  padding: 5px 10px;
+}
+table#weights-container caption {
+  caption-side: top;
+  text-align: center;
+  color: black;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.template {
+  display: none;
+}

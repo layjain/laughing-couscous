@@ -114,21 +114,6 @@ Learning {% endblock %} {% block formFields %}
         </div>
       </div>
       <div class="col-12"></div>
-      <div class="col-auto my-3" data-hide="NaiveBayes kMeans">
-        <div class="input-group parameter-input">
-          <div class="input-group-prepend">
-            <label for="alpha" class="input-group-text">Alpha</label>
-          </div>
-          <input
-            type="number"
-            class="form-control"
-            id="alpha"
-            name="Alpha"
-            required
-            placeholder="0"
-          />
-        </div>
-      </div>
       <div class="col-auto my-3" data-hide="NaiveBayes logreg">
         <div class="input-group parameter-input">
           <div class="input-group-prepend">
@@ -204,7 +189,7 @@ Learning {% endblock %} {% block formFields %}
 <section
   class="parameter-section"
   id="bounds"
-  data-hide="logreg kMeans"
+  data-hide="logreg"
   style="display: none;"
 >
   <header class="section-header">
@@ -223,10 +208,20 @@ Learning {% endblock %} {% block formFields %}
         <tr id="bound-template" style="display: none;">
           <th scope="row" class="bound-feature"></th>
           <td class="input-bound-lower">
-            <input type="number" class="form-control" id="lower-bound" value="0"/>
+            <input
+              type="number"
+              class="form-control"
+              id="lower-bound"
+              value="0"
+            />
           </td>
           <td class="input-bound-upper">
-            <input type="number" class="form-control" id="upper-bound" value="0"/>
+            <input
+              type="number"
+              class="form-control"
+              id="upper-bound"
+              value="0"
+            />
           </td>
         </tr>
       </tbody>
@@ -271,27 +266,74 @@ Learning {% endblock %} {% block formFields %}
   src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
 ></script>
 <script type="text/javascript">
-  let promise = Promise.resolve(); // Used to hold chain of typesetting calls
+  // let promise = Promise.resolve(); // Used to hold chain of typesetting calls
 
-  function typeset(code) {
-    promise = promise
-      .then(() => {
-        code();
-        return MathJax.typesetPromise();
-      })
-      .catch(err => console.log(err));
-    return promise;
-  }
-  function get_row(row, last = 0) {
-    result = [];
-    if (typeof row == "number") {
-      return parseFloat(row).toPrecision(4);
+  // function weights(a) {
+  //   promise = promise
+  //     .then(() => {
+  //       last = a.pop();
+  //       if (a.length >= 10) {
+  //         a = a.slice(0, 8);
+  //         a.push("\\vdots");
+  //       }
+  //       t = "$$Weights=\\left[\\begin{array}{cc} ";
+  //       $.each(a, function(index, value) {
+  //         t += get_row(value) + " \\\\ ";
+  //       });
+  //       // t = t.substring(1, -2);
+  //       t += get_row(last) + " \\end{array}\\right]$$";
+  //       math = $(".weights");
+  //       math.empty();
+  //       a = $("<p/>");
+  //       a.html(t).appendTo(math);
+  //       return MathJax.typesetPromise();
+  //     })
+  //     .catch(err => console.log(err));
+  //   return promise;
+  // }
+  function weights(result) {
+    console.log("making weights");
+    var theta = result["theta"];
+    var x = result["x_list"];
+    var y = result.hasOwnProperty("y_list") ? result["y_list"] : false;
+    $("#weights-container.with-data").remove();
+    var tbl = $("#weights-container.template").clone();
+    tbl
+      .removeClass("template")
+      .addClass("with-data")
+      .show();
+
+    if (y) {
+      $("<th/>")
+        .attr("scope", "column")
+        .text("")
+        .appendTo(tbl.find(".weight-features"));
+      tbl.find("caption").text("Centroids");
     } else {
-      $.each(row, function(index, value) {
-        result.push(parseFloat(value).toPrecision(4));
-      });
-      return result.join(" & ");
+      tbl.find("caption").text("Weights");
     }
+    $.each(x, function(key, value) {
+      $("<th/>")
+        .append($("<div/>").append($("<span/>").text(value)))
+        .attr("scope", "column")
+        .appendTo(tbl.find(".weight-features"));
+    });
+    $.each(theta, function(key, value) {
+      var row = $("<tr/>");
+      if (y) {
+        $("<th/>")
+          .attr("scope", "row")
+          .text(y[key])
+          .appendTo(row);
+      }
+      $.each(value, function(k, val) {
+        $("<td/>")
+          .text(parseFloat(val).toPrecision(4))
+          .appendTo(row);
+      });
+      row.appendTo(tbl.find("tbody"));
+    });
+    tbl.appendTo($(".weights"));
   }
   function Analysis3() {
     var xhttp = new XMLHttpRequest();
@@ -299,7 +341,6 @@ Learning {% endblock %} {% block formFields %}
     var e = document.getElementById("epsilon").value;
     var lambda = document.getElementById("lambda").value;
     var epochs = document.getElementById("epochs").value;
-    var alpha = document.getElementById("alpha").value;
     var split = document.getElementById("split").value;
     var features = [];
     $("input[name='field']:checked").each(function() {
@@ -337,45 +378,44 @@ Learning {% endblock %} {% block formFields %}
               "Oops! " + result["text"]
             );
           } else {
-            typeset(() => {
-              a = result["theta"];
-              console.log(a);
-              last = a.pop();
-              if (a.length >= 10) {
-                a = a.slice(0, 8);
-                a.push("\\vdots");
-                console.log("more");
-                console.log(b);
-              }
-              t = "$$Weights=\\left[\\begin{array}{cc} ";
-              $.each(a, function(index, value) {
-                t += get_row(value) + " \\\\ ";
-              });
-              // t = t.substring(1, -2);
-              t += get_row(last) + " \\end{array}\\right]$$";
-              console.log(t);
-              math = $(".weights");
-              math.empty();
-              a = $("<p/>");
-              a.html(t).appendTo(math);
-              return math[0];
-            });
-            $(".weights").show();
-            console.log();
-            $(".training-accuracy").html(
-              "Training Accuracy: " +
-                parseFloat(result["train_accuracy"]).toFixed(3) +
-                "%"
-            );
-            $(".test-accuracy").text(
-              "Test Accuracy: " +
-                parseFloat(result["test_accuracy"]).toFixed(3) +
-                "%"
-            );
-            $(".displays.tab-select").css("display", "flex");
-            $("#data-histogram")
-              .attr("src", result["image"])
-              .show();
+            if (result.hasOwnProperty("theta")) {
+              console.log("has theta");
+              weights(result);
+              $(".weights").show();
+            } else {
+              $(".weights").hide();
+            }
+            if (result.hasOwnProperty("train_accuracy")) {
+              $(".training-accuracy")
+                .html(
+                  "Training Accuracy: " +
+                    parseFloat(result["train_accuracy"]).toFixed(3) +
+                    "%"
+                )
+                .show();
+              $(".test-accuracy")
+                .text(
+                  "Test Accuracy: " +
+                    parseFloat(result["test_accuracy"]).toFixed(3) +
+                    "%"
+                )
+                .show();
+            } else {
+              $(".training-accuracy")
+                .html("")
+                .hide();
+              $(".test-accuracy")
+                .text("")
+                .hide();
+            }
+            if (result.hasOwnProperty("image")) {
+              $(".displays.tab-select").css("display", "flex");
+              $("#data-histogram")
+                .attr("src", result["image"])
+                .show();
+            } else {
+              $(".displays.tab-select").css("display", "none");
+            }
             $(".data-graph").addClass("visual-available");
             $("label[for='display-weights']").click();
           }
@@ -401,8 +441,6 @@ Learning {% endblock %} {% block formFields %}
         lambda +
         "&epochs=" +
         epochs +
-        "&alpha=" +
-        alpha +
         "&clusters=" +
         clusters +
         "&split=" +
