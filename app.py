@@ -374,8 +374,8 @@ def logreg_process():
     
     except Exception as e:
         print(e)
-        return {"error":True, "image":name,"text":"Oops! Something went wrong"}
-    return {"error":False,'image':name, "train_accuracy":train_accuracy, "test_accuracy":test_accuracy, 'theta':params.tolist(), 'x_list':x_list, 'y_list' : y_list}
+        return {"error":True, "image":name,"text":"Something went wrong"}
+    return {'mechanism':'logreg',"error":False,'image':name, "train_accuracy":train_accuracy, "test_accuracy":test_accuracy, 'theta':params.tolist(), 'x_list':x_list, 'y_list' : y_list}
 # def logreg_process():
 #     print(request)
 #     print(dict(request.args))
@@ -456,7 +456,7 @@ def NaiveBayes_process():
     # except Exception as e:
     #     print(e)
     #     return {"error":True, "image":name,"text":"Oops! Something went wrong"}
-    return {"error":False,'image':name, "train_accuracy":train_accuracy, "test_accuracy":test_accuracy, 'theta':params.tolist(), 'x_list':x_list}
+    return {'mechanism':'NaiveBayes',"error":False,'image':name, "train_accuracy":train_accuracy, "test_accuracy":test_accuracy, 'theta':params.tolist(), 'x_list':x_list}
 
 @app.route('/kMeans_process', methods=["GET","POST"])
 def Kmeans_process():
@@ -501,7 +501,7 @@ def Kmeans_process():
     except Exception as e:
         print("EXCEPTION RAISED:",e)
         return {"error":True, "text":"Something went wrong"}
-    return {"error":False,'theta':params.tolist(), 'x_list':x_list, 'y_list':y_list}
+    return {'mechanism':'KMeans',"error":False,'theta':params.tolist(), 'x_list':x_list, 'y_list':y_list}
 
 
 @app.route('/query', methods=['GET','POST'])

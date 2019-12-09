@@ -239,11 +239,6 @@ Learning {% endblock %} {% block formFields %}
 </section>
 {% endblock %} {% block analysisScript %}
 
-<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-<script
-  id="MathJax-script"
-  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
-></script>
 <script type="text/javascript">
   function weights(result) {
     var theta = result["theta"];
@@ -256,24 +251,23 @@ Learning {% endblock %} {% block formFields %}
       .addClass("with-data")
       .show();
 
-    if (y && len(y) > 1) {
-      y.unshift("");
+    if (y) {
       $("<th/>")
         .attr("scope", "column")
         .text("")
-        .appendTo(tbl.find(".weight-classes"));
-      $.each(y, function(key, value) {
-        $("<th/>")
-          .text(value)
-          .attr("scope", "column")
-          .appendTo(tbl.find(".weight-classes"));
-      });
-      tbl.find("thead").show();
-      tbl.find("caption").text("Centroids");
-    } else {
-      tbl.find("thead").hide();
-      tbl.find("caption").text("Weights");
+        .appendTo(tbl.find(".weight-features"));
     }
+    if (result["mechanism"] == "KMeans") {
+      $(".table-caption").text("Centroids");
+    } else {
+      $(".table-caption").text("Weights");
+    }
+    $.each(x, function(key, value) {
+      $("<th/>")
+        .text(value)
+        .attr("scope", "column")
+        .appendTo(tbl.find(".weight-features"));
+    });
     $.each(theta, function(key, value) {
       var row = $("<tr/>");
       if (y) {
