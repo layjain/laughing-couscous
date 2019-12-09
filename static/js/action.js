@@ -20,20 +20,26 @@ $("#select-file").change(function(e) {
   $("#upload-data")
     .parent()
     .show();
+  $(".file-error").hide();
   if (size >= 1024 * 5) {
     $("#upload-data").addClass("disabled");
     $(".size-error").show();
     $(".file-spec#file-size").hide();
+    checkfile(false);
   } else {
     $("#upload-data").removeClass("disabled");
     $(".size-error").hide();
     $(".file-spec#file-size")
       .show()
       .text("(" + size + " " + unit + ")");
+    checkfile(true);
   }
 });
 // trigger only when file is uploaded first time
-
+function checkfile(validity) {
+  var file = $("#select-file")[0];
+  file.setCustomValidity(validity ? "" : "File Error");
+}
 $("#upload-data").click(function() {
   $(".dataset-upload label").css("white-space", "unset");
   $(this)
@@ -59,50 +65,59 @@ $("#upload-data").click(function() {
     processData: false,
     success: function(data) {
       // data = JSON.parse(data);
-      $(".tab-select.fields").each(function() {
-        radios = $("<div/>").addClass("d-none tab-radios");
-        $(this).html(radios);
-        input_type = $(this).attr("data-childType");
-        type = $(this).attr("data-type");
-        data_attr = null;
-        require = input_type == "radio" ? true : false;
-        $.each(JSON.parse(data["__" + type + "_options__"]), (key, item) => {
-          label = $("<label/>")
-            .addClass("btn btn-outline")
-            .attr("for", "field-" + type + "-" + item.trim())
-            .text(item.trim());
-          if ($(this).attr("data-linked")) {
-            label.attr({
-              "data-title":
-                item.trim() +
-                " is already selected as " +
-                $(this)
-                  .attr("data-linked")
-                  .toUpperCase() +
-                ". Please unselect that to select this as " +
-                type.toUpperCase(),
-              "data-toggle": "tooltip",
-              "data-trigger": "manual",
-              "data-placement": "top"
-            });
-          }
-          label.appendTo($(this));
-          input = $("<input/>")
-            .attr({
-              type: input_type,
-              name: "field-" + type,
-              id: "field-" + type + "-" + item.trim(),
-              value: item.trim()
-            })
-            .prop({ required: require })
-            .addClass("tab-radio");
-          input.appendTo(radios);
+      console.log(data);
+      if (data["error"]) {
+        $(".size-error").hide();
+        $(".file-error").show();
+        $(".file-spec#file-size").hide();
+        checkfile(false);
+      } else {
+        $(".tab-select.fields").each(function() {
+          radios = $("<div/>").addClass("d-none tab-radios");
+          $(this).html(radios);
+          input_type = $(this).attr("data-childType");
+          type = $(this).attr("data-type");
+          data_attr = null;
+          require = input_type == "radio" ? true : false;
+          $.each(JSON.parse(data["__" + type + "_options__"]), (key, item) => {
+            label = $("<label/>")
+              .addClass("btn btn-outline")
+              .attr("for", "field-" + type + "-" + item.trim())
+              .text(item.trim());
+            if ($(this).attr("data-linked")) {
+              label.attr({
+                "data-title":
+                  item.trim() +
+                  " is already selected as " +
+                  $(this)
+                    .attr("data-linked")
+                    .toUpperCase() +
+                  ". Please unselect that to select this as " +
+                  type.toUpperCase(),
+                "data-toggle": "tooltip",
+                "data-trigger": "manual",
+                "data-placement": "top"
+              });
+            }
+            label.appendTo($(this));
+            input = $("<input/>")
+              .attr({
+                type: input_type,
+                name: "field-" + type,
+                id: "field-" + type + "-" + item.trim(),
+                value: item.trim()
+              })
+              .prop({ required: require })
+              .addClass("tab-radio");
+            input.appendTo(radios);
+          });
+          window.min_max = data;
+          template = $("#bound-template").clone();
+          $(".bounds-table tbody").html(template);
         });
-        window.min_max = data;
-        template = $("#bound-template").clone();
-        $(".bounds-table tbody").html(template);
-      });
-      $("#field-type").show();
+        $("#field-type").show();
+        checkfile(true);
+      }
     }
   });
 });
@@ -217,7 +232,8 @@ form_validity = function(form) {
         validity.rangeOverflow ||
         validity.rangeUnderflow ||
         validity.typeMismatch ||
-        validity.valueMissing
+        validity.valueMissing ||
+        validity.customError
       ) {
         var to_do = $(this).attr("type") == "number" ? "enter" : "select";
         var type =
@@ -359,4 +375,38 @@ $("input[type=range]").each(function() {
     .clone()
     .html(max)
     .appendTo(container);
+});
+$(".section-header").click(function() {
+  $(this).toggleClass("active-info");
+  $(this)
+    .parent("section")
+    .find(".header-subtitle")
+    .toggle();
+});
+$(document).ready(function() {
+  $("*[data-help]").each(function() {
+    console.log("help");
+    help = $("<div/>")
+      .addClass("icon icon-help")
+      .attr({
+        "data-toggle": "tooltip",
+        "data-trigger": "manual",
+        "data-placement": "top",
+        "data-title": "Epsilon cannot be 0!"
+      })
+      .html("&#xf128;");
+    help.appendTo($(this));
+    $(this).addClass("d-flex align-items-center");
+  });
+});
+$("*[data-help]").on("click", ".icon-help", function() {
+  $(this).toggleClass(".active-info");
+  $(this).tooltip("toggle");
+});
+$(document).click(function(e) {
+  $("*[data-toggle=tooltip]").each(function() {
+    if ($(e.target).hasClass(".active-info")) return;
+    $(this).removeClass("active-info");
+    $(this).tooltip("hide");
+  });
 });

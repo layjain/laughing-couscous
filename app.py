@@ -29,7 +29,7 @@ import json
 import NaiveBayes
 import Kmeans
 
-ALLOWED_EXTENSIONS = set(['txt', 'csv'])
+ALLOWED_EXTENSIONS = set(['txt', 'csv','data'])
 UPLOAD_FOLDER = 'static/uploaded'
 
 class Config(object):

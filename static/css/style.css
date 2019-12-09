@@ -1,3 +1,14 @@
+@font-face {
+  font-family: "Custom";
+  src: url("../fonts/fontello.eot?88511564");
+  src: url("../fonts/fontello.eot?88511564#iefix") format("embedded-opentype"),
+    url("../fonts/fontello.woff?88511564") format("woff"),
+    url("../fonts/fontello.ttf?88511564") format("truetype"),
+    url("../fonts/fontello.svg?88511564#fontello") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -313,6 +324,7 @@ section.home-features {
   padding: 10px;
   z-index: 1;
   margin-bottom: 10px;
+  pointer-events: none;
 }
 .parameter-section .section-header:before {
   position: absolute;
@@ -333,10 +345,49 @@ section.home-features {
   margin: 0;
   display: inline-block;
   padding: 5px 10px;
+  padding-right: 30px;
   background: #f9f9f9;
   z-index: 1;
   text-transform: uppercase;
+  position: relative;
 }
+.parameter-section .section-header h6:after,
+.icon {
+  font-family: "Custom";
+  border: 1px solid #aaa;
+  color: #aaa;
+  border-radius: 50%;
+  font-weight: 100;
+  font-size: 0.7em;
+  pointer-events: auto;
+  height: 18px;
+  width: 18px;
+  padding: 3px 0;
+  cursor: pointer;
+  margin-left: 10px;
+  line-height: 1;
+  text-align: center;
+}
+.parameter-section .section-header h6:after {
+  position: absolute;
+  right: 5px;
+  top: 4px;
+  content: "\e800";
+}
+.parameter-section .section-header.active-info h6:after,
+.icon.active-info {
+  color: #f9f9f9;
+  background: #aaa;
+}
+p.header-subtitle {
+  color: #999;
+  font-size: 0.85em;
+  font-style: italic;
+  text-align: center;
+  margin: -15px 0 15px;
+  display: none;
+}
+
 .tab-select {
   margin: 10px 0;
   align-items: center;
@@ -345,12 +396,15 @@ section.home-features {
   max-width: 380px;
   margin: 0 auto;
 }
-.upload-container > div {
+.upload-container > section {
   border: 2px dashed #aaa;
   padding: 20px;
   background: white;
   border-radius: 10px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+.upload-container > section .custom-validation {
+  display: none;
 }
 .upload-container header h4 {
   display: none;
@@ -365,10 +419,23 @@ section.home-features {
 .upload-form #select-file {
   display: none;
 }
-.size-error {
+.size-error,
+.file-error {
   color: red;
   font-size: 0.9em;
   display: none;
+  animation: blinkingText 0.8s 20;
+}
+@keyframes blinkingText {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.75;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 .upload-form .upload-btns {
   width: 100%;
