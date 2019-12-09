@@ -5,7 +5,11 @@ Learning {% endblock %} {% block formFields %}
   <header class="section-header">
     <h6>Select Mechanism</h6>
   </header>
-    <p class="header-subtitle">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsa eligendi mollitia magnam omnis deserunt quaerat assumenda in repudiandae, libero ut repellendus aut neque!</p>
+  <p class="header-subtitle">
+    Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsa eligendi
+    mollitia magnam omnis deserunt quaerat assumenda in repudiandae, libero ut
+    repellendus aut neque!
+  </p>
   <div class="d-flex justify-content-center functions tab-select">
     <label class="btn btn-outline" for="function-logreg" data-control="logreg"
       >Logistic Regression</label
@@ -83,7 +87,11 @@ Learning {% endblock %} {% block formFields %}
   </header>
   <div>
     <div class="form-row my-4 justify-content-around">
-      <div class="col-auto my-3" data-hide="NaiveBayes kMeans" data-help="Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsa eligendi mollitia magnam omnis deserunt quaerat assumenda in repudiandae">
+      <div
+        class="col-auto my-3"
+        data-hide="NaiveBayes kMeans"
+        data-help="Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsa eligendi mollitia magnam omnis deserunt quaerat assumenda in repudiandae"
+      >
         <div class="input-group parameter-input">
           <div class="input-group-prepend">
             <label for="lambda" class="input-group-text">Lambda</label>
@@ -227,36 +235,6 @@ Learning {% endblock %} {% block formFields %}
         </tr>
       </tbody>
     </table>
-    <!-- <div class="form-row my-4 justify-content-around">
-      <div class="col-auto my-3">
-        <div class="input-group parameter-input">
-          <div class="input-group-prepend">
-            <label for="upper-bound" class="input-group-text">Upper</label>
-          </div>
-          <input
-            type="number"
-            class="form-control"
-            id="upper-bound"
-            placeholder="0"
-            required
-          />
-        </div>
-      </div>
-      <div class="col-auto my-3">
-        <div class="input-group parameter-input">
-          <div class="input-group-prepend">
-            <label for="lower-bound" class="input-group-text">Lower</label>
-          </div>
-          <input
-            type="number"
-            class="form-control"
-            id="lower-bound"
-            required
-            placeholder="0"
-          />
-        </div>
-      </div>
-    </div> -->
   </div>
 </section>
 {% endblock %} {% block analysisScript %}
@@ -267,31 +245,6 @@ Learning {% endblock %} {% block formFields %}
   src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
 ></script>
 <script type="text/javascript">
-  // let promise = Promise.resolve(); // Used to hold chain of typesetting calls
-
-  // function weights(a) {
-  //   promise = promise
-  //     .then(() => {
-  //       last = a.pop();
-  //       if (a.length >= 10) {
-  //         a = a.slice(0, 8);
-  //         a.push("\\vdots");
-  //       }
-  //       t = "$$Weights=\\left[\\begin{array}{cc} ";
-  //       $.each(a, function(index, value) {
-  //         t += get_row(value) + " \\\\ ";
-  //       });
-  //       // t = t.substring(1, -2);
-  //       t += get_row(last) + " \\end{array}\\right]$$";
-  //       math = $(".weights");
-  //       math.empty();
-  //       a = $("<p/>");
-  //       a.html(t).appendTo(math);
-  //       return MathJax.typesetPromise();
-  //     })
-  //     .catch(err => console.log(err));
-  //   return promise;
-  // }
   function weights(result) {
     var theta = result["theta"];
     var x = result["x_list"];
@@ -303,21 +256,24 @@ Learning {% endblock %} {% block formFields %}
       .addClass("with-data")
       .show();
 
-    if (y) {
+    if (y && len(y) > 1) {
+      y.unshift("");
       $("<th/>")
         .attr("scope", "column")
         .text("")
-        .appendTo(tbl.find(".weight-features"));
+        .appendTo(tbl.find(".weight-classes"));
+      $.each(y, function(key, value) {
+        $("<th/>")
+          .text(value)
+          .attr("scope", "column")
+          .appendTo(tbl.find(".weight-classes"));
+      });
+      tbl.find("thead").show();
       tbl.find("caption").text("Centroids");
     } else {
+      tbl.find("thead").hide();
       tbl.find("caption").text("Weights");
     }
-    $.each(x, function(key, value) {
-      $("<th/>")
-        .append($("<div/>").append($("<span/>").text(value)))
-        .attr("scope", "column")
-        .appendTo(tbl.find(".weight-features"));
-    });
     $.each(theta, function(key, value) {
       var row = $("<tr/>");
       if (y) {
