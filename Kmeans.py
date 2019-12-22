@@ -12,9 +12,9 @@ def train_and_test(x_fields_list,  filepath="static/uploaded/logReg.txt", epsilo
     df = pd.read_csv(filepath, header=0)
     print("head:", df.head())
 
-    headers = list(pd.read_csv(filepath))
+    headers = list(map(lambda x: x.strip(),list(pd.read_csv(filepath))))
     print("HEADERS ARE", headers)
-    x_indices = [headers.index(field[0]) for field in x_fields_list]
+    x_indices = [headers.index(field[0].strip()) for field in x_fields_list]
 
     X_train = df.iloc[:, x_indices].values  # features, np array
     print(X_train)
