@@ -119,9 +119,11 @@ def generate_and_save_histogram (filepath="https://raw.githubusercontent.com/pri
     if measure=='Median':
         print("Getting data using pandas df")
         PUMSdata=pandas.read_csv(filepath)
+        selection_index = list(map(lambda x:x.strip(),list(PUMSdata))).index(selection.strip())
+        selection = list(PUMSdata)[selection_index]
         data=np.array(PUMSdata[selection], dtype='float32')
         populationTrue=float(np.median(data))
-        print("100 random choices for samnple_index")
+        print("100 random choices for sample_index")
         sample_index=np.random.choice(range(1, len(data), 1), size=99, replace=False)
         x=data[sample_index]
         n_sims=2000
@@ -148,6 +150,9 @@ def generate_and_save_histogram (filepath="https://raw.githubusercontent.com/pri
     else:
         print('measure given : '+measure+' hence using: Mean')
         PUMSdata=pandas.read_csv(filepath)
+        print("extracting data")
+        selection_index = list(map(lambda x:x.strip(),list(PUMSdata))).index(selection.strip())
+        selection = list(PUMSdata)[selection_index]
         data=np.array(PUMSdata[selection], dtype='float32') #### KEY ERROR
         count=0
         release=[None for _ in range(2000)]
@@ -224,6 +229,8 @@ def upload_process():
             df = pandas.read_csv(os.path.join(UPLOAD_FOLDER, session.get('filename')))
             # filepath="https://raw.githubusercontent.com/privacytoolsproject/cs208/master/data/FultonPUMS5full.csv"
             # df=pandas.read_csv(filepath)
+            print("dataframe of the uploaded file:")
+            print(df)
             fields_list = []
             headers_list=list(df)
             field_min_maxes={}
@@ -316,7 +323,7 @@ def process():
             name=generate_and_save_histogram(filepath=filepath, epsilon=epsilon, measure=measure, selection=selection, low=low, high=high, delta=delta, mechanism=mechanism, gamma=gamma)
         except Exception as e:
             print(e)
-            return {"error":True, "text":"Something went wrong!"}
+            return {"error":True, "text":"Something went wrong! ErrorCode:"+str(e)}
     else:
         UPLOAD_STATUS='USED DEFAULT FILE'
 
@@ -367,54 +374,14 @@ def logreg_process():
     
     except Exception as e:
         print(e)
-        return {"error":True, "text":"Something went wrong"}
+        return {"error":True, "text":"Something went wrong! ErrorCode: "+str(e)}
 
     try:
         train_accuracy, test_accuracy, params, x_list, y_list = LogisticRegression.train_and_test(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio, y_field_name=y_field_name, x_fields_list=x_fields_list, epochs=epochs, Lambda=Lambda)
-    
     except Exception as e:
         print(e)
-        return {"error":True, "image":name,"text":"Something went wrong"}
+        return {"error":True, "image":name,"text":"Something went wrong! ErrorCode: "+str(e)}
     return {'mechanism':'logreg',"error":False,'image':name, "train_accuracy":train_accuracy, "test_accuracy":test_accuracy, 'theta':params.tolist(), 'x_list':x_list, 'y_list' : y_list}
-# def logreg_process():
-#     print(request)
-#     print(dict(request.args))
-#     try:
-#         filename_dpml=session.get('filename')
-#     except:
-#         filename_dpml=None
-#     e = request.args.get('e','0.1')
-#     Lambda = request.args.get('lambda', '1')
-#     Degree=request.args.get('degree','6')
-#     epochs=request.args.get('epochs','800')
-#     alpha=request.args.get('alpha','1')
-#     split_ratio=request.args.get('split_ratio', '1') #train:(total) must be (0,1]
-    
-#     epsilon=get_float(e, 0.1)
-#     Lambda=get_float(Lambda, 1)
-#     Degree=get_natural(Degree, 6, 'Could not convert given degree to int')
-#     epochs=get_natural(epochs, 800)
-#     alpha=get_float(alpha, 1.0)
-#     split_ratio = get_float(split_ratio, 1.0)
-#     if filename_dpml != None:
-#         print('used new file '+filename_dpml)
-#         filepath = 'static/uploaded/'+filename_dpml
-#         UPLOAD_STATUS='UPLOADED!'
-#         filename_dpml=None
-#     else:
-#         print('used default')
-#         filepath = "static/uploaded/logReg.txt"
-#         UPLOAD_STATUS='USED DEFAULT FILE'
-#     if not logreg.format_correct(filepath):
-#         return {"error":True, "text":"Incorrect File Format"}
-#     try:
-#         name =logreg.generate_and_save_graph(filepath=filepath, epsilon=epsilon, Lambda=Lambda,\
-#                                         degree=Degree, alpha=alpha, epochs=epochs, split_ratio=split_ratio)
-#     except Exception as e:
-#         print(e)
-#         return {"error":True, "text":"Oops! Something went wrong"}
-#     # return name
-#     return {"error":False,'image':name,'theta': theta}
 
 @app.route('/NaiveBayes_process', methods=["GET","POST"])
 def NaiveBayes_process():
@@ -443,19 +410,19 @@ def NaiveBayes_process():
 
     if not logreg.format_correct(filepath):
         return {"error":True, "text":"Incorrect File Format"}
-    # try:
-    name = NaiveBayes.make_and_save_graph(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio, y_field_name = y_field_name, x_fields_list = x_fields_list)
-    print(name)    
-    # except Exception as e:
-    #     print(e)
-    #     return {"error":True, "text":"Something went wrong"}
+    try:
+        name = NaiveBayes.make_and_save_graph(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio, y_field_name = y_field_name, x_fields_list = x_fields_list)
+        print(name)    
+    except Exception as e:
+        print(e)
+        return {"error":True, "text":"Something went wrong! ErrorCode: "+str(e)}
 
-    # try:
-    train_accuracy, test_accuracy, params, x_list = NaiveBayes.train_and_test(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio, y_field_name=y_field_name, x_fields_list=x_fields_list)
+    try:
+        train_accuracy, test_accuracy, params, x_list = NaiveBayes.train_and_test(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio, y_field_name=y_field_name, x_fields_list=x_fields_list)
     
-    # except Exception as e:
-    #     print(e)
-    #     return {"error":True, "image":name,"text":"Oops! Something went wrong"}
+    except Exception as e:
+        print(e)
+        return {"error":True, "image":name,"text":"Something went wrong! ErrorCode: "+str(e)}
     return {'mechanism':'NaiveBayes',"error":False,'image':name, "train_accuracy":train_accuracy, "test_accuracy":test_accuracy, 'theta':params.tolist(), 'x_list':x_list}
 
 @app.route('/kMeans_process', methods=["GET","POST"])

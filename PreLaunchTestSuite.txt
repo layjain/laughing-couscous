@@ -24,8 +24,40 @@ HUMAN TESTS:
 	- an error message explaining the correct format
 8. Uploading a file with existing name does not delete the existing file
 9. Check good errors when:
-	- high<low
-	-File Size bigg
-	-File format wrong
+	- high<low (1)
+	-File Size bigg (1)
+	-File format wrong (1)
 	-Datafile is empty
-	-e=0, d=0 not allowed in: Laplace, BoundedLaplace, 
+	-e=0, d=0 not allowed (1)
+10. Qualitative Variation
+	-DP Visualisation
+		-Mean
+			-Laplace
+				1. Accuracy increase with epsilon: close to true mean at large epsilon (1)
+				2. Values of High/Low, in and out of the range; High = Low (1)
+			-Bounded Laplace
+				1. Accuracy increase with epsilon: close to true mean at large epsilon (1)
+				2. Accuracy increase with delta: close to true mean at large delta (1)
+				3. Values of High/Low, in and out of the range; High = Low (1)
+			-Staircase
+				1. Accuracy increase with epsilon: close to true mean at large epsilon (1)
+				2. ??@Vaik: Variation with gamma??
+				3. Values of High/Low, in and out of the range; High = Low (1)
+			-Gaussian
+				1. Values of High/Low, in and out of the range; High = Low (1)
+				2. High range High/Low gives wider graph (1)
+				3. Accuracy increase with epsilon: close to true mean at large epsilon (1)
+				4. Accuracy increase with delta: close to true mean at large delta (1)
+		-Median
+			1. Accuracy increase with epsilon: close to true mean at large epsilon (0)
+			2. Values of High/Low, in and out of the range; High = Low (0)
+			3. High range High/Low gives wider graph (0)
+	-DPML
+		-Logistic Regression
+			1. Train accuracy increase with epochs (1)
+			2. Test accuracy: under- and over- fitting with epochs for low enough lambda (0?-> @Lay check sklearn logistic regression, max_iter, early stop?)
+			3. Train accuracy decrease with lambda (1)
+			4. Train accuracy decrease with split ratio (1?-a liitle for adult dataset)
+		-Naive Bayes
+			1. Accuracy increase with epsilon
+			2. 
