@@ -19,6 +19,7 @@ TODO:
 
 NOTES:
 1. If two headers differ by a leading or trailing whitespace, then we can get wrong results or exceptions
-2. NaNs are not allowed in any file
-3. Semicolon seperated csv is not allowed as of now (**Important**)
+2. NaNs/Empty Entries are not allowed in any file (Throws Informative Exception)
+3. Semicolon not allowed in entries sep by comma and vise-versa
 4. If split_ratio = 1, Train data = Test data (instead of empty test data!)
+5. Allows only comma and semicolon seperated values in csv

@@ -1,10 +1,10 @@
 HUMAN TESTS:
 
 1. Login (1)
-2. Signup (0)
+2. Signup (1 - set up database on server)
 3. Signup with the same username/email should not be allowed,
    and such a request should not change the current SQL database 
-3. Logistic Regression, Naive Bayes, K-means
+3. Logistic Regression, Naive Bayes, K-means (See 10)
 	-Variation with different values of epsilon/hyperparameterts
 	-File with -1
 			   -2
@@ -14,15 +14,15 @@ HUMAN TESTS:
 	-Bounded Laplace (1)
 	-Staircase (1)
 	-Gaussian (1)
-5. Median, no NaN
-6. With nan values in input file:
+5. Median, no NaN (0, See 10)
+6. With nan values in input file: (0)
 	-Mean
 	-Median
 	-DPML (all three mechs)
    throw an error from backend to front-end
 7. With wrong file format in DPML
 	- an error message explaining the correct format
-8. Uploading a file with existing name does not delete the existing file
+8. Uploading a file with existing name does not delete the existing file (0)
 9. Check good errors when:
 	- high<low (1)
 	-File Size bigg (1)
@@ -57,7 +57,7 @@ HUMAN TESTS:
 			1. Train accuracy increase with epochs (1)
 			2. Test accuracy: under- and over- fitting with epochs for low enough lambda (0?-> @Lay check sklearn logistic regression, max_iter, early stop?)
 			3. Train accuracy decrease with lambda (1)
-			4. Train accuracy decrease with split ratio (1?-a liitle for adult dataset)
+			4. Train accuracy decrease with split ratio (1?-only a liitle for adult dataset)
 		-Naive Bayes
-			1. Accuracy increase with epsilon
-			2. 
+			1. Accuracy increase with epsilon (1)
+			2. Train accuracy decrease with lambda 

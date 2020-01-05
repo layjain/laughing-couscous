@@ -13,7 +13,7 @@ def train_and_test(x_fields_list, y_field_name, filepath="static/uploaded/logReg
     @Split_ratio = train:(test+train) should be in (0,1]
     '''
     print("making pandas dataframe")
-    df = pd.read_csv(filepath, header=0)
+    df = pd.read_csv(filepath, header=0, sep = '[;,]', engine='python')
     print("head:", df.head())
 
     headers = list(map(lambda x:x.strip(),list(df)))
@@ -47,7 +47,7 @@ def train_and_test(x_fields_list, y_field_name, filepath="static/uploaded/logReg
 
 def make_and_save_graph(x_fields_list, y_field_name,  filepath="static/uploaded/logReg.txt", split_ratio=1, **unused_args):
     print("making pandas dataframe")
-    df = pd.read_csv(filepath, header=0)
+    df = pd.read_csv(filepath, header=0, sep = '[;,]', engine='python')
     print("head:", df.head())
 
     headers = list(map(lambda x:x.strip(),list(df)))

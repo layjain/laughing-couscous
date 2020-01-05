@@ -35,7 +35,7 @@ def meanDP(x, lower, upper, epsilon):
 def generate_and_save_histogram (filepath,
                                  label,
                                  epsilon=1):
-    PUMSdata=pandas.read_csv(filepath)
+    PUMSdata=pandas.read_csv(filepath, sep = '[;,]', engine='python')
     data=np.array(PUMSdata['age'])
     count=0
     release=[None for _ in range(2000)]

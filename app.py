@@ -118,7 +118,7 @@ def generate_and_save_histogram (filepath="https://raw.githubusercontent.com/pri
     upper=high
     if measure=='Median':
         print("Getting data using pandas df")
-        PUMSdata=pandas.read_csv(filepath)
+        PUMSdata=pandas.read_csv(filepath, sep = '[;,]', engine='python')
         selection_index = list(map(lambda x:x.strip(),list(PUMSdata))).index(selection.strip())
         selection = list(PUMSdata)[selection_index]
         data=np.array(PUMSdata[selection], dtype='float32')
@@ -149,7 +149,7 @@ def generate_and_save_histogram (filepath="https://raw.githubusercontent.com/pri
 
     else:
         print('measure given : '+measure+' hence using: Mean')
-        PUMSdata=pandas.read_csv(filepath)
+        PUMSdata=pandas.read_csv(filepath, sep = '[;,]', engine='python')
         print("extracting data")
         selection_index = list(map(lambda x:x.strip(),list(PUMSdata))).index(selection.strip())
         selection = list(PUMSdata)[selection_index]
@@ -226,7 +226,7 @@ def upload_process():
             print('File is Allowed', file.filename)
             session['filename']=secure_filename(file.filename)
             file.save(os.path.join(UPLOAD_FOLDER, session.get('filename')))
-            df = pandas.read_csv(os.path.join(UPLOAD_FOLDER, session.get('filename')))
+            df = pandas.read_csv(os.path.join(UPLOAD_FOLDER, session.get('filename')), sep='[;,]', engine = 'python')
             # filepath="https://raw.githubusercontent.com/privacytoolsproject/cs208/master/data/FultonPUMS5full.csv"
             # df=pandas.read_csv(filepath)
             print("dataframe of the uploaded file:")
@@ -367,8 +367,9 @@ def logreg_process():
         print('used default')
         filepath = "static/uploaded/logRegNoNaN.txt"
 
-    if not logreg.format_correct(filepath):
-        return {"error":True, "text":"Incorrect File Format"}
+    if logreg.format_correct(filepath) != True:
+        msg = logreg.format_correct(filepath)
+        return {"error":True, "text":"Incorrect File Format: "+str(msg)}
     try:
         name = LogisticRegression.make_and_save_graph(filepath=filepath, epsilon=epsilon, split_ratio=split_ratio, y_field_name = y_field_name, x_fields_list = x_fields_list, epochs=epochs, Lambda=Lambda)
     

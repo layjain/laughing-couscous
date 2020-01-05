@@ -9,10 +9,10 @@ import time
 
 def train_and_test(x_fields_list,  filepath="static/uploaded/logReg.txt", epsilon=0.1, split_ratio=1, n_clusters=8, **unused_args):
     print("making pandas dataframe")
-    df = pd.read_csv(filepath, header=0)
+    df = pd.read_csv(filepath, header=0, sep = '[;,]', engine='python')
     print("head:", df.head())
 
-    headers = list(map(lambda x: x.strip(),list(pd.read_csv(filepath))))
+    headers = list(map(lambda x: x.strip(),list(pd.read_csv(filepath, sep = '[;,]', engine='python'))))
     print("HEADERS ARE", headers)
     x_indices = [headers.index(field[0].strip()) for field in x_fields_list]
 
@@ -34,7 +34,7 @@ def make_and_save_graph(x_fields_list, filepath="static/uploaded/logReg.txt", sp
     This function is not called for now
     '''
     print("making pandas dataframe")
-    df = pd.read_csv(filepath, header=None)
+    df = pd.read_csv(filepath, header=None, sep = '[;,]', engine='python')
     print("head:", df.head())
     X = df.iloc[:, :-1].values  # features, np array
     Y = df.iloc[:, -1].values  # labels, np array
