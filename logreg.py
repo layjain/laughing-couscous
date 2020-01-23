@@ -124,7 +124,7 @@ def format_correct(filepath):
     PUMSdata=pd.read_csv(filepath, sep = '[;,]', engine='python')
 
     #Any Empty Values
-    if np.any(pd.isnull(df)):
+    if np.any(pd.isnull(PUMSdata)):
         return "File Contains Empty or Null Values"
 
     # X=df.iloc[:,:-1].values #features
