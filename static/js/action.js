@@ -376,7 +376,7 @@ $("input[type=range]").each(function() {
     .html(max)
     .appendTo(container);
 });
-$(".section-header").click(function() {
+$(".parameter-section .section-header").click(function() {
   $(this).toggleClass("active-info");
   $(this)
     .parent("section")
@@ -409,4 +409,31 @@ $(document).click(function(e) {
     $(this).removeClass("active-info");
     $(this).tooltip("hide");
   });
+});
+
+check_scroll = function() {
+  var table = $("#weights-container.with-data");
+  var container = table.parent();
+  var table_right = table.position().left + table.width();
+  var container_right = container.position().left + container.width();
+
+  if (
+    Math.abs(table_right - container_right) < 10 ||
+    table.width() <= container.width()
+  ) {
+    container.find(".table-right-scroll").hide();
+  } else {
+    container.find(".table-right-scroll").show();
+  }
+};
+
+$(document).ready(function() {
+  if ($("#weights-container.with-data").length) check_scroll();
+});
+$(".weights").scroll(function() {
+  check_scroll();
+});
+$(".table-right-scroll").click(function() {
+  var par = $(this).parent();
+  par.scrollLeft(parseInt(par.scrollLeft()) + par.width() / 2);
 });

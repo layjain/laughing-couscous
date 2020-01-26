@@ -284,6 +284,9 @@ Learning {% endblock %} {% block formFields %}
       row.appendTo(tbl.find("tbody"));
     });
     tbl.appendTo($(".weights"));
+    setTimeout(function() {
+      check_scroll();
+    }, 0);
     //applying the rotated css
   }
   function Analysis3() {
