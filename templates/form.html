@@ -9,19 +9,13 @@
   <div class="row justify-content-between align-items-center">
     <form class="form upload-form px-0 col-12 needs-validation">
       <div class="upload-container text-center my-3">
-        <section
-          class="d-flex flex-column justify-content-around align-items-center"
-        >
+        <section class="d-flex flex-column justify-content-around align-items-center">
           <header>
             <h3 class="bottom-border mb-4">Upload Your Dataset</h3>
             <h4>Your Dataset</h4>
           </header>
           <figure class="file-icon">
-            <img
-              src="/static/images/sheet.png"
-              alt="Data File"
-              title="Data File"
-            />
+            <img src="/static/images/sheet.png" alt="Data File" title="Data File" />
             <figcaption class="font-italic pt-3">
               <div class="file-spec font-weight-bold" id="file-name"></div>
               <div class="file-spec" id="file-size"></div>
@@ -37,17 +31,10 @@
               </div>
             </figcaption>
           </figure>
-          <div
-            class="upload-btns form-row justify-content-around px-0 align-items-center"
-          >
+          <div class="upload-btns form-row justify-content-around px-0 align-items-center">
             <div class="col-6 form-group dataset-upload my-0">
               <label for="select-file" class="btn my-2">Select File</label>
-              <input
-                type="file"
-                id="select-file"
-                accept=".txt,.csv,.data,.xls,.tsv,.db"
-                required
-              />
+              <input type="file" id="select-file" accept=".txt,.csv,.data,.xls,.tsv,.db" required />
             </div>
             <div class="col-6">
               <a class="btn my-2" id="upload-data">Upload</a>
@@ -58,12 +45,7 @@
       <div class="parameters-container">
         {% block formFields %}{% endblock %}
         <div class="d-flex justify-items-center">
-          <button
-            type="button"
-            onclick="Analysis3()"
-            class="btn"
-            id="Analyze-Button"
-          >
+          <button type="button" onclick="Analysis3()" class="btn" id="Analyze-Button">
             Analyze
           </button>
         </div>
@@ -72,49 +54,20 @@
     <div class="data-graph col-6">
       <form class="form">
         <div class="justify-content-center displays tab-select mt-4">
-          <label
-            class="btn btn-outline m-3"
-            for="display-weights"
-            data-control="weights"
-            >Result</label
-          >
-          <label
-            class="btn btn-outline selected m-3"
-            for="display-visual"
-            data-control="visual"
-            >Visualization</label
-          >
+          <label class="btn btn-outline m-3" for="display-weights" data-control="weights">Result</label>
+          <label class="btn btn-outline selected m-3" for="display-visual" data-control="visual">Visualization</label>
           <div class="d-none tab-radios">
-            <input
-              type="radio"
-              class="tab-radio"
-              value="visual"
-              id="display-visual"
-              name="display"
-              required
-              selected
-            />
-            <input
-              type="radio"
-              value="weights"
-              id="display-weights"
-              name="display"
-              class="tab-radio"
-              required
-            />
+            <input type="radio" class="tab-radio" value="visual" id="display-visual" name="display" required selected />
+            <input type="radio" value="weights" id="display-weights" name="display" class="tab-radio" required />
           </div>
         </div>
         <div class="graph-container" data-hide="weights">
           <div class="graph-pre-caption">
-            <span class="initial-caption"
-              >Your data will be visualized here after analyzing</span
-            >
+            <span class="initial-caption">Your data will be visualized here after analyzing</span>
             <span class="loading-caption">Generating preview</span>
             <span class="error-caption"></span>
           </div>
-          <div
-            class="loading-animation justify-content-center align-items-center"
-          >
+          <div class="loading-animation justify-content-center align-items-center">
             <div class="triple-spinner"></div>
           </div>
           <img id="data-histogram" />
@@ -122,15 +75,17 @@
         <div class="data-weights text-center" data-hide="visual">
           <div class="table-caption"></div>
           <div class="weights">
-            <table id="weights-container" class="template">
-              <div class="table-right-scroll">
-                <span>&gt;</span>
-              </div>
-              <thead>
-                <tr class="weight-features"></tr>
-              </thead>
-              <tbody></tbody>
-            </table>
+            <div class="table-right-scroll">
+              <span>&gt;</span>
+            </div>
+            <div class="weights-wrapper">
+              <table id="weights-container" class="template">
+                <thead>
+                  <tr class="weight-features"></tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
           </div>
           <div class="training-accuracy py-2"></div>
           <div class="test-accuracy py-2"></div>

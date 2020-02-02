@@ -10,5 +10,16 @@ TODO:
 23. nan in the data (Lay)
 28. Can handle high less than low from frontend? (Prabhakar?)
 30. Is gamma = 1 / (1 + np.exp(epsilon / 2)) in staircase? (Vaik)
-31. More robust Median Code
-32. Maybe we shouldn't constrain the file extension
+31. More robust Median Code(Vaik)(**IMPORTANT: Performance Issues**)
+32. Disallow epochs = 0 from front-end
+33. Disallow lambda = 0 from front-end
+34. Remove the first column in weights table for binary classification (front End)
+35. Add bias column (back-End)
+36. Disallow split-ratio = 0 from front-End
+
+NOTES:
+1. If two headers differ by a leading or trailing whitespace, then we can get wrong results or exceptions
+2. NaNs/Empty Entries are not allowed in any file (Throws Informative Exception)
+3. Semicolon not allowed in entries sep by comma and vise-versa
+4. If split_ratio = 1, Train data = Test data (instead of empty test data!)
+5. Allows only comma and semicolon seperated values in csv

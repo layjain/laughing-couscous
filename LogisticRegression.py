@@ -15,12 +15,12 @@ def train_and_test(x_fields_list, y_field_name, filepath="static/uploaded/logReg
     @Split_ratio = train:(test+train) should be in (0,1]
     '''
     print("making pandas dataframe")
-    df = pd.read_csv(filepath, header=0)
+    df = pd.read_csv(filepath, header=0, sep = '[;,]', engine='python')
     print("head:", df.head())
 
-    headers = list(df)
-    y_index = headers.index(y_field_name)
-    x_indices = [headers.index(field[0]) for field in x_fields_list]
+    headers = list(map(lambda x:x.strip(),list(df)))
+    y_index = headers.index(y_field_name.strip())
+    x_indices = [headers.index(field[0].strip()) for field in x_fields_list]
 
     X = df.iloc[:, x_indices].values  # features, np array
     Y = np.array(list(map(str, df.iloc[:, y_index].values)))  # labels, np array
@@ -54,12 +54,13 @@ def train_and_test(x_fields_list, y_field_name, filepath="static/uploaded/logReg
 
 def make_and_save_graph(x_fields_list, y_field_name, filepath="static/uploaded/logReg.txt", split_ratio=1, epochs=10, Lambda=1,  **unused_args):
     print("making pandas dataframe")
-    df = pd.read_csv(filepath, header=0)
+    df = pd.read_csv(filepath, header=0, sep = '[;,]', engine='python')
     print("head:", df.head())
 
-    headers = list(df)
-    y_index = headers.index(y_field_name)
-    x_indices = [headers.index(field[0]) for field in x_fields_list]
+    headers = list(map(lambda x:x.strip(),list(df)))
+    print("headers:", headers)
+    y_index = headers.index(y_field_name.strip())
+    x_indices = [headers.index(field[0].strip()) for field in x_fields_list]
 
     X = df.iloc[:, x_indices].values  # features, np array
     Y = np.array(list(map(str, df.iloc[:, y_index].values)))  # labels, np array

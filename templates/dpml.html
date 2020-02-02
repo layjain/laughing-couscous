@@ -11,43 +11,13 @@ Learning {% endblock %} {% block formFields %}
     repellendus aut neque!
   </p>
   <div class="d-flex justify-content-center functions tab-select">
-    <label class="btn btn-outline" for="function-logreg" data-control="logreg"
-      >Logistic Regression</label
-    >
-    <label
-      class="btn btn-outline"
-      for="function-NaiveBayes"
-      data-control="NaiveBayes"
-      >Naive Bayes</label
-    >
-    <label class="btn btn-outline" for="function-kMeans" data-control="kMeans"
-      >k-means</label
-    >
+    <label class="btn btn-outline" for="function-logreg" data-control="logreg">Logistic Regression</label>
+    <label class="btn btn-outline" for="function-NaiveBayes" data-control="NaiveBayes">Naive Bayes</label>
+    <label class="btn btn-outline" for="function-kMeans" data-control="kMeans">k-means</label>
     <div class="d-none tab-radios">
-      <input
-        type="radio"
-        class="tab-radio"
-        value="logreg"
-        id="function-logreg"
-        name="function"
-        required
-      />
-      <input
-        type="radio"
-        class="tab-radio"
-        value="NaiveBayes"
-        id="function-NaiveBayes"
-        name="function"
-        required
-      />
-      <input
-        type="radio"
-        value="kMeans"
-        id="function-kMeans"
-        name="function"
-        class="tab-radio"
-        required
-      />
+      <input type="radio" class="tab-radio" value="logreg" id="function-logreg" name="function" required />
+      <input type="radio" class="tab-radio" value="NaiveBayes" id="function-NaiveBayes" name="function" required />
+      <input type="radio" value="kMeans" id="function-kMeans" name="function" class="tab-radio" required />
     </div>
   </div>
 </section>
@@ -61,22 +31,9 @@ Learning {% endblock %} {% block formFields %}
         <div class="input-group-prepend">
           <label for="epsilon" class="input-group-text">Epsilon</label>
         </div>
-        <input
-          type="number"
-          class="form-control"
-          id="epsilon"
-          name="Epsilon"
-          min="0"
-          max="100"
-          step="0.001"
-          placeholder="0"
-          data-inclusive-min="False"
-          required
-          data-toggle="tooltip"
-          data-trigger="manual"
-          data-placement="top"
-          data-title="Epsilon cannot be 0!"
-        />
+        <input type="number" class="form-control" id="epsilon" name="Epsilon" min="0" max="100" step="0.001"
+          placeholder="0" data-inclusive-min="False" required data-toggle="tooltip" data-trigger="manual"
+          data-placement="top" data-title="Epsilon cannot be 0!" />
       </div>
     </div>
   </div>
@@ -87,24 +44,13 @@ Learning {% endblock %} {% block formFields %}
   </header>
   <div>
     <div class="form-row my-4 justify-content-around">
-      <div
-        class="col-auto my-3"
-        data-hide="NaiveBayes kMeans"
-        data-help="Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsa eligendi mollitia magnam omnis deserunt quaerat assumenda in repudiandae"
-      >
+      <div class="col-auto my-3" data-hide="NaiveBayes kMeans"
+        data-help="Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsa eligendi mollitia magnam omnis deserunt quaerat assumenda in repudiandae">
         <div class="input-group parameter-input">
           <div class="input-group-prepend">
             <label for="lambda" class="input-group-text">Lambda</label>
           </div>
-          <input
-            type="number"
-            class="form-control"
-            id="lambda"
-            name="Lambda"
-            required
-            placeholder="0"
-            required
-          />
+          <input type="number" class="form-control" id="lambda" name="Lambda" required placeholder="0" required />
         </div>
       </div>
       <div class="col-auto my-3" data-hide="NaiveBayes kMeans">
@@ -112,14 +58,7 @@ Learning {% endblock %} {% block formFields %}
           <div class="input-group-prepend">
             <label for="epochs" class="input-group-text">Epochs</label>
           </div>
-          <input
-            type="number"
-            class="form-control"
-            id="epochs"
-            name="Epochs"
-            required
-            placeholder="0"
-          />
+          <input type="number" class="form-control" id="epochs" name="Epochs" required placeholder="0" />
         </div>
       </div>
       <div class="col-12"></div>
@@ -128,14 +67,7 @@ Learning {% endblock %} {% block formFields %}
           <div class="input-group-prepend">
             <label for="clusters" class="input-group-text">Clusters</label>
           </div>
-          <input
-            type="number"
-            class="form-control"
-            id="clusters"
-            name="Clusters"
-            required
-            placeholder="0"
-          />
+          <input type="number" class="form-control" id="clusters" name="Clusters" required placeholder="0" />
         </div>
       </div>
     </div>
@@ -145,28 +77,11 @@ Learning {% endblock %} {% block formFields %}
           <div class="input-group-prepend">
             <label for="split" class="input-group-text">Split Ratio</label>
           </div>
-          <input
-            type="number"
-            class="form-control range-value"
-            id="split"
-            name="Split Ratio"
-            min="0"
-            max="1"
-            placeholder="0"
-            step="0.05"
-            required
-          />
+          <input type="number" class="form-control range-value" id="split" name="Split Ratio" min="0" max="1"
+            placeholder="0" step="0.05" required />
         </div>
       </div>
-      <input
-        type="range"
-        class="custom-range col"
-        min="0"
-        max="1"
-        step="0.05"
-        id="split-range"
-        value="0"
-      />
+      <input type="range" class="custom-range col" min="0" max="1" step="0.05" id="split-range" value="0" />
     </div>
   </div>
 </section>
@@ -176,31 +91,16 @@ Learning {% endblock %} {% block formFields %}
   </header>
   <section class="sub-section" data-hide="kMeans">
     <div class="sub-section-header">Select Y</div>
-    <div
-      class="d-flex justify-content-center fields flex-wrap tab-select"
-      data-childType="radio"
-      data-type="y"
-      data-linked="x"
-      data-bounds="true"
-    ></div>
+    <div class="d-flex justify-content-center fields flex-wrap tab-select" data-childType="radio" data-type="y"
+      data-linked="x" data-bounds="true"></div>
   </section>
   <section class="sub-section">
     <div class="sub-section-header">Select X</div>
-    <div
-      class="d-flex justify-content-center fields flex-wrap tab-select"
-      data-childType="checkbox"
-      data-type="x"
-      data-linked="y"
-      data-bounds="true"
-    ></div>
+    <div class="d-flex justify-content-center fields flex-wrap tab-select" data-childType="checkbox" data-type="x"
+      data-linked="y" data-bounds="true"></div>
   </section>
 </section>
-<section
-  class="parameter-section"
-  id="bounds"
-  data-hide="logreg"
-  style="display: none;"
->
+<section class="parameter-section" id="bounds" data-hide="logreg" style="display: none;">
   <header class="section-header">
     <h6>Bounds</h6>
   </header>
@@ -217,20 +117,10 @@ Learning {% endblock %} {% block formFields %}
         <tr id="bound-template" style="display: none;">
           <th scope="row" class="bound-feature"></th>
           <td class="input-bound-lower">
-            <input
-              type="number"
-              class="form-control"
-              id="lower-bound"
-              value="0"
-            />
+            <input type="number" class="form-control" id="lower-bound" value="0" />
           </td>
           <td class="input-bound-upper">
-            <input
-              type="number"
-              class="form-control"
-              id="upper-bound"
-              value="0"
-            />
+            <input type="number" class="form-control" id="upper-bound" value="0" />
           </td>
         </tr>
       </tbody>
@@ -262,13 +152,13 @@ Learning {% endblock %} {% block formFields %}
     } else {
       $(".table-caption").text("Weights");
     }
-    $.each(x, function(key, value) {
+    $.each(x, function (key, value) {
       $("<th/>")
         .text(value)
         .attr("scope", "column")
         .appendTo(tbl.find(".weight-features"));
     });
-    $.each(theta, function(key, value) {
+    $.each(theta, function (key, value) {
       var row = $("<tr/>");
       if (y) {
         $("<th/>")
@@ -276,18 +166,17 @@ Learning {% endblock %} {% block formFields %}
           .text(y[key])
           .appendTo(row);
       }
-      $.each(value, function(k, val) {
+      $.each(value, function (k, val) {
         $("<td/>")
           .text(parseFloat(val).toPrecision(4))
           .appendTo(row);
       });
       row.appendTo(tbl.find("tbody"));
     });
-    tbl.appendTo($(".weights"));
-    setTimeout(function() {
+    tbl.appendTo($(".weights-wrapper"));
+    setTimeout(function () {
       check_scroll();
     }, 0);
-    //applying the rotated css
   }
   function Analysis3() {
     var xhttp = new XMLHttpRequest();
@@ -297,14 +186,14 @@ Learning {% endblock %} {% block formFields %}
     var epochs = document.getElementById("epochs").value;
     var split = document.getElementById("split").value;
     var features = [];
-    $("input[name='field']:checked").each(function() {
+    $("input[name='field']:checked").each(function () {
       features.push($(this).val());
     });
     features = features.join("+");
     var clusters = $("#clusters").val();
     var y = $("input[name='field-y']:checked").val();
     var x = [];
-    $("input[name='field-x']:checked").each(function() {
+    $("input[name='field-x']:checked").each(function () {
       val = $(this).val();
       low = $("*[id='lower-bound-" + val + "']").val();
       high = $("*[id='upper-bound-" + val + "']").val();
@@ -321,7 +210,7 @@ Learning {% endblock %} {% block formFields %}
       .prop("disabled", true)
       .addClass("disabled");
     $("label[for='display-visual']").click();
-    xhttp.onreadystatechange = function() {
+    xhttp.onreadystatechange = function () {
       if (this.readyState == 4) {
         if (this.status == 200) {
           result = JSON.parse(this.responseText);
@@ -341,15 +230,15 @@ Learning {% endblock %} {% block formFields %}
               $(".training-accuracy")
                 .html(
                   "Training Accuracy: " +
-                    parseFloat(result["train_accuracy"]).toFixed(3) +
-                    "%"
+                  parseFloat(result["train_accuracy"]).toFixed(3) +
+                  "%"
                 )
                 .show();
               $(".test-accuracy")
                 .text(
                   "Test Accuracy: " +
-                    parseFloat(result["test_accuracy"]).toFixed(3) +
-                    "%"
+                  parseFloat(result["test_accuracy"]).toFixed(3) +
+                  "%"
                 )
                 .show();
             } else {
@@ -386,21 +275,21 @@ Learning {% endblock %} {% block formFields %}
     xhttp.open(
       "GET",
       "/" +
-        func +
-        "_process?e=" +
-        e +
-        "&lambda=" +
-        lambda +
-        "&epochs=" +
-        epochs +
-        "&clusters=" +
-        clusters +
-        "&split=" +
-        split +
-        "&y=" +
-        y +
-        "&x=" +
-        JSON.stringify(x),
+      func +
+      "_process?e=" +
+      e +
+      "&lambda=" +
+      lambda +
+      "&epochs=" +
+      epochs +
+      "&clusters=" +
+      clusters +
+      "&split=" +
+      split +
+      "&y=" +
+      y +
+      "&x=" +
+      JSON.stringify(x),
       true
     );
     xhttp.send();

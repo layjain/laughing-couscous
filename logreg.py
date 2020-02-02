@@ -78,7 +78,7 @@ def mapFeaturePlot(x1,x2,degree):
 
 def generate_and_save_graph(filepath, degree=6, epsilon=0.1, Lambda=1, alpha=1, epochs=800, split_ratio=1):
     print('making graph')
-    df=pd.read_csv(filepath, header=None)
+    df=pd.read_csv(filepath, header=None, sep = '[;,]', engine='python')
     df.head()
 
     X=df.iloc[:,:-1].values #features
@@ -121,8 +121,11 @@ def generate_and_save_graph(filepath, degree=6, epsilon=0.1, Lambda=1, alpha=1, 
     return (name, np.array(theta_dp).reshape((-1,)).tolist())
 
 def format_correct(filepath):
-    # df=pd.read_csv(filepath, header=None)
-    # df.head()
+    PUMSdata=pd.read_csv(filepath, sep = '[;,]', engine='python')
+
+    #Any Empty Values
+    if np.any(pd.isnull(PUMSdata)):
+        return "File Contains Empty or Null Values"
 
     # X=df.iloc[:,:-1].values #features
     return True
